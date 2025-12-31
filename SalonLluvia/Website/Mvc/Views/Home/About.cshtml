@@ -1,24 +1,8 @@
-﻿@*
-    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
-*@
-@{
+﻿@{
+    ViewData["Title"] = "About";
 }
 
-@*TODO: Make this into partial view*@
-<!-- Hero Start -->
-<div class="container-fluid bg-light page-header py-5 mb-5">
-    <div class="container text-center py-5">
-        <h1 class="display-1 animated slideInLeft">About Us</h1>
-        <nav aria-label="breadcrumb">
-            <ol class="breadcrumb justify-content-center animated slideInLeft mb-0">
-                <li class="breadcrumb-item"><a class="text-primary" href="#">Home</a></li>
-                <li class="breadcrumb-item"><a class="text-primary" href="#">Pages</a></li>
-                <li class="breadcrumb-item active" aria-current="page">About Us</li>
-            </ol>
-        </nav>
-    </div>
-</div>
-<!-- Hero End -->
+<partial name="_breadcrumbPartial" />
 
 <!-- About Start -->
 <div class="container-fluid py-5">

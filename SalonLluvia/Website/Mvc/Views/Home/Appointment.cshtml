@@ -1,7 +1,5 @@
-﻿@*
-    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
-*@
-@{
+﻿@{
+    ViewData["Title"] = "Appointment";
 }
 
 @section Styles
@@ -10,21 +8,7 @@
     <link href="~/css/appointment.css" rel="stylesheet" asp-append-version="true">
 }
 
-@*TODO: Make this into partial view*@
-<!-- Hero Start -->
-<div class="container-fluid bg-light page-header py-5 mb-5">
-    <div class="container text-center py-5">
-        <h1 class="display-1 animated slideInLeft">Contáctanos</h1>
-        <nav aria-label="breadcrumb">
-            <ol class="breadcrumb justify-content-center animated slideInLeft mb-0">
-                <li class="breadcrumb-item"><a class="text-primary" href="#">Home</a></li>
-                <li class="breadcrumb-item"><a class="text-primary" href="#">Pages</a></li>
-                <li class="breadcrumb-item active" aria-current="page">Contáctanos</li>
-            </ol>
-        </nav>
-    </div>
-</div>
-<!-- Hero End -->
+<partial name="_breadcrumbPartial" />
 
 <section id="contact-2251">
     <div class="cs-container">
@@ -44,19 +28,19 @@
                 <div class="row g-3">
                     <div class="col-md-6">
                         <div class="form-floating">
-                            <input type="text" class="form-control" id="name" placeholder="Your Name" required="true">
+                            <input type="text" class="form-control" id="name" placeholder="Your Name" required>
                             <label for="name">Nombre</label>
                         </div>
                     </div>
                     <div class="col-md-6">
                         <div class="form-floating">
-                            <input type="tel" class="form-control" id="phone" placeholder="Teléfono" required="true">
+                            <input type="tel" class="form-control" id="phone" placeholder="Teléfono" required>
                             <label for="phone">Teléfono</label>
                         </div>
                     </div>
                     <div class="col-12">
                         <div class="form-floating">
-                            <input type="date" class="form-control" id="subject" placeholder="Fecha" required="true">
+                            <input type="date" class="form-control" id="subject" placeholder="Fecha" required>
                             <label for="subject">
                                 Fecha
                             </label>
@@ -65,7 +49,7 @@
                     <div class="col-12">
                         <div class="form-floating">
                             <textarea class="form-control" placeholder="Leave a message here" id="message"
-                                      style="height: 150px" required="true"></textarea>
+                                      style="height: 150px" required></textarea>
                             <label for="message">Servicio</label>
                         </div>
                     </div>

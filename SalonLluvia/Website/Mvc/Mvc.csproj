@@ -7,7 +7,23 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <None Remove="scripts\navbar.ts" />
+  </ItemGroup>
+
+  <ItemGroup>
     <Folder Include="Views\Appointment\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.TypeScript.MSBuild" Version="5.9.3">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
+    <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="10.0.1" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <TypeScriptCompile Include="scripts\navbar.ts" />
   </ItemGroup>
 
 </Project>
