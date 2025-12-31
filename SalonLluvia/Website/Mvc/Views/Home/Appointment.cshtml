@@ -1,0 +1,79 @@
+﻿@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@{
+}
+
+@section Styles
+{
+    <link href="~/css/appointment-core.css" rel="stylesheet" asp-append-version="true">
+    <link href="~/css/appointment.css" rel="stylesheet" asp-append-version="true">
+}
+
+@*TODO: Make this into partial view*@
+<!-- Hero Start -->
+<div class="container-fluid bg-light page-header py-5 mb-5">
+    <div class="container text-center py-5">
+        <h1 class="display-1 animated slideInLeft">Contáctanos</h1>
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb justify-content-center animated slideInLeft mb-0">
+                <li class="breadcrumb-item"><a class="text-primary" href="#">Home</a></li>
+                <li class="breadcrumb-item"><a class="text-primary" href="#">Pages</a></li>
+                <li class="breadcrumb-item active" aria-current="page">Contáctanos</li>
+            </ol>
+        </nav>
+    </div>
+</div>
+<!-- Hero End -->
+
+<section id="contact-2251">
+    <div class="cs-container">
+        <!--Copy and paste any iframe from Google Maps-->
+        <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d352.0769115647991!2d-80.8557955672369!3d35.77002177316065!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x885159b3197aaaab%3A0x695fd39779fadae3!2sSalon%20Lluvia!5e1!3m2!1sen!2sus!4v1767140107113!5m2!1sen!2sus" width="600" height="450" style="border:0;" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
+        <div class="cs-wrapper">
+            <div class="cs-content">
+                <span class="cs-topper text-uppercase">Contáctanos</span>
+                <h2 class="cs-title text-capitalize">
+                    Reserve su cita
+                </h2>
+                <p class="cs-text">
+                    El lugar donde la belleza te está esperando.
+                </p>
+            </div>
+            <form>
+                <div class="row g-3">
+                    <div class="col-md-6">
+                        <div class="form-floating">
+                            <input type="text" class="form-control" id="name" placeholder="Your Name" required="true">
+                            <label for="name">Nombre</label>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="form-floating">
+                            <input type="tel" class="form-control" id="phone" placeholder="Teléfono" required="true">
+                            <label for="phone">Teléfono</label>
+                        </div>
+                    </div>
+                    <div class="col-12">
+                        <div class="form-floating">
+                            <input type="date" class="form-control" id="subject" placeholder="Fecha" required="true">
+                            <label for="subject">
+                                Fecha
+                            </label>
+                        </div>
+                    </div>
+                    <div class="col-12">
+                        <div class="form-floating">
+                            <textarea class="form-control" placeholder="Leave a message here" id="message"
+                                      style="height: 150px" required="true"></textarea>
+                            <label for="message">Servicio</label>
+                        </div>
+                    </div>
+                    <div class="col-12">
+                        <button class="btn btn-primary text-uppercase w-100 py-3 ms-0" type="submit">Reservar</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</section>
