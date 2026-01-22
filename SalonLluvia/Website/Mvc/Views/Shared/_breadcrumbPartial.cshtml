@@ -1,12 +1,20 @@
-﻿<!-- Breadcrumb Start -->
+﻿@{
+    string? controllerName = ViewContext.RouteData.Values["controller"]?.ToString();
+    string? actionName = ViewContext.RouteData.Values["action"]?.ToString();
+}
+
+<!-- Breadcrumb Start -->
 <div class="container-fluid bg-light page-header py-5 mb-0">
     <div class="container text-center py-5">
-        <h1 class="display-1 animated slideInLeft">@ViewBag.Header</h1>
+        <h1 class="display-1 animated slideInLeft">@actionName</h1>
         <nav aria-label="breadcrumb">
             <ol class="breadcrumb justify-content-center animated slideInLeft mb-0">
-                <li class="breadcrumb-item"><a class="text-primary" href="#">Home</a></li>
-                <li class="breadcrumb-item"><a class="text-primary" href="#">Pages</a></li>
-                <li class="breadcrumb-item active" aria-current="page">@ViewBag.Action</li>
+                <li class="breadcrumb-item">
+                    <a class="text-primary" asp-action="Index">
+                        @controllerName
+                    </a>
+                </li>
+                <li class="breadcrumb-item active" aria-current="page">@actionName</li>
             </ol>
         </nav>
     </div>
