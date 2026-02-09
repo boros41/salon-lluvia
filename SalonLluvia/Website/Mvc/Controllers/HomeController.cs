@@ -1,11 +1,15 @@
 using System.Diagnostics;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using Mvc.Models;
 
 namespace Mvc.Controllers
 {
     public class HomeController : Controller
     {
+        private readonly SalonContext _context;
+        public HomeController(SalonContext ctx) => _context = ctx;
+        
         public IActionResult Index()
         {
             return View();

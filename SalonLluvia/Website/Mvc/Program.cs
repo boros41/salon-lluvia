@@ -1,3 +1,6 @@
+using Microsoft.EntityFrameworkCore;
+using Mvc.Models;
+
 namespace Mvc
 {
     public class Program
@@ -9,6 +12,21 @@ namespace Mvc
             // Add services to the container.
             builder.Services.AddControllersWithViews();
 
+            string? connectionString = builder.Configuration.GetConnectionString("SalonContext");
+            // Add EF Core DI
+            builder.Services.AddDbContext<SalonContext>(options =>
+            {
+                if (builder.Environment.IsDevelopment())
+                {
+                    options.UseSqlite(connectionString);
+                }
+                else
+                {
+                    // TODO: Setup production database on deployment
+                    //options.UseSqlServer(connectionString);
+                }
+            });
+            
             var app = builder.Build();
 
             // Configure the HTTP request pipeline.
