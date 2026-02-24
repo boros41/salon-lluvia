@@ -3,7 +3,7 @@
 *@
 @{
 }
-
+@*TODO: Change filename to generic error name and dynamically change the url name based on the status code*@
 <!-- 404 Start -->
 <div class="container-fluid py-5 wow fadeIn" data-wow-delay="0.1s">
     <div class="container text-center">
@@ -11,7 +11,7 @@
             <div class="col-lg-6">
                 <i class="bi bi-exclamation-triangle display-1 text-primary"></i>
                 <h1 class="display-1">@ViewBag.Status</h1>
-                <h1 class="mb-4">@ViewBag.Error</h1>
+                <h1 class="mb-4">@ViewBag.Reason</h1>
                 <p class="mb-4">@ViewBag.Message</p>
                 <a class="btn btn-primary py-3 px-4" href="/">Go Back To Home</a>
             </div>
