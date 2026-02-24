@@ -1,4 +1,4 @@
-﻿@*TODO: Create a ViewModel for the form pg. 306*@
+﻿@model AppointmentViewModel
 @{
     ViewData["Title"] = "Appointment";
 }
@@ -25,33 +25,31 @@
                     El lugar donde la belleza te está esperando.
                 </p>
             </div>
-            <form>
-                <div class="row g-3">
+            <form asp-controller="Home" asp-action="Appointment" method="post">
+                <div class="row g-3" asp-validation-summary="All">
                     <div class="col-md-6">
                         <div class="form-floating">
-                            <input type="text" class="form-control" id="name" placeholder="Your Name" required>
-                            <label for="name">Nombre</label>
+                            <input asp-for="Name" class="form-control" placeholder="Nombre" >
+                            <label asp-for="Name">Nombre</label>
                         </div>
                     </div>
                     <div class="col-md-6">
                         <div class="form-floating">
-                            <input type="tel" class="form-control" id="phone" placeholder="Teléfono" required>
-                            <label for="phone">Teléfono</label>
+                            <input asp-for="PhoneNumber" class="form-control" placeholder="Teléfono" >
+                            <label asp-for="PhoneNumber">Teléfono</label>
                         </div>
                     </div>
                     <div class="col-12">
                         <div class="form-floating">
-                            <input type="date" class="form-control" id="subject" placeholder="Fecha" required>
-                            <label for="subject">
-                                Fecha
-                            </label>
+                            <input asp-for="Date" class="form-control" placeholder="Fecha" >
+                            <label asp-for="Date">Fecha</label>
                         </div>
                     </div>
                     <div class="col-12">
                         <div class="form-floating">
-                            <textarea class="form-control" placeholder="Leave a message here" id="message"
+                            <textarea asp-for="DesiredService" class="form-control" placeholder="Servicio deseado (por ejemplo, tinte)"
                                       style="height: 150px" required></textarea>
-                            <label for="message">Servicio</label>
+                            <label asp-for="DesiredService">Servicio</label>
                         </div>
                     </div>
                     <div class="col-12">

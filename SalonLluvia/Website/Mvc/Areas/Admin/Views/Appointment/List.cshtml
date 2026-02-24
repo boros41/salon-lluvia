@@ -1,0 +1,61 @@
+﻿@model IEnumerable<Appointment>
+
+@{
+    ViewData["Title"] = "List";
+}
+
+<div class="container">
+    <div class="row text-center">
+        <h1 class="col">List of Appointments</h1>
+    </div>
+
+    <div class="table-responsive">
+        <table class="table table-striped table-hover">
+            <thead>
+                <tr>
+                    <th>
+                        @Html.DisplayNameFor(model => model.Client.Name)
+                    </th>
+                    <th>
+                        @Html.DisplayNameFor(model => model.Client.PhoneNumber)
+                    </th>
+                    <th>
+                        @Html.DisplayNameFor(model => model.Date)
+                    </th>
+                    <th>
+                        @Html.DisplayNameFor(model => model.DesiredService)
+                    </th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (Appointment appointment in Model)
+                {
+                    <tr>
+                        <td>
+                            @Html.DisplayFor(modelItem => appointment.Client.Name)
+                        </td>
+                        <td>
+                            <i class="bi bi-telephone"></i>
+                            <a href="tel:@appointment.Client.PhoneNumber" class="fw-bold">
+                                @Html.DisplayFor(modelItem => appointment.Client.PhoneNumber)
+                            </a>
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => appointment.Date)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => appointment.DesiredService)
+                        </td>
+                        <td>
+                            <a asp-action="Edit" asp-route-id="@appointment.Id">Edit</a> |
+                            <a asp-action="Details" asp-route-id="@appointment.Id">Details</a> |
+                            <a asp-action="Delete" asp-route-id="@appointment.Id">Delete</a>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+    
+</div>

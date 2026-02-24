@@ -1,23 +1,24 @@
-using System.ComponentModel.DataAnnotations;
 using Microsoft.AspNetCore.Mvc.ModelBinding.Validation;
+using System.ComponentModel.DataAnnotations;
 
-namespace Mvc.Models
+namespace Mvc.Models;
+
+public class Appointment
 {
-    public class Appointment
-    {
-        public int Id { get; set; }
+    public int Id { get; set; }
 
-        [Required(ErrorMessage = "Please enter a client")]
-        public int? ClientId { get; set; }
-        
-        [ValidateNever]
-        public Client Client { get; set; } = null!;
-        
-        [Required]
-        public DateTime Date { get; set; }
+    [Required(ErrorMessage = "Please enter a client")]
+    public int? ClientId { get; set; }
 
-        [Required]
-        [StringLength(200)]
-        public string DesiredService { get; set; } = string.Empty;
-    }
+    [ValidateNever]
+    public Client Client { get; set; } = null!;
+
+    [Display(Name = "Date")]
+    [Required]
+    public DateTime Date { get; set; }
+
+    [Display(Name = "Desired Service")]
+    [Required]
+    [StringLength(200)]
+    public string DesiredService { get; set; } = string.Empty;
 }

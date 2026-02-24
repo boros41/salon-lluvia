@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Mvc.Models;
 
@@ -15,95 +16,59 @@ namespace Mvc.Migrations
         protected override void BuildModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
-            modelBuilder.HasAnnotation("ProductVersion", "10.0.2");
+            modelBuilder
+                .HasAnnotation("ProductVersion", "10.0.2")
+                .HasAnnotation("Relational:MaxIdentifierLength", 128);
+
+            SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
 
             modelBuilder.Entity("Mvc.Models.Appointment", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("INTEGER");
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
                     b.Property<int>("ClientId")
-                        .HasColumnType("INTEGER");
+                        .HasColumnType("int");
 
                     b.Property<DateTime>("Date")
-                        .HasColumnType("TEXT");
+                        .HasColumnType("datetime2");
 
                     b.Property<string>("DesiredService")
                         .IsRequired()
                         .HasMaxLength(200)
-                        .HasColumnType("TEXT");
+                        .HasColumnType("nvarchar(200)");
 
                     b.HasKey("Id");
 
                     b.HasIndex("ClientId");
 
                     b.ToTable("Appointments");
-
-                    b.HasData(
-                        new
-                        {
-                            Id = 1,
-                            ClientId = 1,
-                            Date = new DateTime(2025, 2, 12, 4, 30, 0, 0, DateTimeKind.Unspecified),
-                            DesiredService = "Tinte"
-                        },
-                        new
-                        {
-                            Id = 2,
-                            ClientId = 1,
-                            Date = new DateTime(2025, 2, 15, 10, 0, 0, 0, DateTimeKind.Unspecified),
-                            DesiredService = "Peinado"
-                        },
-                        new
-                        {
-                            Id = 3,
-                            ClientId = 2,
-                            Date = new DateTime(2025, 2, 17, 8, 0, 0, 0, DateTimeKind.Unspecified),
-                            DesiredService = "Tinte"
-                        });
                 });
 
             modelBuilder.Entity("Mvc.Models.Client", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("INTEGER");
+                        .HasColumnType("int");
 
-                    b.Property<string>("FirstName")
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("Name")
                         .IsRequired()
                         .HasMaxLength(100)
-                        .HasColumnType("TEXT");
-
-                    b.Property<string>("LastName")
-                        .IsRequired()
-                        .HasMaxLength(100)
-                        .HasColumnType("TEXT");
+                        .HasColumnType("nvarchar(100)");
 
                     b.Property<string>("PhoneNumber")
                         .IsRequired()
                         .HasMaxLength(20)
-                        .HasColumnType("TEXT");
+                        .HasColumnType("nvarchar(20)");
 
                     b.HasKey("Id");
 
                     b.ToTable("Clients");
-
-                    b.HasData(
-                        new
-                        {
-                            Id = 1,
-                            FirstName = "Kevin",
-                            LastName = "A",
-                            PhoneNumber = "123-456-7890"
-                        },
-                        new
-                        {
-                            Id = 2,
-                            FirstName = "John",
-                            LastName = "Snow",
-                            PhoneNumber = "111-234-5678"
-                        });
                 });
 
             modelBuilder.Entity("Mvc.Models.Appointment", b =>

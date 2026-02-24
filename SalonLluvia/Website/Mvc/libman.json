@@ -17,11 +17,6 @@
       "files": [
         "js/bootstrap.bundle.min.js"
       ]
-    },
-    {
-      "provider": "cdnjs",
-      "library": "typescript@5.9.2",
-      "destination": "wwwroot/lib/typescript/"
     }
   ]
 }
