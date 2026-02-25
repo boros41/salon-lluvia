@@ -1,0 +1,48 @@
+﻿@model IEnumerable<Mvc.Models.Client>
+
+@{
+    ViewData["Title"] = "View";
+}
+
+<div class="container">
+    <div class="row text-center">
+        <h1 class="col">List of Clients</h1>
+    </div>
+
+    <div class="table-responsive-md">
+        <table class="table table-striped-columns table-bordered">
+            <thead>
+                <tr class="table-info">
+                    <th class="sticky-top">
+                        @Html.DisplayNameFor(model => model.Name)
+                    </th>
+                    <th class="sticky-top">
+                        @Html.DisplayNameFor(model => model.PhoneNumber)
+                    </th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (Client client in Model)
+                {
+                    <tr>
+                        <td>
+                            @Html.DisplayFor(modelItem => client.Name)
+                        </td>
+                        <td>
+                            <i class="bi bi-telephone"></i>
+                            <a href="tel:@client.PhoneNumber" class="fw-bold">
+                                @Html.DisplayFor(modelItem => client.PhoneNumber)
+                            </a>
+                        </td>
+                        <td>
+                            <a asp-action="Edit" asp-route-id="@client.Id">Edit</a> |
+                            <a asp-action="Details" asp-route-id="@client.Id">Appointments</a> |
+                            <a asp-action="Delete" asp-route-id="@client.Id">Delete</a>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>
