@@ -13,6 +13,9 @@ public class AppointmentController : Controller
     public ViewResult List()
     {
         List<Appointment> appointments = _context.Appointments.Include(a => a.Client).ToList();
+
+        //TODO: Handle if no appoinments are found
+
         return View(appointments);
     }
 }
