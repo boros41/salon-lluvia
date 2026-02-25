@@ -239,6 +239,11 @@ a:hover {
     margin-left: 8px;
 }
 
+#navbar-dropdown-menu {
+    /*greater than the admin table's .sticky-top z-index so the dropdown isn't behind the table's header*/
+    z-index: 1050;
+}
+
 .navbar .dropdown-menu .dropdown-item:hover,
 .navbar .dropdown-menu .dropdown-item.active {
     color: var(--bs-white);
