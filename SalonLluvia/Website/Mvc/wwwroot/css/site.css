@@ -1,5 +1,74 @@
 /********** Template CSS **********/
 
+/*** Bootstrap overrides ***/
+:root,
+[data-bs-theme="light"] {
+    --bs-primary: #BF9456;
+    --bs-primary-rgb: 191, 148, 86;
+    --bs-secondary: #444444;
+    --bs-secondary-rgb: 68, 68, 68;
+    --bs-light: #F8F7F4;
+    --bs-light-rgb: 248, 247, 244;
+    --bs-dark: #252525;
+    --bs-dark-rgb: 37, 37, 37;
+    --bs-body-font-family: "Work Sans", sans-serif;
+    --bs-body-color: #444444;
+    --bs-body-bg: #ffffff;
+    --bs-heading-color: #252525;
+    --bs-link-color: #BF9456;
+    --bs-link-hover-color: #c9a46f;
+    --bs-border-radius: 0;
+    --bs-border-radius-sm: 0;
+    --bs-border-radius-lg: 0;
+    --bs-border-radius-xl: 0;
+    --bs-border-radius-2xl: 0;
+    --bs-border-radius-pill: 0;
+}
+
+.btn-primary {
+    --bs-btn-color: var(--bs-dark);
+    --bs-btn-bg: var(--bs-primary);
+    --bs-btn-border-color: var(--bs-primary);
+
+    --bs-btn-hover-color: var(--bs-dark);
+    --bs-btn-hover-bg: var(--bs-link-hover-color);
+    --bs-btn-hover-border-color: var(--bs-primary);
+    --bs-btn-active-color: var(--bs-dark);
+    --bs-btn-active-bg: var(--bs-primary);
+    --bs-btn-active-border-color: var(--bs-primary);
+}
+
+h1, h2, h3, h4, h5, h6 {
+    font-family: "Playfair Display", serif;
+    font-weight: 500;
+    color: #252525;
+}
+
+a {
+    color: #bf9456;
+    text-decoration: none
+}
+
+a:hover {
+    color: #997645
+}
+
+.btn {
+    position: relative;
+    transition: .5s;
+}
+
+.btn-link {
+    font-weight: 400;
+    color: #bf9456;
+    text-decoration: none;
+}
+
+.form-control:focus {
+    color: var(--bs-light);
+    box-shadow: 0 0 0 0.25rem rgba(191, 148, 86, 0.25);
+}
+
 /*** Spinner ***/
 #spinner {
     opacity: 0;
@@ -134,6 +203,14 @@
 .sticky-top {
     top: -150px;
     transition: .5s;
+}
+
+.navbar-brand {
+    padding-top: .3125rem;
+    padding-bottom: .3125rem;
+    margin-right: 1rem;
+    font-size: 1.25rem;
+    white-space: nowrap;
 }
 
 .navbar .navbar-nav .nav-link {
