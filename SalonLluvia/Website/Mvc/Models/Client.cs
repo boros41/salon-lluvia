@@ -6,7 +6,7 @@ public class Client
 {
     public int Id { get; set; }
 
-    [Display(Name = "Client Name")]
+    [Display(Name = "Client")]
     [Required]
     [StringLength(100)]
     public string Name { get; set; } = string.Empty;
