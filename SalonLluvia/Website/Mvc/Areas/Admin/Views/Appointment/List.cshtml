@@ -33,8 +33,10 @@
                 {
                     <tr>
                         <td>
-                            @Html.DisplayFor(modelItem => appointment.Client.Name)<br>
-                            ID: @Html.DisplayFor(modelItem => appointment.Client.Id)
+                            <a asp-action="Appointments" asp-controller="Client" asp-route-id="@appointment.ClientId">
+                                @Html.DisplayFor(modelItem => appointment.Client.Name)<br>
+                                ID: @Html.DisplayFor(modelItem => appointment.ClientId)
+                            </a>
                         </td>
                         <td>
                             <i class="bi bi-telephone"></i>
@@ -50,7 +52,6 @@
                         </td>
                         <td>
                             <a asp-action="Edit" asp-route-id="@appointment.Id">Edit</a> |
-                            <a asp-action="Details" asp-route-id="@appointment.Id">Details</a> |
                             <a asp-action="Delete" asp-route-id="@appointment.Id">Delete</a>
                         </td>
                     </tr>

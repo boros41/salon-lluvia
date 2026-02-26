@@ -33,7 +33,8 @@
                 {
                     <tr>
                         <td>
-                            @Html.DisplayFor(modelItem => appointment.Client.Name)
+                            @Html.DisplayFor(modelItem => appointment.Client.Name)<br>
+                            ID: @Html.DisplayFor(modelItem => appointment.ClientId)
                         </td>
                         <td>
                             <i class="bi bi-telephone"></i>

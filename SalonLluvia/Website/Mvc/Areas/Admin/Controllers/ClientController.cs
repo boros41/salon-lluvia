@@ -29,7 +29,7 @@ public class ClientController : Controller
         {
             string? clientName = _context.Clients.Find(id)?.Name ?? "Deleted client";
 
-            ViewBag.Header = $"{appointments.Count} appointments found for {clientName} with Id: {id}";
+            ViewBag.Header = $"{clientName}\'s Appointments ({appointments.Count} Found)";
         }
         else
         {
