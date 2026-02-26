@@ -64,7 +64,7 @@ a {
 }
 
 .form-control:focus {
-    color: var(--bs-light);
+    color: var(--bs-body-color);
     box-shadow: 0 0 0 0.25rem rgba(191, 148, 86, 0.25);
 }
 
@@ -595,6 +595,11 @@ a {
         left: 50%;
         background: var(--bs-secondary);
     }
+}
+
+#newsletter {
+    /*Newsletter has a dark background*/
+    color: var(--bs-light);
 }
 
 .footer .btn.btn-link {
