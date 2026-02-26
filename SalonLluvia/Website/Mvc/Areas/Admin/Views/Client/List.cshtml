@@ -14,6 +14,9 @@
             <thead>
                 <tr class="table-info">
                     <th class="sticky-top">
+                        @Html.DisplayNameFor(model => model.Id)
+                    </th>
+                    <th class="sticky-top">
                         @Html.DisplayNameFor(model => model.Name)
                     </th>
                     <th class="sticky-top">
@@ -26,6 +29,9 @@
                 @foreach (Client client in Model)
                 {
                     <tr>
+                        <td>
+                            @Html.DisplayFor(modelItem => client.Id)
+                        </td>
                         <td>
                             @Html.DisplayFor(modelItem => client.Name)
                         </td>
