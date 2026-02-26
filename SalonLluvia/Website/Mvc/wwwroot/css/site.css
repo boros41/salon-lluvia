@@ -29,7 +29,6 @@
     --bs-btn-color: var(--bs-dark);
     --bs-btn-bg: var(--bs-primary);
     --bs-btn-border-color: var(--bs-primary);
-
     --bs-btn-hover-color: var(--bs-dark);
     --bs-btn-hover-bg: var(--bs-link-hover-color);
     --bs-btn-hover-border-color: var(--bs-primary);
@@ -49,9 +48,9 @@ a {
     text-decoration: none
 }
 
-a:hover {
-    color: #997645
-}
+    a:hover {
+        color: #997645
+    }
 
 .btn {
     position: relative;
@@ -211,6 +210,13 @@ a:hover {
     margin-right: 1rem;
     font-size: 1.25rem;
     white-space: nowrap;
+    width: 100%;
+}
+
+@media (min-width: 443px) {
+    .navbar-brand {
+        width: auto;
+    }
 }
 
 .navbar .navbar-nav .nav-link {

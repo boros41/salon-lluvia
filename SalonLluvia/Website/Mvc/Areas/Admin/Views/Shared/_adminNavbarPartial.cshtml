@@ -18,23 +18,23 @@
                     url = Url.Action("Index", "Home"); // generates "/" since default route
                 }
                 <a href="@url" class="nav-item nav-link @((Context.Request.Path == url
-                                                           || Context.Request.Path == "/Home/Index"
-                                                           ||Context.Request.Path == "/Home"
-                                                           || Context.Request.Path == "/Home/")
-                                                            ? "active" : null)">
+                                                                                          || Context.Request.Path == "/Home/Index"
+                                                                                          || Context.Request.Path == "/Home"
+                                                                                          || Context.Request.Path == "/Home/")
+                                                                                           ? "active" : null)">
                     Home
                 </a>
-                
+
                 @{
                     url = Url.Action("Gallery", "Home");
                 }
                 <a href="@url" class="nav-item nav-link @(requestPathStartsWithUrl(url) ? "active" : null)">Gallery</a>
-                
+
                 @{
                     url = Url.Action("Service", "Home");
                 }
                 <a href="@url" class="nav-item nav-link @(requestPathStartsWithUrl(url) ? "active" : null)">Service</a>
-                
+
                 @{
                     url = Url.Action("Pricing", "Home");
                 }
@@ -44,22 +44,28 @@
                     <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown">Pages</a>
                     <div class="dropdown-menu bg-light mt-2" id="navbar-dropdown-menu">
                         @{
-                            url = Url.Action("About", "Home");
+                            // two segments needed since default admin area route specified in Program.cs routes to list of appointments
+                            string shortAppointmentsUrl = "/Admin";
+                            string? qualifiedAppointmentsUrl = Url.Action("List", "Appointment");
                         }
-                        <a href="@url" class="dropdown-item @(requestPathStartsWithUrl(url) ? "active" : null)">About</a>
-                        
+                        <a href="@qualifiedAppointmentsUrl" 
+                           class="dropdown-item @((requestPathStartsWithUrl(shortAppointmentsUrl) 
+                                                && requestPathStartsWithUrl(qualifiedAppointmentsUrl)) ? "active" : null)">
+                           List of Appointments
+                       </a>
+
                         @{
-                            url = Url.Action("Team", "Home");
+                            url = Url.Action("List", "Client");
                         }
-                        <a href="@url" class="dropdown-item @(requestPathStartsWithUrl(url) ? "active" : null)">Our Team</a>
-                        
+                        <a href="@url" class="dropdown-item @(requestPathStartsWithUrl(url) ? "active" : null)">List of clients</a>
+
                         @{
                             url = Url.Action("Testimonial", "Home");
                         }
                         <a href="@url" class="dropdown-item @(requestPathStartsWithUrl(url) ? "active" : null)">Testimonial</a>
                     </div>
                 </div>
-                
+
                 @{
                     url = Url.Action("Appointment", "Home");
                 }
