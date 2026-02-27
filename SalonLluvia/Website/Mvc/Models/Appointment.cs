@@ -7,6 +7,7 @@ public class Appointment
 {
     public int Id { get; set; }
 
+    [Display(Name = "Client ID")]
     [Required(ErrorMessage = "Please enter a client")]
     public int? ClientId { get; set; }
 

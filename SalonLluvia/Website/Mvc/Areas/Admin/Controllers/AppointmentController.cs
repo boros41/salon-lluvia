@@ -18,4 +18,23 @@ public class AppointmentController : Controller
 
         return View(appointments);
     }
+
+    [HttpGet]
+    public ViewResult Edit(int id)
+    {
+        Appointment? appointment = _context.Appointments
+                                          .Include(a => a.Client)
+                                          .FirstOrDefault(a => a.Id == id);
+
+        return View(appointment);
+    }
+
+    [HttpPost]
+    public ViewResult Edit(Appointment editedAppointment)
+    {
+        _context.Appointments.Update(editedAppointment);
+        _context.SaveChanges();
+
+        return View(editedAppointment);
+    }
 }
