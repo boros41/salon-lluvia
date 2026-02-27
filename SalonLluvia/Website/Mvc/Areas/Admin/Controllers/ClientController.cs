@@ -51,9 +51,17 @@ public class ClientController : Controller
     public ViewResult Delete(Client client)
     {
         // TODO: Handle if client was already deleted to prevent exception. Check if the primary key exists in the DB before removing
+        Client? clientToDelete = _context.Clients.Find(client.Id);
+        bool isClientDeleted = clientToDelete is null;
 
-        _context.Clients.Remove(client);
+        if (isClientDeleted)
+        {
+            return View(client);
+        }
+
+        // TODO: Redirect to list of clients showing successful toast message
+        _context.Clients.Remove(clientToDelete!);
         _context.SaveChanges();
-        return View();
+        return View(client);
     }
 }

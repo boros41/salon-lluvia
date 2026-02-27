@@ -32,6 +32,11 @@ public class AppointmentController : Controller
     [HttpPost]
     public ViewResult Edit(Appointment editedAppointment)
     {
+        if (!ModelState.IsValid)
+        {
+            return View(editedAppointment);
+        }
+
         _context.Appointments.Update(editedAppointment);
         _context.SaveChanges();
 
