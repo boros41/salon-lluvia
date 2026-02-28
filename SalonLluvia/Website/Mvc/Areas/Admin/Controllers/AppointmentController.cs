@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Mvc.Models;
+using Mvc.Utilities;
 
 namespace Mvc.Areas.Admin.Controllers;
 
@@ -53,7 +54,7 @@ public class AppointmentController : Controller
             return View(editedAppointment);
         }
 
-        TempData["toast-header"] = "Appointment Edit"; // TODO: create utility class for string names
+        TempData[Tags.ToastHeader] = "Appointment Edit"; // TODO: create utility class for string names
 
         appointment.Date = editedAppointment.Date;
         appointment.DesiredService = editedAppointment.DesiredService;
@@ -61,14 +62,14 @@ public class AppointmentController : Controller
         int propertiesEdited = _context.SaveChanges();
         if (propertiesEdited > 0)
         {
-            TempData["toast-message"] = $"Successfully edited {appointment.Client.Name}\'s appointment";
-            TempData["is-success"] = true;
+            TempData[Tags.ToastMessage] = $"Successfully edited {appointment.Client.Name}\'s appointment";
+            TempData[Tags.IsSuccess] = true;
             return RedirectToAction("List");
         }
         else
         {
-            TempData["toast-message"] = "No changes were made";
-            TempData["is-success"] = false;
+            TempData[Tags.ToastMessage] = "No changes were made";
+            TempData[Tags.IsSuccess] = false;
             return View(editedAppointment);
         }
     }

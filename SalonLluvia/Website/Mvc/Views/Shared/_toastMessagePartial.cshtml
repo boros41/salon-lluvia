@@ -1,14 +1,16 @@
 ﻿<!--Bootstrap Toast Message Start-->
-@if (TempData.ContainsKey("toast-header") && TempData.ContainsKey("toast-message") && TempData.ContainsKey("is-success"))
+@if (TempData.ContainsKey(Tags.ToastHeader) 
+     && TempData.ContainsKey(Tags.ToastMessage) 
+     && TempData.ContainsKey(Tags.IsSuccess))
 {
     <div class="toast-container position-fixed bottom-0 start-0 p-3">
         <div id="liveToast" class="toast" role="alert" aria-live="assertive" aria-atomic="true" data-bs-delay="10000">
-            <div class="toast-header bg-primary @((bool)TempData["is-success"]! ? "bg-success-subtle" : "bg-danger")">
-                <strong class="me-auto">@TempData["toast-header"]</strong>
+            <div class="toast-header bg-primary @((bool)TempData[Tags.IsSuccess]! ? "bg-success-subtle" : "bg-danger")">
+                <strong class="me-auto">@TempData[Tags.ToastHeader]</strong>
                 <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close"></button>
             </div>
             <div class="toast-body">
-                @TempData["toast-message"]
+                @TempData[Tags.ToastMessage]
             </div>
         </div>
     </div>
