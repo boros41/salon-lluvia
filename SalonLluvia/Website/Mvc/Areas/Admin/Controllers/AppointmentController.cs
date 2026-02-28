@@ -10,36 +10,54 @@ public class AppointmentController : Controller
     private readonly SalonContext _context;
     public AppointmentController(SalonContext ctx) => _context = ctx;
 
+    [HttpGet]
     public ViewResult List()
     {
         List<Appointment> appointments = _context.Appointments.Include(a => a.Client).ToList();
 
-        //TODO: Handle if no appoinments are found
+        //TODO: Handle if no appointments are found
 
         return View(appointments);
     }
 
     [HttpGet]
-    public ViewResult Edit(int id)
+    public IActionResult Edit(int appointmentId)
     {
         Appointment? appointment = _context.Appointments
-                                          .Include(a => a.Client)
-                                          .FirstOrDefault(a => a.Id == id);
+                                           .Include(a => a.Client)
+                                           .FirstOrDefault(a => a.Id == appointmentId);
+
+        if (appointment is null)
+        {
+            return RedirectToAction("List");
+        }
 
         return View(appointment);
     }
 
     [HttpPost]
-    public ViewResult Edit(Appointment editedAppointment)
+    public IActionResult Edit(Appointment editedAppointment)
     {
+        Appointment? appointment = _context.Appointments
+                                           .Include(a => a.Client)
+                                           .FirstOrDefault(a => a.Id == editedAppointment.Id);
+
+        if (appointment is null) // client probably edited the id to a non-existent one
+        {
+            return RedirectToAction("List");
+        }
+
         if (!ModelState.IsValid)
         {
+
             return View(editedAppointment);
         }
 
-        _context.Appointments.Update(editedAppointment);
+        appointment.Date = editedAppointment.Date;
+        appointment.DesiredService = editedAppointment.DesiredService;
+
         _context.SaveChanges();
 
-        return View(editedAppointment);
+        return RedirectToAction("List");
     }
 }
