@@ -53,11 +53,23 @@ public class AppointmentController : Controller
             return View(editedAppointment);
         }
 
+        TempData["toast-header"] = "Appointment Edit"; // TODO: create utility class for string names
+
         appointment.Date = editedAppointment.Date;
         appointment.DesiredService = editedAppointment.DesiredService;
 
-        _context.SaveChanges();
-
-        return RedirectToAction("List");
+        int propertiesEdited = _context.SaveChanges();
+        if (propertiesEdited > 0)
+        {
+            TempData["toast-message"] = $"Successfully edited {appointment.Client.Name}\'s appointment";
+            TempData["is-success"] = true;
+            return RedirectToAction("List");
+        }
+        else
+        {
+            TempData["toast-message"] = "No changes were made";
+            TempData["is-success"] = false;
+            return View(editedAppointment);
+        }
     }
 }
