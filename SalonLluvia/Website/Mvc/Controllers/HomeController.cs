@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Mvc;
 using Mvc.Models;
 using Mvc.Models.ViewModels;
+using Mvc.Utilities;
 using System.Diagnostics;
 
 namespace Mvc.Controllers;
@@ -41,16 +42,19 @@ public class HomeController : Controller
             return View(model);
         }
 
-        // TODO: refactor & dont create new clients for the same person, maybe unique constraint phone number
-        Client client = new Client()
+        Client? client = _context.Clients.FirstOrDefault(c => c.PhoneNumber == model.PhoneNumber);
+        if (client is null)
         {
-            Name = model.Name,
-            PhoneNumber = model.PhoneNumber
-        };
+            client = new Client()
+            {
+                Name = model.Name,
+                PhoneNumber = model.PhoneNumber
+            };
 
-        // must save to increment client's id before appointment can relate to it
-        _context.Clients.Add(client);
-        _context.SaveChanges();
+            // must save to increment client's id before appointment can relate to it
+            _context.Clients.Add(client);
+            _context.SaveChanges();
+        }
 
         Appointment appointment = new Appointment()
         {
@@ -63,7 +67,11 @@ public class HomeController : Controller
         _context.Appointments.Add(appointment);
         _context.SaveChanges();
 
-        return View();
+        TempData[Tags.ToastHeader] = "Appointment";
+        TempData[Tags.ToastMessage] = "Thank you for your appointment! We will reach out to you soon to confirm.";
+        TempData[Tags.IsSuccess] = true;
+
+        return RedirectToAction("Appointment");
     }
     public IActionResult Service()
     {
