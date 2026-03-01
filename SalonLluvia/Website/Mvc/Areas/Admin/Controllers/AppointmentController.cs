@@ -16,7 +16,12 @@ public class AppointmentController : Controller
     {
         List<Appointment> appointments = _context.Appointments.Include(a => a.Client).ToList();
 
-        //TODO: toast if no appointments found
+        if (appointments.Count == 0)
+        {
+            TempData[Tags.ToastHeader] = "Appointment";
+            TempData[Tags.ToastMessage] = "No appointments found";
+            TempData[Tags.IsSuccess] = false;
+        }
 
         return View(appointments);
     }

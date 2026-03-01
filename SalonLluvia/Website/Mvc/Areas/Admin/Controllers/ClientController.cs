@@ -15,7 +15,12 @@ public class ClientController : Controller
     {
         List<Client> clients = _context.Clients.ToList();
 
-        //TODO: toast if no clients found
+        if (clients.Count == 0)
+        {
+            TempData[Tags.ToastHeader] = "Client";
+            TempData[Tags.ToastMessage] = "No clients found";
+            TempData[Tags.IsSuccess] = false;
+        }
 
         return View(clients);
     }
