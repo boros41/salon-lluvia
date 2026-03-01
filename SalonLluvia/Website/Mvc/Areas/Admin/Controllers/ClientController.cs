@@ -46,6 +46,54 @@ public class ClientController : Controller
     }
 
     [HttpGet]
+    public IActionResult Edit(int id)
+    {
+        Client? client = _context.Clients.Find(id);
+
+        if (client is null)
+        {
+            return RedirectToAction("List");
+        }
+
+        return View(client);
+    }
+
+    [HttpPost]
+    public IActionResult Edit(Client model)
+    {
+        Client? client = _context.Clients.Find(model.Id);
+
+        if (client is null)
+        {
+            return RedirectToAction("List");
+        }
+
+        if (!ModelState.IsValid)
+        {
+
+            return View(model);
+        }
+
+        TempData[Tags.ToastHeader] = "Client Edit";
+
+        client.PhoneNumber = model.PhoneNumber;
+
+        int propertiesEdited = _context.SaveChanges();
+        if (propertiesEdited > 0)
+        {
+            TempData[Tags.ToastMessage] = $"Successfully edited {client.Name}\'s phone number";
+            TempData[Tags.IsSuccess] = true;
+            return RedirectToAction("List");
+        }
+        else
+        {
+            TempData[Tags.ToastMessage] = "No changes were made";
+            TempData[Tags.IsSuccess] = false;
+            return View(model);
+        }
+    }
+
+    [HttpGet]
     public IActionResult Delete(int id)
     {
         Client? client = _context.Clients.Find(id);
