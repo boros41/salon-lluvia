@@ -17,9 +17,7 @@ public class ClientController : Controller
 
         if (clients.Count == 0)
         {
-            TempData[Tags.ToastHeader] = "Client";
-            TempData[Tags.ToastMessage] = "No clients found";
-            TempData[Tags.IsSuccess] = false;
+            Tags.ToastMessage(TempData, new Tags.ToastValues("Client", "No clients found", false));
         }
 
         return View(clients);
@@ -74,21 +72,17 @@ public class ClientController : Controller
             return View(model);
         }
 
-        TempData[Tags.ToastHeader] = "Client Edit";
-
         client.PhoneNumber = model.PhoneNumber;
 
         int propertiesEdited = _context.SaveChanges();
         if (propertiesEdited > 0)
         {
-            TempData[Tags.ToastMessage] = $"Successfully edited {client.Name}\'s phone number";
-            TempData[Tags.IsSuccess] = true;
+            Tags.ToastMessage(TempData, new Tags.ToastValues("Client Edit", $"Successfully edited {client.Name}\'s phone number", true));
             return RedirectToAction("List");
         }
         else
         {
-            TempData[Tags.ToastMessage] = "No changes were made";
-            TempData[Tags.IsSuccess] = false;
+            Tags.ToastMessage(TempData, new Tags.ToastValues("Client Edit", "No changes were made", false));
             return View(model);
         }
     }
@@ -100,11 +94,7 @@ public class ClientController : Controller
 
         if (client is null)
         {
-            // TODO: move these into Utilities.Tags method
-            TempData[Tags.ToastHeader] = "Client";
-            TempData[Tags.ToastMessage] = $"No Client with ID \"{id}\" to delete";
-            TempData[Tags.IsSuccess] = false;
-
+            Tags.ToastMessage(TempData, new Tags.ToastValues("Client", $"No Client with ID \"{id}\" to delete", false));
             return RedirectToAction("List");
         }
 

@@ -18,9 +18,7 @@ public class AppointmentController : Controller
 
         if (appointments.Count == 0)
         {
-            TempData[Tags.ToastHeader] = "Appointment";
-            TempData[Tags.ToastMessage] = "No appointments found";
-            TempData[Tags.IsSuccess] = false;
+            Tags.ToastMessage(TempData, new Tags.ToastValues("Appointment", "No appointments found", false));
         }
 
         return View(appointments);
@@ -60,22 +58,18 @@ public class AppointmentController : Controller
             return View(editedAppointment);
         }
 
-        TempData[Tags.ToastHeader] = "Appointment Edit";
-
         appointment.Date = editedAppointment.Date;
         appointment.DesiredService = editedAppointment.DesiredService;
 
         int propertiesEdited = _context.SaveChanges();
         if (propertiesEdited > 0)
         {
-            TempData[Tags.ToastMessage] = $"Successfully edited {appointment.Client.Name}\'s appointment";
-            TempData[Tags.IsSuccess] = true;
+            Tags.ToastMessage(TempData, new Tags.ToastValues("Appointment Edit", $"Successfully edited {appointment.Client.Name}\'s appointment", true));
             return RedirectToAction("List");
         }
         else
         {
-            TempData[Tags.ToastMessage] = "No changes were made";
-            TempData[Tags.IsSuccess] = false;
+            Tags.ToastMessage(TempData, new Tags.ToastValues("Appointment Edit", "No changes were made", false));
             return View(editedAppointment);
         }
     }

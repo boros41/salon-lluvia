@@ -67,9 +67,7 @@ public class HomeController : Controller
         _context.Appointments.Add(appointment);
         _context.SaveChanges();
 
-        TempData[Tags.ToastHeader] = "Appointment";
-        TempData[Tags.ToastMessage] = "Thank you for your appointment! We will reach out to you soon to confirm.";
-        TempData[Tags.IsSuccess] = true;
+        Tags.ToastMessage(TempData, new Tags.ToastValues("Appointment", "Thank you for your appointment! We will reach out to you soon to confirm.", true));
 
         return RedirectToAction("Appointment");
     }
