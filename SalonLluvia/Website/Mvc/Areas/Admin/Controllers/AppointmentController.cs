@@ -16,14 +16,15 @@ public class AppointmentController : Controller
     {
         List<Appointment> appointments = _context.Appointments.Include(a => a.Client).ToList();
 
-        //TODO: Handle if no appointments are found
+        //TODO: toast if no appointments found
 
         return View(appointments);
     }
 
     [HttpGet]
-    public IActionResult Edit(int appointmentId)
+    public IActionResult Edit(int id)
     {
+        int appointmentId = id;
         Appointment? appointment = _context.Appointments
                                            .Include(a => a.Client)
                                            .FirstOrDefault(a => a.Id == appointmentId);
@@ -54,7 +55,7 @@ public class AppointmentController : Controller
             return View(editedAppointment);
         }
 
-        TempData[Tags.ToastHeader] = "Appointment Edit"; // TODO: create utility class for string names
+        TempData[Tags.ToastHeader] = "Appointment Edit";
 
         appointment.Date = editedAppointment.Date;
         appointment.DesiredService = editedAppointment.DesiredService;
@@ -72,5 +73,36 @@ public class AppointmentController : Controller
             TempData[Tags.IsSuccess] = false;
             return View(editedAppointment);
         }
+    }
+
+    [HttpGet]
+    public IActionResult Delete(int id)
+    {
+        int appointmentId = id;
+        Appointment? appointment = _context.Appointments
+                                           .Include(a => a.Client)
+                                           .FirstOrDefault(a => a.Id == appointmentId);
+
+        if (appointment is null)
+        {
+            RedirectToAction("List");
+        }
+
+        return View(appointment);
+    }
+
+    [HttpPost]
+    public IActionResult Delete(Appointment appointment)
+    {
+        Appointment? appointmentToDelete = _context.Appointments.Find(appointment.Id);
+
+        if (appointmentToDelete is null)
+        {
+            return RedirectToAction("List");
+        }
+
+        _context.Appointments.Remove(appointmentToDelete);
+        _context.SaveChanges();
+        return RedirectToAction("List");
     }
 }

@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Mvc.Models;
+using Mvc.Utilities;
 
 namespace Mvc.Areas.Admin.Controllers;
 
@@ -14,7 +15,7 @@ public class ClientController : Controller
     {
         List<Client> clients = _context.Clients.ToList();
 
-        //TODO: handle if no clients are found
+        //TODO: toast if no clients found
 
         return View(clients);
     }
@@ -40,28 +41,35 @@ public class ClientController : Controller
     }
 
     [HttpGet]
-    public ViewResult Delete(int id)
+    public IActionResult Delete(int id)
     {
         Client? client = _context.Clients.Find(id);
+
+        if (client is null)
+        {
+            // TODO: move these into Utilities.Tags method
+            TempData[Tags.ToastHeader] = "Client";
+            TempData[Tags.ToastMessage] = $"No Client with ID \"{id}\" to delete";
+            TempData[Tags.IsSuccess] = false;
+
+            return RedirectToAction("List");
+        }
 
         return View(client);
     }
 
     [HttpPost]
-    public ViewResult Delete(Client client)
+    public IActionResult Delete(Client client)
     {
-        // TODO: Handle if client was already deleted to prevent exception. Check if the primary key exists in the DB before removing
         Client? clientToDelete = _context.Clients.Find(client.Id);
-        bool isClientDeleted = clientToDelete is null;
 
-        if (isClientDeleted)
+        if (clientToDelete is null)
         {
-            return View(client);
+            return RedirectToAction("List");
         }
 
-        // TODO: Redirect to list of clients showing successful toast message
-        _context.Clients.Remove(clientToDelete!);
+        _context.Clients.Remove(clientToDelete);
         _context.SaveChanges();
-        return View(client);
+        return RedirectToAction("List");
     }
 }

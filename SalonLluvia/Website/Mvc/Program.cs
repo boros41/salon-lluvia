@@ -56,11 +56,6 @@ public class Program
         app.MapStaticAssets();
 
         app.MapAreaControllerRoute(
-            name: "edit_client_appointment",
-            areaName: "Admin",
-            pattern: "Admin/{controller}/{action}/{appointmentId?}");
-
-        app.MapAreaControllerRoute(
             name: "clients_appointments",
             areaName: "Admin",
             pattern: "Admin/{controller}/{action}/{id?}");
