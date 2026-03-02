@@ -1,8 +1,8 @@
 ﻿"use strict";
 
-const toast = $("#liveToast");
+const $toast = $("#liveToast");
 
-if (toast) {
-    const toastBootstrap = bootstrap.Toast.getOrCreateInstance(toast);
+if ($toast.length) {
+    const toastBootstrap = bootstrap.Toast.getOrCreateInstance($toast[0]);
     toastBootstrap.show();
 }
