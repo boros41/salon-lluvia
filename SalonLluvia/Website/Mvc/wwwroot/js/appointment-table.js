@@ -1,11 +1,11 @@
 ﻿let isAscending = true; // Appointment controller initially returns ascending order
-const sortBtn = $("#appointment-sort-date");
+const $sortBtn = $("#appointment-sort-date");
 const ascendingIcon = "fas fa-sort-numeric-down";
 const descendingIcon = "fas fa-sort-numeric-up-alt";
 
 
 $(document).ready(function () {
-    sortBtn.on("click", function (e) {
+    $sortBtn.on("click", function (e) {
         e.preventDefault();
         SortDate();
     });
@@ -35,11 +35,11 @@ function SortDate() {
 }
 
 function SortDescending(a, b) {
-    sortBtn.removeClass(ascendingIcon).addClass(descendingIcon);
+    $sortBtn.removeClass(ascendingIcon).addClass(descendingIcon);
     return b - a;
 }
 
 function SortAscending(a, b) {
-    sortBtn.removeClass(descendingIcon).addClass(ascendingIcon);
+    $sortBtn.removeClass(descendingIcon).addClass(ascendingIcon);
     return a - b;
 }
