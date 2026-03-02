@@ -14,7 +14,10 @@ public class AppointmentController : Controller
     [HttpGet]
     public ViewResult List()
     {
-        List<Appointment> appointments = _context.Appointments.Include(a => a.Client).ToList();
+        List<Appointment> appointments = _context.Appointments
+                                                 .Include(a => a.Client)
+                                                 .OrderBy(a => a.Date)
+                                                 .ToList();
 
         if (appointments.Count == 0)
         {

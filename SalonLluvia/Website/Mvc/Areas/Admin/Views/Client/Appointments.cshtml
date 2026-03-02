@@ -19,8 +19,11 @@
                     <th class="sticky-top">
                         @Html.DisplayNameFor(model => model.Client.PhoneNumber)
                     </th>
-                    <th class="sticky-top">
+                    <th class="sticky-top d-flex align-items-center justify-content-between">
                         @Html.DisplayNameFor(model => model.Date)
+                        <a href="#">
+                            <i class="fas fa-sort-numeric-down" id="appointment-sort-date"></i>
+                        </a>
                     </th>
                     <th class="sticky-top">
                         @Html.DisplayNameFor(model => model.DesiredService)
@@ -28,10 +31,10 @@
                     <th></th>
                 </tr>
             </thead>
-            <tbody>
+            <tbody id="appointment-table-body">
                 @foreach (Appointment appointment in Model)
                 {
-                    <tr>
+                    <tr class="appointment-row">
                         <td>
                             @Html.DisplayFor(modelItem => appointment.Client.Name)<br>
                             ID: @Html.DisplayFor(modelItem => appointment.ClientId)
@@ -42,9 +45,7 @@
                                 @Html.DisplayFor(modelItem => appointment.Client.PhoneNumber)
                             </a>
                         </td>
-                        <td>
-                            @Html.DisplayFor(modelItem => appointment.Date)
-                        </td>
+                        <td class="appointment-date">@appointment.Date</td>
                         <td>
                             @Html.DisplayFor(modelItem => appointment.DesiredService)
                         </td>
