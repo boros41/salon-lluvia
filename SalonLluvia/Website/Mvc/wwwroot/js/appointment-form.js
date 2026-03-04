@@ -11,12 +11,16 @@ $(document).ready(function () {
 function formatPhone() {
     const $input = $(this);
     const rawPhoneNumber = $input.val();
+    let phoneNumber;
 
-    if (rawPhoneNumber.length < 2) {
+    try {
+        phoneNumber = parsePhoneNumber(rawPhoneNumber, "US");
+    } catch (error) {
+        $input.val("");
+
+        console.log("Unable to parse phone number: " + error.message);
         return;
     }
-
-    const phoneNumber = parsePhoneNumber(rawPhoneNumber, "US");
 
     let formattedPhoneNumber;
     if (phoneNumber.isValid()) {
@@ -26,8 +30,8 @@ function formatPhone() {
         formattedPhoneNumber = asYouType.input(phoneNumber.nationalNumber)
     }
 
-    console.log("Formatted number: " + formattedPhoneNumber);
-    console.log("Is valid: " + phoneNumber.isValid());
+    console.log("Formatted phone number: " + formattedPhoneNumber);
+    console.log("Phone number is valid: " + phoneNumber.isValid());
 
     $input.val(formattedPhoneNumber);
 }
