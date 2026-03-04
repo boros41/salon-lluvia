@@ -2,6 +2,16 @@
 <---          Contact           -->
 <--- -------------------------- -*/
 
+.input-validation-error {
+    border: 2px solid rgb(220, 53, 69);
+    background-color: #faebd7; /*antique white*/
+}
+
+/*Fixes label background color's being white on the .input-validation-error background color*/
+#desired-service > label::after {
+    background: transparent;
+}
+
 /* Mobile - 360px */
 @media only screen and (min-width: 0rem) {
     #contact-2251 {

@@ -16,7 +16,7 @@ public class Appointment
 
     [Display(Name = "Date")]
     [Required]
-    public DateTime Date { get; set; }
+    public DateTime? Date { get; set; }
 
     [Display(Name = "Desired Service")]
     [Required]
