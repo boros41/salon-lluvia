@@ -67,9 +67,13 @@
     <script src="~/lib/counterup/counterup.min.js"></script>
     <script src="~/lib/lightbox/js/lightbox.min.js"></script>
     <script src="~/lib/owlcarousel/owl.carousel.min.js"></script>
+    @await RenderSectionAsync("LibPhoneNumberJS", false)
 
     <!-- Template Javascript -->
     <script src="~/js/main.js" asp-append-version="true"></script>
+    
+    <!-- Page Scripts-->
     <script src="~/js/toast-message.js" asp-append-version="true"></script>
-</body>
+    @await RenderSectionAsync("AppointmentFormJS", false)
+    </body>
 </html>

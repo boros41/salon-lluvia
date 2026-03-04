@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using Mvc.Utilities;
+using System.ComponentModel.DataAnnotations;
 
 namespace Mvc.Models.ViewModels;
 
@@ -10,7 +11,7 @@ public class AppointmentViewModel
 
     [Required(ErrorMessage = "Please enter a phone number")]
     [StringLength(20, ErrorMessage = "Phone number must be 20 characters or less")]
-    // TODO: Add validation attribute for regex
+    [RegularExpression(Tags.UsPhoneRegEx, ErrorMessage = "Invalid phone number")]
     // TODO: Add custom validation to check if phone number is a real phone number
     public string PhoneNumber { get; set; } = string.Empty;
 

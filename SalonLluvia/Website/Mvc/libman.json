@@ -11,9 +11,12 @@
       "destination": "wwwroot/lib/jquery/"
     },
     {
-      "provider": "cdnjs",
       "library": "bootstrap@5.3.8",
       "destination": "wwwroot/lib/bootstrap/"
+    },
+    {
+      "library": "libphonenumber-js@1.12.23",
+      "destination": "wwwroot/lib/libphonenumber-js/"
     }
   ]
 }

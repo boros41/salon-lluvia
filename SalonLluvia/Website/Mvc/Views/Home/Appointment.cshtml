@@ -45,7 +45,7 @@
                         <div class="d-block d-md-none">
                             <span asp-validation-for="PhoneNumber" class="text-danger"></span>
                         </div>
-                        <div class="form-floating">
+                        <div class="form-floating" id="phone-number-wrapper">
                             <input asp-for="PhoneNumber" class="form-control" placeholder="Teléfono">
                             <label asp-for="PhoneNumber">Teléfono</label>
                         </div>
@@ -90,3 +90,12 @@
         </div>
     </div>
 </section>
+
+@section LibPhoneNumberJS {
+    <script src="~/lib/libphonenumber-js/libphonenumber-js.min.js"></script>
+}
+
+@section AppointmentFormJS
+{
+    <script src="~/js/appointment-form.js" asp-append-version="true"></script>
+}
