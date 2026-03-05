@@ -18,7 +18,6 @@ function formatPhone() {
     } catch (error) {
         $input.val("");
 
-        console.log("Unable to parse phone number: " + error.message);
         return;
     }
 
@@ -29,9 +28,6 @@ function formatPhone() {
         const asYouType = new AsYouType("US");
         formattedPhoneNumber = asYouType.input(phoneNumber.nationalNumber)
     }
-
-    console.log("Formatted phone number: " + formattedPhoneNumber);
-    console.log("Phone number is valid: " + phoneNumber.isValid());
 
     $input.val(formattedPhoneNumber);
 }

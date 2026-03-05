@@ -1,4 +1,4 @@
-﻿using Mvc.Utilities;
+﻿using Mvc.Validation;
 using System.ComponentModel.DataAnnotations;
 
 namespace Mvc.Models.ViewModels;
@@ -11,8 +11,7 @@ public class AppointmentViewModel
 
     [Required(ErrorMessage = "Please enter a phone number")]
     [StringLength(20, ErrorMessage = "Phone number must be 20 characters or less")]
-    [RegularExpression(Tags.UsPhoneRegEx, ErrorMessage = "Invalid phone number")]
-    // TODO: Add custom validation to check if phone number is a real phone number
+    [PhoneNumber]
     public string PhoneNumber { get; set; } = string.Empty;
 
     // TODO: Add custom range validation to prevent client-side issues
