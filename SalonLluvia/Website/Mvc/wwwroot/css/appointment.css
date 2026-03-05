@@ -7,6 +7,10 @@
     background-color: #faebd7; /*antique white*/
 }
 
+.valid {
+    border: 2px solid #198754;
+}
+
 /*Fixes label background color's being white on the .input-validation-error background color*/
 #desired-service > label::after {
     background: transparent;

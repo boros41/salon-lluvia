@@ -1,9 +1,10 @@
-﻿using PhoneNumbers;
+﻿using Microsoft.AspNetCore.Mvc.ModelBinding.Validation;
+using PhoneNumbers;
 using System.ComponentModel.DataAnnotations;
 
 namespace Mvc.Validation;
 
-public class PhoneNumberAttribute : ValidationAttribute
+public class PhoneNumberAttribute : ValidationAttribute, IClientModelValidator
 {
     protected override ValidationResult? IsValid(object? value, ValidationContext validationContext)
     {
@@ -37,9 +38,18 @@ public class PhoneNumberAttribute : ValidationAttribute
 
         return ValidationResult.Success;
     }
+    public void AddValidation(ClientModelValidationContext ctx)
+    {
+        if (!ctx.Attributes.ContainsKey("data-val"))
+        {
+            ctx.Attributes.Add("data-val", "true");
+        }
+
+        ctx.Attributes.Add("data-val-phonenumber", GetMessage());
+    }
 
     private string GetMessage()
     {
-        return base.ErrorMessage ?? $"Not a valid phone number";
+        return base.ErrorMessage ?? $"Please enter a valid phone number";
     }
 }
