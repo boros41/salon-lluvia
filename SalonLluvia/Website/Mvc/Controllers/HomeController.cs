@@ -1,4 +1,5 @@
 using Microsoft.AspNetCore.Mvc;
+using Mvc.Integrations.Calendly;
 using Mvc.Models;
 using Mvc.Models.ViewModels;
 using Mvc.Utilities;
@@ -10,7 +11,13 @@ namespace Mvc.Controllers;
 public class HomeController : Controller
 {
     private readonly SalonContext _context;
-    public HomeController(SalonContext ctx) => _context = ctx;
+    private readonly CalendlyClient _calendly;
+
+    public HomeController(SalonContext ctx, CalendlyClient calendly)
+    {
+        _context = ctx;
+        _calendly = calendly;
+    }
 
     [Route("/")]
     public IActionResult Index()

@@ -14,10 +14,12 @@ public class AppointmentViewModel
     [PhoneNumber]
     public string PhoneNumber { get; set; } = string.Empty;
 
-    // TODO: Add custom range validation to prevent client-side issues
-    // TODO: Add custom validation to check if selected date is on an available day in a calendar service
     [Required(ErrorMessage = "Please enter a date")]
     public DateTime? Date { get; set; }
+
+    // TODO: Add email regex
+    [Required(ErrorMessage = "Please enter an email")]
+    public string Email { get; set; } = string.Empty;
 
     [Required(ErrorMessage = "Please enter a desired service")]
     [StringLength(200, ErrorMessage = "Service must be 200 characters or less")]

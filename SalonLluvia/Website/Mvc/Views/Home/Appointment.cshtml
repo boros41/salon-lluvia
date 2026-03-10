@@ -1,12 +1,15 @@
 ﻿@model AppointmentViewModel
 @{
     ViewData["Title"] = "Appointment";
+
+    ViewBag.HideCalendlyWidget = true;
 }
 
 @section Styles
 {
     <link href="~/css/appointment-core.css" rel="stylesheet" asp-append-version="true">
     <link href="~/css/appointment.css" rel="stylesheet" asp-append-version="true">
+    <link href="~/lib/flatpickr/flatpickr.min.css" rel="stylesheet" asp-append-version="true">
 }
 
 <partial name="_breadcrumbPartial" />
@@ -51,21 +54,33 @@
                         </div>
                     </div>
                 </div>
-
+                
                 <div class="row">
-                    <div class="col-12">
+                    <div class="col-md-6">
+                        <span asp-validation-for="Email" class="text-danger"></span>
+                    </div>
+                    <div class="col-md-6 d-none d-md-block">
                         <span asp-validation-for="Date" class="text-danger"></span>
                     </div>
                 </div>
                 <div class="row mb-2">
-                    <div class="col-12">
+                    <div class="col-md-6 mb-2 mb-md-0">
                         <div class="form-floating">
-                            <input asp-for="Date" class="form-control" placeholder="Fecha" autocomplete="off">
+                            <input asp-for="Email" class="form-control" placeholder="Email" autocomplete="email">
+                            <label asp-for="Email">Correo</label>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="d-block d-md-none">
+                            <span asp-validation-for="Date" class="text-danger"></span>
+                        </div>
+                        <div class="form-floating">
+                            <input asp-for="Date" class="form-control" placeholder="Date" autocomplete="off">
                             <label asp-for="Date">Fecha</label>
                         </div>
                     </div>
                 </div>
-                
+
                 <div class="row">
                     <div class="col-12">
                         <span asp-validation-for="DesiredService" class="text-danger"></span>
@@ -100,4 +115,6 @@
 @section AppointmentFormJS
 {
     <script src="~/js/validation/phone-number-attribute.js" asp-append-version="true"></script>
+    <script src="~/lib/flatpickr/flatpickr.min.js" asp-append-version="true"></script>
+    <script src="~/js/appointment-form.js" asp-append-version="true"></script>
 }

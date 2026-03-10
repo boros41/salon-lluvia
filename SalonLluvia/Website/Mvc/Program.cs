@@ -1,4 +1,5 @@
 using Microsoft.EntityFrameworkCore;
+using Mvc.Integrations.Calendly;
 using Mvc.Models;
 
 namespace Mvc;
@@ -11,6 +12,8 @@ public class Program
 
         // Add services to the container.
         builder.Services.AddControllersWithViews();
+
+        builder.Services.AddScoped<CalendlyClient>();
 
         string? connectionString = builder.Configuration.GetConnectionString("SalonContext");
         // Add EF Core DI

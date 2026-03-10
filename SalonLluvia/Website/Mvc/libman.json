@@ -31,6 +31,10 @@
       "files": [
         "jquery.validate.unobtrusive.min.js"
       ]
+    },
+    {
+      "library": "flatpickr@4.6.13",
+      "destination": "wwwroot/lib/flatpickr/"
     }
   ]
 }
