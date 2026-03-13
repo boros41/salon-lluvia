@@ -18,7 +18,13 @@ $("#Date").prop("disabled", true);
 $("#Date").val("Fetching available days...");
 
 fetch(url, options)
-    .then(response => response.json())
+    .then(response => {
+        if (!response.ok) {
+            throw new Error(`HTTP ${response.status}`);
+        }
+
+        return response.json()
+    })
     .then(response => {
         console.log(response);
 

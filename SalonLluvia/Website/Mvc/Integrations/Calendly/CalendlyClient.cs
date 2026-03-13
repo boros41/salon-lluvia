@@ -1,8 +1,8 @@
 ﻿using Mvc.Dto.Calendly.AvailableTimes;
 using Mvc.Dto.Calendly.EventType;
 using Mvc.Dto.Calendly.User;
-using Newtonsoft.Json;
-using JsonSerializer = System.Text.Json.JsonSerializer;
+using System.Text.Json;
+using JsonException = Newtonsoft.Json.JsonException;
 
 namespace Mvc.Integrations.Calendly;
 
@@ -44,9 +44,9 @@ public sealed class CalendlyClient
         response.EnsureSuccessStatusCode();
         string body = await response.Content.ReadAsStringAsync();
 
-        UserResponse userResponse = JsonSerializer.Deserialize<UserResponse>(body) ?? throw new JsonSerializationException("Failed to deserialize Calendly user.");
+        UserResponse userResponse = JsonSerializer.Deserialize<UserResponse>(body) ?? throw new JsonException("Failed to deserialize Calendly user.");
 
-        return userResponse.Resource?.Uri ?? throw new JsonSerializationException("Failed to deserialize user's URI.");
+        return userResponse.Resource.Uri;
     }
 
     private async Task<string> GetUserEventTypeUri(string userUri)
@@ -69,11 +69,10 @@ public sealed class CalendlyClient
         string body = await response.Content.ReadAsStringAsync();
 
         EventTypeResponse eventTypeResponse = JsonSerializer.Deserialize<EventTypeResponse>(body) ??
-                                      throw new JsonSerializationException("Failed to deserialize Calendly user's event types.");
+                                      throw new JsonException("Failed to deserialize Calendly user's event types.");
 
         // Calendly account is configured to have only one event type
-        return eventTypeResponse.Collection?[0].Uri ??
-               throw new JsonSerializationException("Failed to deserialize Calendly user's event type URI.");
+        return eventTypeResponse.Collection[0].Uri;
     }
 
     private async Task<HashSet<string>> GetEventTypeAvailableTimes(string eventTypeUri)
@@ -134,7 +133,7 @@ public sealed class CalendlyClient
             string body = await response.Content.ReadAsStringAsync();
 
             AvailableTimesResponse availableTimesResponse = JsonSerializer.Deserialize<AvailableTimesResponse>(body) ??
-                                                            throw new JsonSerializationException("Failed to deserialize Calendly event type available times.");
+                                                            throw new JsonException("Failed to deserialize Calendly event type available times.");
 
             foreach (AvailableTime availableTime in availableTimesResponse.Collection)
             {
@@ -143,7 +142,7 @@ public sealed class CalendlyClient
                 availableDays.Add(availableTime.StartTime.ToString(dateFormat));
             }
 
-            // Recursive step towards base case
+            // Recursive step towards base case, Calendly API only allows date ranges of 1 week at a time
             await FillDays(startDate: endDate, endDate: endDate.AddDays(7));
         }
     }
