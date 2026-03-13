@@ -29,7 +29,7 @@ public class CalendlyController : ControllerBase
             const string key = "available-days";
             HashSet<string> availableDays = await _memoryCache.GetOrCreateAsync(key, cacheEntry =>
             {
-                cacheEntry.AbsoluteExpirationRelativeToNow = TimeSpan.FromMinutes(10);
+                cacheEntry.AbsoluteExpirationRelativeToNow = TimeSpan.FromMinutes(5);
 
                 return _calendly.GetAvailableDays();
             }) ?? throw new InvalidOperationException($"Value for memory cache \"{key}\" was null");

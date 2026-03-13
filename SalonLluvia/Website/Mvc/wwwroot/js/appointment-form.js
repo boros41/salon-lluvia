@@ -39,7 +39,5 @@ fetch(url, options)
 
         $("#Date").prop("disabled", false);
         const fp = $("#Date").flatpickr(config);
-
-        console.log(fp.dateFormat);
     })
     .catch(err => console.error(err));

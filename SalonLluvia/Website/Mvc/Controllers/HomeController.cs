@@ -1,4 +1,5 @@
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Caching.Memory;
 using Mvc.Integrations.Calendly;
 using Mvc.Models;
 using Mvc.Models.ViewModels;
@@ -12,11 +13,13 @@ public class HomeController : Controller
 {
     private readonly SalonContext _context;
     private readonly CalendlyClient _calendly;
+    private readonly IMemoryCache _memoryCache;
 
-    public HomeController(SalonContext ctx, CalendlyClient calendly)
+    public HomeController(SalonContext ctx, CalendlyClient calendly, IMemoryCache memoryCache)
     {
         _context = ctx;
         _calendly = calendly;
+        _memoryCache = memoryCache;
     }
 
     [Route("/")]
@@ -42,11 +45,37 @@ public class HomeController : Controller
     }
 
     [HttpPost]
-    public IActionResult Appointment(AppointmentViewModel model)
+    public async Task<IActionResult> Appointment(AppointmentViewModel model)
     {
         if (!ModelState.IsValid)
         {
             return View(model);
+        }
+
+        if (_memoryCache.TryGetValue("available-days", out HashSet<string>? availableDays))
+        {
+            if (availableDays is null)
+            {
+                Tags.ToastMessage(TempData, new Tags.ToastValues("Appointment", $"Unfortunately, An error occured when trying to book your appointment. If this continues, please contact support with this message: \"cache was empty\"", false));
+
+                return RedirectToAction("Appointment");
+            }
+
+            DateTime date = (DateTime)model.Date!; // model.Date has a [Required] attribute which requires a nullable for value types
+            if (!availableDays.Contains(date.ToString("yyyy-MM-dd")))
+            {
+                Tags.ToastMessage(TempData, new Tags.ToastValues("Appointment", "The date you tried to reserve is no longer available, please try again.", false));
+
+                _memoryCache.Remove("available-days");
+
+                return RedirectToAction("Appointment");
+            }
+        }
+        else
+        {
+            Tags.ToastMessage(TempData, new Tags.ToastValues("Appointment", $"Unfortunately, An error occured when trying to book your appointment. If this continues, please contact support with this message: \"cache key did not exist\"", false));
+
+            return RedirectToAction("Appointment");
         }
 
         Client? client = _context.Clients.FirstOrDefault(c => c.PhoneNumber == model.PhoneNumber);
@@ -60,7 +89,7 @@ public class HomeController : Controller
 
             // must save to increment client's id before appointment can relate to it
             _context.Clients.Add(client);
-            _context.SaveChanges();
+            await _context.SaveChangesAsync();
         }
 
         Appointment appointment = new Appointment()
@@ -71,8 +100,35 @@ public class HomeController : Controller
             DesiredService = model.DesiredService
         };
 
+        try
+        {
+            await _calendly.CreateAppointment(model);
+            _memoryCache.Remove("available-days"); // the date the user just booked is no longer available
+        }
+        catch (HttpRequestException e)
+        {
+            if (e.StatusCode is null)
+            {
+                Tags.ToastMessage(TempData, new Tags.ToastValues("Appointment", $"Unfortunately, An error occured when trying to book your appointment. If this continues, please contact support with this message: {e.Message}", false));
+
+                return RedirectToAction("Appointment");
+            }
+
+            int statusCode = (int)e.StatusCode.Value;
+
+            Tags.ToastMessage(TempData, new Tags.ToastValues("Appointment", $"Unfortunately, An error occured when trying to book your appointment. If this continues, contact support with this code: {statusCode}", false));
+
+            return RedirectToAction("Appointment");
+        }
+        catch (Exception e)
+        {
+            Tags.ToastMessage(TempData, new Tags.ToastValues("Appointment", $"Unfortunately, An error occured when trying to book your appointment. If this continues, please contact support.", false));
+
+            return RedirectToAction("Appointment");
+        }
+
         _context.Appointments.Add(appointment);
-        _context.SaveChanges();
+        await _context.SaveChangesAsync();
 
         Tags.ToastMessage(TempData, new Tags.ToastValues("Appointment", "Thank you for your appointment! We will reach out to you soon to confirm.", true));
 

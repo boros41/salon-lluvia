@@ -17,6 +17,9 @@ public class ErrorController : Controller
                 ViewBag.Message = "We’re sorry, the page you have looked for does not exist in our website! " +
                                 "Maybe go to our home page or try to use a search?";
                 break;
+            case 500:
+                ViewBag.Message = "We're sorry, please contact support if this error persists.";
+                break;
         }
 
         // TODO: change this view name to generic error name

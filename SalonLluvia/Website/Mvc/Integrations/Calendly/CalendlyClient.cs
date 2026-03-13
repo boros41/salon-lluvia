@@ -1,6 +1,9 @@
 ﻿using Mvc.Dto.Calendly.AvailableTimes;
+using Mvc.Dto.Calendly.CreateAppointment;
 using Mvc.Dto.Calendly.EventType;
 using Mvc.Dto.Calendly.User;
+using Mvc.Models.ViewModels;
+using System.Net.Http.Headers;
 using System.Text.Json;
 using JsonException = Newtonsoft.Json.JsonException;
 
@@ -128,7 +131,7 @@ public sealed class CalendlyClient
                     },
                 },
             };
-            using var response = await client.SendAsync(request);
+            using HttpResponseMessage response = await client.SendAsync(request);
             response.EnsureSuccessStatusCode();
             string body = await response.Content.ReadAsStringAsync();
 
@@ -145,5 +148,52 @@ public sealed class CalendlyClient
             // Recursive step towards base case, Calendly API only allows date ranges of 1 week at a time
             await FillDays(startDate: endDate, endDate: endDate.AddDays(7));
         }
+    }
+
+    public async Task<string> CreateAppointment(AppointmentViewModel model)
+    {
+        DateTime date = (DateTime)model.Date!; // model.Date has a [Required] attribute which requires a nullable for value types
+        CreateAppointmentRequest appointmentRequest = new CreateAppointmentRequest
+        {
+            EventTypeUri = await GetUserEventTypeUri(await GetUserUri()),
+            StartTime = new DateTime(date.Year, date.Month, date.Day, 16, 0, 0, DateTimeKind.Utc),
+            Invitee = new Invitee { Name = model.Name, Email = model.Email },
+            QuestionsAndAnswers = new List<QuestionsAndAnswers>()
+            {
+                {new QuestionsAndAnswers() {Question = "Teléfono", Answer = model.PhoneNumber, Position = 0}},
+                {new QuestionsAndAnswers()
+                {
+                    Question = "Cuéntenos algo que nos ayude a prepararnos para la reunión.", Answer = model.DesiredService, Position = 1
+                }}
+            }
+        };
+
+        string jsonContent = JsonSerializer.Serialize(appointmentRequest);
+
+        var client = new HttpClient();
+        var request = new HttpRequestMessage
+        {
+            Method = HttpMethod.Post,
+            RequestUri = new Uri("https://api.calendly.com/invitees"),
+            Headers =
+            {
+                {
+                    "Authorization",
+                    "Bearer " + _token
+                }
+            },
+            Content = new StringContent(jsonContent)
+            {
+                Headers =
+                {
+                    ContentType = new MediaTypeHeaderValue("application/json")
+                }
+            }
+        };
+        using HttpResponseMessage response = await client.SendAsync(request);
+        response.EnsureSuccessStatusCode();
+        string body = await response.Content.ReadAsStringAsync();
+
+        return body;
     }
 }
