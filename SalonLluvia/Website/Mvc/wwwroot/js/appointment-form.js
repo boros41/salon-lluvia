@@ -35,9 +35,43 @@ fetch(url, options)
             altInput: true,
             altFormat: "F j, Y",
             dateFormat: "Z",
+            onChange: onDateChange,
+            onClose: onDateClose
         };
 
         $("#Date").prop("disabled", false);
         const fp = $("#Date").flatpickr(config);
     })
     .catch(err => console.error(err));
+
+// flatpickr sets the original date input to hidden meaning jQuery-validate libraries
+// won't run so I have to manually validate flatpickr's date picker
+function onDateChange(selectedDates, dateStr, instance) {
+    if (dateStr) {
+        $("#Date + input").removeClass("input-validation-error").addClass("valid");
+        $(".date-validation-error").removeClass("field-validation-error")
+                                   .addClass("field-validation-valid")
+                                   .text("");
+    }
+}
+
+function onDateClose(selectedDates, dateStr, instance) {
+    if (!dateStr) {
+        $("#Date + input").addClass("input-validation-error").removeClass("valid");
+
+        $(".date-validation-error").addClass("field-validation-error")
+                                   .removeClass("field-validation-valid")
+                                   .text($("#Date").data("valRequired"));
+    }
+}
+
+function onSubmit(event) {
+    const date = $("#Date").val();
+    if (!date) {
+        event.preventDefault();
+        $("#Date + input").addClass("input-validation-error").removeClass("valid");
+        $(".date-validation-error").addClass("field-validation-error")
+                                   .removeClass("field-validation-valid")
+                                   .text($("#Date").data("valRequired"));
+    }
+}
