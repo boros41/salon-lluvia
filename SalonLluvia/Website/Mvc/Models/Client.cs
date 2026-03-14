@@ -20,6 +20,6 @@ public class Client
 
     [Display(Name = "Email")]
     [Required]
-    [StringLength(254)]
+    [StringLength(254, ErrorMessage = "Email must be 254 characters or less")]
     public string Email { get; set; } = string.Empty;
 }

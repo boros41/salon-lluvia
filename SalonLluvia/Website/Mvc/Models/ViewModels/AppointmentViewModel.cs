@@ -19,6 +19,8 @@ public class AppointmentViewModel
 
     // TODO: Add email regex
     [Required(ErrorMessage = "Please enter an email")]
+    [StringLength(254, ErrorMessage = "Email must be 254 characters or less")]
+    [Email(ErrorMessage = "Please enter a valid email")]
     public string Email { get; set; } = string.Empty;
 
     [Required(ErrorMessage = "Please enter a desired service")]
