@@ -1,33 +1,21 @@
 ﻿using Mvc.Dto.Calendly.AvailableTimes;
-using Mvc.Dto.Calendly.CreateAppointment;
 using Mvc.Dto.Calendly.EventType;
 using Mvc.Dto.Calendly.User;
-using Mvc.Models.ViewModels;
 using System.Net.Http.Headers;
 using System.Text.Json;
-using JsonException = Newtonsoft.Json.JsonException;
 
 namespace Mvc.Integrations.Calendly;
 
-public sealed class CalendlyClient
+public abstract class CalendlyClient
 {
     private readonly string _token;
 
-    public CalendlyClient(IConfiguration config)
+    protected CalendlyClient(IConfiguration config)
     {
         _token = config["Calendly:PAT"] ?? throw new InvalidOperationException("Missing Calendly:PAT secret");
     }
 
-    public async Task<HashSet<string>> GetAvailableDays()
-    {
-        string userUri = await GetUserUri();
-        string eventTypeUri = await GetUserEventTypeUri(userUri);
-        HashSet<string> availableDays = await GetEventTypeAvailableTimes(eventTypeUri);
-
-        return availableDays;
-    }
-
-    private async Task<string> GetUserUri()
+    protected async Task<string> GetUserUri()
     {
         HttpClient client = new HttpClient();
         HttpRequestMessage request = new HttpRequestMessage()
@@ -52,7 +40,7 @@ public sealed class CalendlyClient
         return userResponse.Resource.Uri;
     }
 
-    private async Task<string> GetUserEventTypeUri(string userUri)
+    protected async Task<string> GetUserEventTypeUri(string userUri)
     {
         var client = new HttpClient();
         var request = new HttpRequestMessage
@@ -78,7 +66,7 @@ public sealed class CalendlyClient
         return eventTypeResponse.Collection[0].Uri;
     }
 
-    private async Task<HashSet<string>> GetEventTypeAvailableTimes(string eventTypeUri)
+    protected async Task<HashSet<string>> GetEventTypeAvailableTimes(string eventTypeUri)
     {
         // Will not contain weekends nor any day that already has at least one appointment. Calendly account is configured that way.
         HashSet<string> availableDays = [];
@@ -150,26 +138,8 @@ public sealed class CalendlyClient
         }
     }
 
-    public async Task<string> CreateAppointment(AppointmentViewModel model)
+    protected async Task CreateAppointment(string jsonContent)
     {
-        DateTime date = (DateTime)model.Date!; // model.Date has a [Required] attribute which requires a nullable for value types
-        CreateAppointmentRequest appointmentRequest = new CreateAppointmentRequest
-        {
-            EventTypeUri = await GetUserEventTypeUri(await GetUserUri()),
-            StartTime = new DateTime(date.Year, date.Month, date.Day, 16, 0, 0, DateTimeKind.Utc),
-            Invitee = new Invitee { Name = model.Name, Email = model.Email },
-            QuestionsAndAnswers = new List<QuestionsAndAnswers>()
-            {
-                {new QuestionsAndAnswers() {Question = "Teléfono", Answer = model.PhoneNumber, Position = 0}},
-                {new QuestionsAndAnswers()
-                {
-                    Question = "Cuéntenos algo que nos ayude a prepararnos para la reunión.", Answer = model.DesiredService, Position = 1
-                }}
-            }
-        };
-
-        string jsonContent = JsonSerializer.Serialize(appointmentRequest);
-
         var client = new HttpClient();
         var request = new HttpRequestMessage
         {
@@ -192,8 +162,6 @@ public sealed class CalendlyClient
         };
         using HttpResponseMessage response = await client.SendAsync(request);
         response.EnsureSuccessStatusCode();
-        string body = await response.Content.ReadAsStringAsync();
-
-        return body;
+        //string body = await response.Content.ReadAsStringAsync();
     }
 }

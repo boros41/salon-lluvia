@@ -12,13 +12,13 @@ namespace Mvc.Controllers;
 public class HomeController : Controller
 {
     private readonly SalonContext _context;
-    private readonly CalendlyClient _calendly;
+    private readonly CalendlyAppointment _appointment;
     private readonly IMemoryCache _memoryCache;
 
-    public HomeController(SalonContext ctx, CalendlyClient calendly, IMemoryCache memoryCache)
+    public HomeController(SalonContext ctx, CalendlyAppointment appointment, IMemoryCache memoryCache)
     {
         _context = ctx;
-        _calendly = calendly;
+        _appointment = appointment;
         _memoryCache = memoryCache;
     }
 
@@ -102,7 +102,7 @@ public class HomeController : Controller
 
         try
         {
-            await _calendly.CreateAppointment(model);
+            await _appointment.Create(model);
             _memoryCache.Remove("available-days"); // the date the user just booked is no longer available
         }
         catch (HttpRequestException e)
