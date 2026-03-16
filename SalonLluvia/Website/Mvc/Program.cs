@@ -13,8 +13,8 @@ public class Program
         // Add services to the container.
         builder.Services.AddControllersWithViews();
 
-        builder.Services.AddTransient<CalendlyAvailableDays>();
-        builder.Services.AddTransient<CalendlyAppointment>();
+        builder.Services.AddTransient<ICalendlyAvailableDays, CalendlyAvailableDays>();
+        builder.Services.AddTransient<ICalendlyAppointment, CalendlyAppointment>();
 
         string? connectionString = builder.Configuration.GetConnectionString("SalonContext");
         // Add EF Core DI

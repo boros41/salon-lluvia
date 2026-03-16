@@ -10,10 +10,10 @@ namespace Mvc.Controllers.Api;
 [ApiController]
 public class CalendlyController : ControllerBase
 {
-    private readonly CalendlyAvailableDays _availableDays;
+    private readonly ICalendlyAvailableDays _availableDays;
     private readonly IMemoryCache _memoryCache;
 
-    public CalendlyController(CalendlyAvailableDays availableDays, IMemoryCache memoryCache)
+    public CalendlyController(ICalendlyAvailableDays availableDays, IMemoryCache memoryCache)
     {
         _availableDays = availableDays;
         _memoryCache = memoryCache;
@@ -31,7 +31,7 @@ public class CalendlyController : ControllerBase
             {
                 cacheEntry.AbsoluteExpirationRelativeToNow = TimeSpan.FromMinutes(5);
 
-                return _availableDays.Get();
+                return _availableDays.GetAvailableDays();
             }) ?? throw new InvalidOperationException($"Value for memory cache \"{key}\" was null");
 
             return Ok(availableDays);
