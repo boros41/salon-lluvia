@@ -24,7 +24,6 @@
     <link href="~/lib/animate.css/animate.min.css" rel="stylesheet" asp-append-version="true">
     <link href="~/lib/lightbox/css/lightbox.min.css" rel="stylesheet" asp-append-version="true">
     <link href="~/lib/owlcarousel/assets/owl.carousel.min.css" rel="stylesheet" asp-append-version="true">
-    <link href="https://assets.calendly.com/assets/external/widget.css" rel="stylesheet" asp-append-version="true">
 
     <!-- Customized Bootstrap Stylesheet -->
     <link href="~/lib/bootstrap/css/bootstrap.min.css" rel="stylesheet" asp-append-version="true">
@@ -66,15 +65,6 @@
     <script src="~/lib/lightbox/js/lightbox.min.js"></script>
     <script src="~/lib/owlcarousel/owl.carousel.min.js"></script>
     @await RenderSectionAsync("LibPhoneNumberJS", false)
-    
-    @*Won't show Calendly widget on Appointment.cshtml*@
-    @if (ViewBag.HideCalendlyWidget is null or false)
-    {
-        <!-- Calendly badge widget begin -->
-        <script src="https://assets.calendly.com/assets/external/widget.js" type="text/javascript" async></script>
-        <script type="text/javascript">window.onload = function() { Calendly.initBadgeWidget({ url: 'https://calendly.com/kevstar421?hide_landing_page_details=1', text: 'Reserve su cita', color: '#0069ff', textColor: '#ffffff', branding: true }); }</script>
-        <!-- Calendly badge widget end -->
-    }
 
     <!-- Template Javascript -->
     <script src="~/js/main.js" asp-append-version="true"></script>
