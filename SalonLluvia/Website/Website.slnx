@@ -2,5 +2,7 @@
   <Folder Name="/Solution Items/">
     <File Path=".editorconfig" />
   </Folder>
+  <Project Path="Mvc.Data/Mvc.Data.csproj" Id="2f2891e3-4024-41ec-ad52-9ad0fee2ea58" />
+  <Project Path="Mvc.Tests/Mvc.Tests.csproj" Id="165afa89-9f5d-4e2d-93ae-01f02cb86612" />
   <Project Path="Mvc/Mvc.csproj" />
 </Solution>

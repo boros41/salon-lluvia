@@ -29,4 +29,8 @@
     <Folder Include="Migrations\" />
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\Mvc.Data\Mvc.Data.csproj" />
+  </ItemGroup>
+
 </Project>

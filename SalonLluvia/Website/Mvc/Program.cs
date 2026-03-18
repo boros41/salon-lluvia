@@ -1,4 +1,5 @@
 using Microsoft.EntityFrameworkCore;
+using Mvc.Data.Repository;
 using Mvc.Integrations.Calendly;
 using Mvc.Models;
 
@@ -13,12 +14,15 @@ public class Program
         // Add services to the container.
         builder.Services.AddControllersWithViews();
 
+        // Map dependencies
+        builder.Services.AddTransient(typeof(IRepository<Appointment>), typeof(Repository<Appointment>));
+        builder.Services.AddTransient(typeof(IRepository<Client>), typeof(Repository<Client>));
         builder.Services.AddTransient<ICalendlyAvailableDays, CalendlyAvailableDays>();
         builder.Services.AddTransient<ICalendlyAppointment, CalendlyAppointment>();
 
         string? connectionString = builder.Configuration.GetConnectionString("SalonContext");
         // Add EF Core DI
-        builder.Services.AddDbContext<SalonContext>(options =>
+        builder.Services.AddDbContext<DbContext, SalonContext>(options =>
         {
             if (builder.Environment.IsDevelopment())
             {

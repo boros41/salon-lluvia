@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Caching.Memory;
+using Mvc.Data.Repository;
 using Mvc.Integrations.Calendly;
 using Mvc.Models;
 using Mvc.Models.ViewModels;
@@ -11,14 +12,16 @@ namespace Mvc.Controllers;
 [Route("[action]")]
 public class HomeController : Controller
 {
-    private readonly SalonContext _context;
-    private readonly ICalendlyAppointment _appointment;
+    private readonly IRepository<Appointment> _appointmentRepo;
+    private readonly IRepository<Client> _clientRepo;
+    private readonly ICalendlyAppointment _calendlyAppointment;
     private readonly IMemoryCache _memoryCache;
 
-    public HomeController(SalonContext ctx, ICalendlyAppointment appointment, IMemoryCache memoryCache)
+    public HomeController(IRepository<Appointment> appointmentRepo, IRepository<Client> clientRepo, ICalendlyAppointment appointment, IMemoryCache memoryCache)
     {
-        _context = ctx;
-        _appointment = appointment;
+        _appointmentRepo = appointmentRepo;
+        _clientRepo = clientRepo;
+        _calendlyAppointment = appointment;
         _memoryCache = memoryCache;
     }
 
@@ -78,7 +81,8 @@ public class HomeController : Controller
             return RedirectToAction("Appointment");
         }
 
-        Client? client = _context.Clients.FirstOrDefault(c => c.PhoneNumber == model.PhoneNumber);
+        Client? client = _clientRepo.List(new QueryOptions<Client>())
+                                    .FirstOrDefault(c => c.PhoneNumber == model.PhoneNumber);
         if (client is null)
         {
             client = new Client()
@@ -88,8 +92,8 @@ public class HomeController : Controller
             };
 
             // must save to increment client's id before appointment can relate to it
-            _context.Clients.Add(client);
-            await _context.SaveChangesAsync();
+            _clientRepo.Insert(client);
+            _clientRepo.Save();
         }
 
         Appointment appointment = new Appointment()
@@ -102,7 +106,7 @@ public class HomeController : Controller
 
         try
         {
-            await _appointment.CreateAppointment(model);
+            await _calendlyAppointment.CreateAppointment(model);
             _memoryCache.Remove("available-days"); // the date the user just booked is no longer available
         }
         catch (HttpRequestException e)
@@ -127,8 +131,8 @@ public class HomeController : Controller
             return RedirectToAction("Appointment");
         }
 
-        _context.Appointments.Add(appointment);
-        await _context.SaveChangesAsync();
+        _appointmentRepo.Insert(appointment);
+        _appointmentRepo.Save();
 
         Tags.ToastMessage(TempData, new Tags.ToastValues("Appointment", "Thank you for your appointment! We will reach out to you soon to confirm.", true));
 
@@ -138,18 +142,22 @@ public class HomeController : Controller
     {
         return View();
     }
+
     public IActionResult Pricing()
     {
         return View();
     }
+
     public IActionResult Gallery()
     {
         return View();
     }
+
     public IActionResult Team()
     {
         return View();
     }
+
     public IActionResult Testimonial()
     {
         return View();
