@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Mvc.Data.Repository;
 using Mvc.Integrations.Calendly;
@@ -13,6 +14,10 @@ public class Program
 
         // Add services to the container.
         builder.Services.AddControllersWithViews();
+
+        builder.Services.AddIdentity<User, IdentityRole>()
+                        .AddEntityFrameworkStores<SalonContext>()
+                        .AddDefaultTokenProviders();
 
         // Map dependencies
         builder.Services.AddTransient(typeof(IRepository<Appointment>), typeof(Repository<Appointment>));
@@ -56,6 +61,10 @@ public class Program
         app.UseStaticFiles();
 
         app.UseRouting();
+
+        app.UseAuthentication();
+
+        app.UseAuthorization();
 
         app.UseStatusCodePagesWithReExecute("/Error/{0}");
 
