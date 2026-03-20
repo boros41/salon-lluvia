@@ -119,8 +119,20 @@ public class HomeController : Controller
             }
 
             int statusCode = (int)e.StatusCode.Value;
+            string message;
 
-            Tags.ToastMessage(TempData, new Tags.ToastValues("Appointment", $"Unfortunately, An error occured when trying to book your appointment. If this continues, contact support with this code: {statusCode}", false));
+            switch (statusCode)
+            {
+                case StatusCodes.Status403Forbidden:
+                    // Access to the "/invitees" endpoint is limited to Calendly users on paid plans (Standard and above). Users on the Free plan will receive a 403 Forbidden response.
+                    message = $"Unfortunately, the booking service rejected and did not create the appointment. If this continues, please contact support with this code: {statusCode}";
+                    break;
+                default:
+                    message = $"Unfortunately, an error occured when trying to book your appointment. If this continues, please contact support with this code: {statusCode}";
+                    break;
+            }
+
+            Tags.ToastMessage(TempData, new Tags.ToastValues("Appointment", message, false));
 
             return RedirectToAction("Appointment");
         }
