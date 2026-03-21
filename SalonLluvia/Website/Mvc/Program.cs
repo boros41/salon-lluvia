@@ -67,8 +67,8 @@ public class Program
 
         app.UseAuthorization();
 
-        var scopeFactory = app.Services.GetRequiredService<IServiceScopeFactory>();
-        using (var scope = scopeFactory.CreateScope())
+        IServiceScopeFactory scopeFactory = app.Services.GetRequiredService<IServiceScopeFactory>();
+        using (IServiceScope scope = scopeFactory.CreateScope())
         {
             await ConfigureIdentity.CreateAdminUserAsync(scope.ServiceProvider);
         }

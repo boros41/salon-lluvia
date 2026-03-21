@@ -1,4 +1,10 @@
-﻿<!-- Navbar Start -->
+﻿@{
+    string? controller = ViewContext.RouteData.Values["controller"]?.ToString();
+    string? action = ViewContext.RouteData.Values["action"]?.ToString();
+    string? area = ViewContext.RouteData.Values["area"]?.ToString();
+}
+
+<!-- Navbar Start -->
 <div class="container-fluid bg-light p-0">
     <nav class="navbar navbar-expand-xl navbar-light p-0">
         <a href="/" class="navbar-brand bg-primary py-4 px-5 me-0">
@@ -9,61 +15,35 @@
             <span class="navbar-toggler-icon"></span>
         </button>
         <div class="collapse navbar-collapse p-3" id="navbarCollapse">
-            @{
-                string? url;
-                Predicate<string?> requestPathStartsWithUrl = url => Context.Request.Path.StartsWithSegments(url);
-            }
             <div class="navbar-nav mx-auto">
-                @{
-                    url = Url.Action("Index", "Home"); // generates "/" since default route
-                }
-                <a href="@url" class="nav-item nav-link @((Context.Request.Path == url
-                                                           || Context.Request.Path == "/Home/Index"
-                                                           ||Context.Request.Path == "/Home"
-                                                           || Context.Request.Path == "/Home/")
-                                                            ? "active" : null)">
-                    Home
-                </a>
-                
-                @{
-                    url = Url.Action("Gallery", "Home");
-                }
-                <a href="@url" class="nav-item nav-link @(requestPathStartsWithUrl(url) ? "active" : null)">Gallery</a>
-                
-                @{
-                    url = Url.Action("Service", "Home");
-                }
-                <a href="@url" class="nav-item nav-link @(requestPathStartsWithUrl(url) ? "active" : null)">Service</a>
-                
-                @{
-                    url = Url.Action("Pricing", "Home");
-                }
-                <a href="@url" class="nav-item nav-link @(requestPathStartsWithUrl(url) ? "active" : null)">Price</a>
+                <a asp-controller="Home" asp-action="Index" class="nav-item nav-link @(controller == "Home" && action == "Index" ? "active" : null)">Home</a>
+
+                <a asp-controller="Home" asp-action="Gallery" class="nav-item nav-link @(controller == "Home" && action == "Gallery" ? "active" : null)">Gallery</a>
+
+                <a asp-controller="Home" asp-action="Service" class="nav-item nav-link @(controller == "Home" && action == "Service" ? "active" : null)">Service</a>
+
+                <a asp-controller="Home" asp-action="Pricing" class="nav-item nav-link @(controller == "Home" && action == "Pricing" ? "active" : null)">Price</a>
 
                 <div class="nav-item dropdown">
                     <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown">Pages</a>
                     <div class="dropdown-menu bg-light mt-2" id="navbar-dropdown-menu">
-                        @{
-                            url = Url.Action("About", "Home");
+                        @if (area == "Admin")
+                        {
+                            <a asp-controller="Appointment" asp-action="List" class="dropdown-item @(controller == "Appointment" && action == "List" ? "active" : null)">List of Appointments</a>
+                            <a asp-controller="Client" asp-action="List" class="dropdown-item @(controller == "Client" && action == "List" ? "active" : null)">List of clients</a>
                         }
-                        <a href="@url" class="dropdown-item @(requestPathStartsWithUrl(url) ? "active" : null)">About</a>
-                        
-                        @{
-                            url = Url.Action("Team", "Home");
+                        else
+                        {
+                            <a asp-controller="Home" asp-action="About" class="dropdown-item @(controller == "Home" && action == "About" ? "active" : null)">About</a>
+
+                            <a asp-controller="Home" asp-action="Team" class="dropdown-item @(controller == "Home" && action == "Team" ? "active" : null)">Our Team</a>
+
+                            <a asp-controller="Home" asp-action="Testimonial" class="dropdown-item @(controller == "Home" && action == "Testimonial" ? "active" : null)">Testimonial</a>
                         }
-                        <a href="@url" class="dropdown-item @(requestPathStartsWithUrl(url) ? "active" : null)">Our Team</a>
-                        
-                        @{
-                            url = Url.Action("Testimonial", "Home");
-                        }
-                        <a href="@url" class="dropdown-item @(requestPathStartsWithUrl(url) ? "active" : null)">Testimonial</a>
                     </div>
                 </div>
-                
-                @{
-                    url = Url.Action("Appointment", "Home");
-                }
-                <a href="@url" class="nav-item nav-link text-uppercase @(requestPathStartsWithUrl(url) ? "active" : null)">Cita</a>
+
+                <a asp-controller="Home" asp-action="Appointment" class="nav-item nav-link text-uppercase @(controller == "Home" && action == "Appointment" ? "active" : null)">Cita</a>
             </div>
             <div class="d-flex">
                 <a class="btn btn-primary btn-sm-square me-3" href=""><i class="fab fa-facebook-f"></i></a>
