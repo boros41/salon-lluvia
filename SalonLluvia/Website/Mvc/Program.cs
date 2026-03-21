@@ -3,12 +3,13 @@ using Microsoft.EntityFrameworkCore;
 using Mvc.Data.Repository;
 using Mvc.Integrations.Calendly;
 using Mvc.Models;
+using Mvc.Utilities;
 
 namespace Mvc;
 
 public class Program
 {
-    public static void Main(string[] args)
+    public static async Task Main(string[] args)
     {
         var builder = WebApplication.CreateBuilder(args);
 
@@ -65,6 +66,12 @@ public class Program
         app.UseAuthentication();
 
         app.UseAuthorization();
+
+        var scopeFactory = app.Services.GetRequiredService<IServiceScopeFactory>();
+        using (var scope = scopeFactory.CreateScope())
+        {
+            await ConfigureIdentity.CreateAdminUserAsync(scope.ServiceProvider);
+        }
 
         app.UseStatusCodePagesWithReExecute("/Error/{0}");
 

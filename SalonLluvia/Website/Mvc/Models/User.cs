@@ -2,7 +2,4 @@
 
 namespace Mvc.Models;
 
-public sealed class User : IdentityUser
-{
-
-}
+public class User : IdentityUser { }
