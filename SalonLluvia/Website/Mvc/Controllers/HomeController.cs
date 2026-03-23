@@ -194,11 +194,6 @@ public class HomeController : Controller
     [HttpPost]
     public IActionResult Gallery(ImageViewModel model)
     {
-        if (!model.HairTypes.Exists(styleType => styleType.IsChecked))
-        {
-            ModelState.AddModelError("Styles", "Please enter a hair style (e.g., peinado).");
-        }
-
         if (!ModelState.IsValid)
         {
             return View(model);

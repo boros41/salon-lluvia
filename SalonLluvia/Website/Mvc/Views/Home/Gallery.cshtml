@@ -35,24 +35,24 @@
                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                     </div>
                     <form asp-controller="Home" asp-action="Gallery" method="post">
-                        <div class="modal-body g-0">
+                        <div class="modal-body">
                             <div class="container-fluid">
                                 <div class="row">
                                     <div class="col">
                                         <div asp-validation-summary="ModelOnly" class="text-danger"></div>
                                     </div>
                                 </div>
-                                <div class="row">
+                                <div class="row mb-2">
                                     <div class="col">
-                                        <span asp-validation-for="Image" class="text-danger"></span><br />
                                         <label asp-for="Image" class="form-label fw-bold"></label>
+                                        <span asp-validation-for="Image" class="text-danger"></span>
                                         <input asp-for="Image" type="file" class="form-control"/>
                                     </div>
                                 </div>
-                                <div class="row">
+                                <div class="row mb-2">
                                     <div class="col">
+                                        <span class="form-label fw-bold">Gender</span>
                                         <span asp-validation-for="Gender" class="text-danger"></span><br />
-                                        <label asp-for="Gender" class="form-label fw-bold"></label><br />
 
                                         <input asp-for="Gender" id="female" class="form-check-input" name="Gender" type="radio" value="F" />
                                         <label for="female" class="form-check-label">Female</label>
@@ -65,42 +65,51 @@
                                     var inputClassAttribute = new Dictionary<string, object>() { { "class", "form-check-input" } };
                                     var labelClassAttribute = new Dictionary<string, object>() { { "class", "form-check-label" } };
                                 }
-                                <div class="row">
+                                <div class="row mb-2">
                                     <div class="col">
                                         @*Hair type checkboxes such as "peinado"*@
-                                        <span asp-validation-for="HairTypes" class="text-danger"></span><br/>
-                                        <label asp-for="HairTypes" class="form-label fw-bold"></label><br/>
+                                        <span class="form-label fw-bold">Hair Types</span>
+                                        <span asp-validation-for="HairTypes" class="text-danger"></span><br />
+                                        
+                                        <div class="row row-cols-3">
+                                            @for (int i = 0; i < Model.HairTypes.Count; i++)
+                                            {
+                                                string label = char.ToUpper(Model.HairTypes[i].Type[0]) + Model.HairTypes[i].Type[1..].ToLower();
 
-                                        @for (int i = 0; i < Model.HairTypes.Count; i++)
-                                        {
-                                            string label = char.ToUpper(Model.HairTypes[i].Type[0]) + Model.HairTypes[i].Type[1..].ToLower();
                                             
-                                            @Html.CheckBoxFor(model => model.HairTypes[i].IsChecked, inputClassAttribute)
-                                            @Html.LabelFor(model => model.HairTypes[i].IsChecked, label, labelClassAttribute)
-                                            <input asp-for="HairTypes[i].Type" type="hidden"/>
-                                        }
+                                                <div class="col">
+                                                    @Html.CheckBoxFor(model => model.HairTypes[i].IsChecked, inputClassAttribute)
+                                                    @Html.LabelFor(model => model.HairTypes[i].IsChecked, label, labelClassAttribute)
+                                                    <input asp-for="HairTypes[i].Type" type="hidden"/>
+                                                </div>
+                                            }
+                                        </div>
                                     </div>
                                 </div>
-                                <div class="row">
+                                <div class="row mb-2">
                                     <div class="col">
                                         @*Hair color checkboxes*@
-                                        <span asp-validation-for="HairColors" class="text-danger"></span><br/>
-                                        <label asp-for="HairColors" class="form-label fw-bold"></label><br />
-
-                                        @for (int i = 0; i < Model.HairColors.Count; i++)
-                                        {
-                                            string label = char.ToUpper(Model.HairColors[i].Color[0]) + Model.HairColors[i].Color[1..].ToLower();
+                                        <span class="form-label fw-bold">Hair Colors</span>
+                                        <span asp-validation-for="HairColors" class="text-danger"></span><br />
+                                        
+                                        <div class="row row-cols-3">
+                                            @for (int i = 0; i < Model.HairColors.Count; i++)
+                                            {
+                                                string label = char.ToUpper(Model.HairColors[i].Color[0]) + Model.HairColors[i].Color[1..].ToLower();
                                             
-                                            @Html.CheckBoxFor(model => model.HairColors[i].IsChecked, inputClassAttribute)
-                                            @Html.LabelFor(model => model.HairColors[i].IsChecked, label, labelClassAttribute)
-                                            <input asp-for="HairColors[i].Color" type="hidden" />
-                                        }
+                                                <div class="col">
+                                                    @Html.CheckBoxFor(model => model.HairColors[i].IsChecked, inputClassAttribute)
+                                                    @Html.LabelFor(model => model.HairColors[i].IsChecked, label, labelClassAttribute)
+                                                    <input asp-for="HairColors[i].Color" type="hidden" />
+                                                </div>
+                                            }
+                                        </div>
                                     </div>
                                 </div>
                                 <div class="row">
                                     <div class="col">
-                                        <span asp-validation-for="Description" class="text-danger"></span><br />
                                         <label asp-for="Description" class="form-label fw-bold"></label>
+                                        <span asp-validation-for="Description" class="text-danger"></span><br />
                                         <input asp-for="Description" class="form-control" />
                                     </div>
                                 </div>
