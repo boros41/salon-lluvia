@@ -3,6 +3,7 @@ using Microsoft.Extensions.Caching.Memory;
 using Mvc.Data.Repository;
 using Mvc.Integrations.Calendly;
 using Mvc.Models;
+using Mvc.Models.Gallery.ViewModels;
 using Mvc.Models.ViewModels;
 using Mvc.Utilities;
 using System.Diagnostics;
@@ -160,8 +161,39 @@ public class HomeController : Controller
         return View();
     }
 
+    [HttpGet]
     public IActionResult Gallery()
     {
+        ImageViewModel model = new ImageViewModel()
+        {
+            Styles = new List<StyleTypeViewModel>()
+            {
+                new StyleTypeViewModel() { Type = "peinado" },
+                new StyleTypeViewModel() { Type = "tinte" },
+                new StyleTypeViewModel() { Type = "chino" },
+                new StyleTypeViewModel() { Type = "trenza" },
+                new StyleTypeViewModel() { Type = "corte" },
+                new StyleTypeViewModel() { Type = "otro" }
+            }
+        };
+
+        return View(model);
+    }
+
+    [HttpPost]
+    public IActionResult Gallery(ImageViewModel model)
+    {
+        if (!model.Styles.Exists(styleType => styleType.IsChecked))
+        {
+            ModelState.AddModelError("Styles", "Please enter a hair style (e.g., peinado).");
+        }
+
+        if (!ModelState.IsValid)
+        {
+            return View(model);
+        }
+
+        // RDG pattern
         return View();
     }
 

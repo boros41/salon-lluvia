@@ -1,72 +1,187 @@
-﻿@{
+﻿@model Mvc.Models.Gallery.ViewModels.ImageViewModel
+@{
     ViewData["Title"] = "Gallery";
 }
 
 <partial name="_breadcrumbPartial" />
 
 <!-- Gallery Start -->
-<div class="container-fluid gallery py-5">
-    <div class="container">
-        <div class="text-center wow fadeIn" data-wow-delay="0.2s">
-            <h1 class="font-dancing-script text-primary">Gallery</h1>
-            <h1 class="mb-5">Explore Our Gallery</h1>
+
+<div class="container gallery py-5">
+    <div class="text-center wow animate__fadeInLeft" data-wow-delay="0.2s">
+        <h1 class="font-dancing-script text-primary">Gallery</h1>
+        <h1 class="mb-4">Explore Our Gallery</h1>
+    </div>
+    
+    @*Admin Upload Image Modal*@
+    @using Microsoft.AspNetCore.Identity
+    
+@using Mvc.Models.Gallery
+@using Mvc.Models.Gallery.ViewModels
+@inject SignInManager<User> SignInManager
+    @if (SignInManager.IsSignedIn(User) && User.IsInRole("Admin"))
+    {
+        <div class="row justify-content-center mb-3">
+            <button type="button" class="btn btn-primary w-auto" data-bs-toggle="modal" data-bs-target="#upload-image-modal">
+                Upload Image
+            </button>
         </div>
-        <div class="row g-0">
-            <div class="col-md-6 wow fadeIn" data-wow-delay="0.2s">
-                <div class="gallery-item h-100">
-                    <img src="~/img/gallery-1.jpg" class="img-fluid w-100 h-100" alt="">
-                    <div class="gallery-icon">
-                        <a href="~/img/gallery-1.jpg" class="btn btn-primary btn-lg-square"
-                           data-lightbox="Gallery-1"><i class="fa fa-eye"></i></a>
+
+        <div class="modal fade" id="upload-image-modal" tabindex="-1" aria-labelledby="upload-image-modal" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h1 class="modal-title fs-5" id="exampleModalLabel">Upload image</h1>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                     </div>
+                    <form asp-controller="Home" asp-action="Gallery" method="post">
+                        <div class="modal-body g-0">
+                            <div class="container-fluid">
+                                <div class="row">
+                                    <div class="col">
+                                        <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col">
+                                        <span asp-validation-for="Image" class="text-danger"></span><br />
+                                        <label asp-for="Image" class="form-label">Upload Image</label>
+                                        <input asp-for="Image" type="file" class="form-control"/>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col">
+                                        <span asp-validation-for="Gender" class="text-danger"></span><br />
+                                        <input asp-for="Gender" id="female" class="form-check-input" name="Gender" type="radio" value="F" />
+                                        <label for="female" class="form-check-label">Female</label>
+                                        <input asp-for="Gender" id="male" class="form-check-input" name="Gender" type="radio" value="M"/>
+                                        <label for="male" class="form-check-label">Male</label>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col">
+                                        <span asp-validation-for="Styles" class="text-danger"></span><br/>
+                                        @for (int i = 0; i < Model.Styles.Count; i++)
+                                        {
+                                            var inputClassAttribute = new Dictionary<string, object>() { { "class", "form-check-input" } };
+                                            var labelClassAttribute = new Dictionary<string, object>() { { "class", "form-check-label" } };
+                                            string label = char.ToUpper(Model.Styles[i].Type[0]) + Model.Styles[i].Type[1..].ToLower();
+
+                                            @Html.CheckBoxFor(model => model.Styles[i].IsChecked, inputClassAttribute)
+                                            @Html.LabelFor(model => model.Styles[i].IsChecked, label, labelClassAttribute)
+                                            <input asp-for="Styles[i].Type" type="hidden"/>
+                                        }
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                            <button type="submit" class="btn btn-primary">Save changes</button>
+                        </div>
+                    </form>
                 </div>
             </div>
-            <div class="col-md-3 wow fadeIn" data-wow-delay="0.4s">
-                <div class="gallery-item h-100">
-                    <img src="~/img/gallery-2.jpg" class="img-fluid w-100 h-100" alt="">
+        </div>
+    }
+
+    <div class="row g-2" data-masonry='{"percentPosition": true }'>
+        <div class="col-sm-6 col-lg-3 wow fadeIn">
+            <div class="card">
+                <div class="gallery-item">
+                    <img src="~/img/gallery-1.jpg" class="card-img-top" alt=""/>
                     <div class="gallery-icon">
-                        <a href="~/img/gallery-2.jpg" class="btn btn-primary btn-lg-square"
-                           data-lightbox="Gallery-2"><i class="fa fa-eye"></i></a>
+                        <a href="~/img/gallery-1.jpg" class="btn btn-primary btn-lg-square" data-lightbox="Gallery-1">
+                            <i class="fa fa-eye"></i>
+                        </a>
                     </div>
                 </div>
-            </div>
-            <div class="col-md-3 wow fadeIn" data-wow-delay="0.6s">
-                <div class="gallery-item h-100">
-                    <img src="~/img/gallery-3.jpg" class="img-fluid w-100 h-100" alt="">
-                    <div class="gallery-icon">
-                        <a href="~/img/gallery-3.jpg" class="btn btn-primary btn-lg-square"
-                           data-lightbox="Gallery-3"><i class="fa fa-eye"></i></a>
-                    </div>
+                <div class="card-body">
+                    <p class="card-text">A nice peinado</p>
                 </div>
             </div>
-            <div class="col-md-3 wow fadeIn" data-wow-delay="0.2s">
-                <div class="gallery-item h-100">
-                    <img src="~/img/gallery-4.jpg" class="img-fluid w-100 h-100" alt="">
+        </div>
+        <div class="col-sm-6 col-lg-3 wow fadeIn">
+            <div class="card">
+                <div class="gallery-item">
+                    <img src="~/img/gallery-2.jpg" class="card-img-top" alt=""/>
                     <div class="gallery-icon">
-                        <a href="~/img/gallery-4.jpg" class="btn btn-primary btn-lg-square"
-                           data-lightbox="Gallery-4"><i class="fa fa-eye"></i></a>
+                        <a href="~/img/gallery-2.jpg" class="btn btn-primary btn-lg-square" data-lightbox="Gallery-2">
+                            <i class="fa fa-eye"></i>
+                        </a>
                     </div>
                 </div>
-            </div>
-            <div class="col-md-3 wow fadeIn" data-wow-delay="0.4s">
-                <div class="gallery-item h-100">
-                    <img src="~/img/gallery-5.jpg" class="img-fluid w-100 h-100" alt="">
-                    <div class="gallery-icon">
-                        <a href="~/img/gallery-5.jpg" class="btn btn-primary btn-lg-square"
-                           data-lightbox="Gallery-5"><i class="fa fa-eye"></i></a>
-                    </div>
+                <div class="card-body">
+                    <p class="card-text">A nice peinado</p>
                 </div>
             </div>
-            <div class="col-md-6 wow fadeIn" data-wow-delay="0.6s">
-                <div class="gallery-item h-100">
-                    <img src="~/img/gallery-6.jpg" class="img-fluid w-100 h-100" alt="">
+        </div>
+        <div class="col-sm-6 col-lg-3 wow fadeIn">
+            <div class="card">
+                <div class="gallery-item">
+                    <img src="~/img/gallery-3.jpg" class="card-img-top" alt="" />
                     <div class="gallery-icon">
-                        <a href="~/img/gallery-6.jpg" class="btn btn-primary btn-lg-square"
-                           data-lightbox="Gallery-6"><i class="fa fa-eye"></i></a>
+                        <a href="~/img/gallery-3.jpg" class="btn btn-primary btn-lg-square" data-lightbox="Gallery-3">
+                            <i class="fa fa-eye"></i>
+                        </a>
                     </div>
+                </div>
+                <div class="card-body">
+                    <p class="card-text">A nice peinado</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-sm-6 col-lg-3 wow fadeIn">
+            <div class="card">
+                <div class="gallery-item">
+                    <img src="~/img/gallery-4.jpg" class="card-img-top" alt="" />
+                    <div class="gallery-icon">
+                        <a href="~/img/gallery-4.jpg" class="btn btn-primary btn-lg-square" data-lightbox="Gallery-4">
+                            <i class="fa fa-eye"></i>
+                        </a>
+                    </div>
+                </div>
+                <div class="card-body">
+                    <p class="card-text">A nice peinado</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-sm-6 col-lg-3 wow fadeIn">
+            <div class="card">
+                <div class="gallery-item">
+                    <img src="~/img/gallery-5.jpg" class="card-img-top" alt="" />
+                    <div class="gallery-icon">
+                        <a href="~/img/gallery-5.jpg" class="btn btn-primary btn-lg-square" data-lightbox="Gallery-5">
+                            <i class="fa fa-eye"></i>
+                        </a>
+                    </div>
+                </div>
+                <div class="card-body">
+                    <p class="card-text">A nice peinado</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-sm-6 col-lg-3 wow fadeIn">
+            <div class="card">
+                <div class="gallery-item">
+                    <img src="~/img/gallery-6.jpg" class="card-img-top" alt=""/>
+                    <div class="gallery-icon">
+                        <a href="~/img/gallery-6.jpg" class="btn btn-primary btn-lg-square" data-lightbox="Gallery-6">
+                            <i class="fa fa-eye"></i>
+                        </a>
+                    </div>
+                </div>
+                <div class="card-body">
+                    <p class="card-text">A nice peinado</p>
                 </div>
             </div>
         </div>
     </div>
 </div>
+
 <!-- Gallery End -->
+
+@section Masonry
+{
+    <script src="~/lib/masonry/masonry.pkgd.min.js" asp-append-version="true"></script>
+}

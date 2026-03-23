@@ -17,7 +17,6 @@ public class AppointmentViewModel
     [Required(ErrorMessage = "Please enter a date")]
     public DateTime? Date { get; set; }
 
-    // TODO: Add email regex
     [Required(ErrorMessage = "Please enter an email")]
     [StringLength(254, ErrorMessage = "Email must be 254 characters or less")]
     [Email(ErrorMessage = "Please enter a valid email")]

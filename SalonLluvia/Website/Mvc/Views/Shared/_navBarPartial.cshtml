@@ -47,8 +47,8 @@
             </div>
             <div class="d-flex align-items-center">
                 @using Microsoft.AspNetCore.Identity
-                @inject SignInManager<User> signInManager
-                @if (signInManager.IsSignedIn(User))
+                @inject SignInManager<User> SignInManager
+                @if (SignInManager.IsSignedIn(User))
                 {
                     <form asp-controller="Account" asp-action="LogOut" asp-area="">
                         <button type="submit" class="btn btn-primary btn-sm-square me-3 p-1" style="width: auto">Log Out</button>

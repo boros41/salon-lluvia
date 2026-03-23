@@ -13,7 +13,7 @@
     
     
     // Initiate the wowjs
-    new WOW().init();
+    // new WOW().init();
 
 
     // Sticky Navbar
@@ -87,6 +87,14 @@
             }
         }
     });
-    
+
+    // Solution for Bootstrap modal issue: https://github.com/twbs/bootstrap/issues/41005#issuecomment-3118196916
+    window.addEventListener('hide.bs.modal', event => {
+        event.target.inert = true
+    })
+
+    window.addEventListener('show.bs.modal', event => {
+        event.target.inert = false
+    })
 })(jQuery);
 

@@ -33,8 +33,57 @@
       ]
     },
     {
+      "library": "masonry@4.2.2",
+      "destination": "wwwroot/lib/masonry/"
+    },
+    {
+      "provider": "cdnjs",
       "library": "flatpickr@4.6.13",
-      "destination": "wwwroot/lib/flatpickr/"
+      "destination": "wwwroot/lib/flatpickr/",
+      "files": [
+        "flatpickr.min.js",
+        "flatpickr.js",
+        "flatpickr.css",
+        "flatpickr.min.css",
+        "themes/airbnb.css",
+        "themes/airbnb.min.css",
+        "themes/confetti.css",
+        "themes/confetti.min.css",
+        "themes/dark.css",
+        "themes/dark.min.css",
+        "themes/light.css",
+        "themes/light.min.css",
+        "themes/material_blue.css",
+        "themes/material_blue.min.css",
+        "themes/material_green.css",
+        "themes/material_green.min.css",
+        "themes/material_orange.css",
+        "themes/material_orange.min.css",
+        "themes/material_red.css",
+        "themes/material_red.min.css",
+        "plugins/confirmDate/confirmDate.css",
+        "plugins/confirmDate/confirmDate.js",
+        "plugins/confirmDate/confirmDate.min.css",
+        "plugins/confirmDate/confirmDate.min.js",
+        "plugins/labelPlugin/labelPlugin.js",
+        "plugins/labelPlugin/labelPlugin.min.js",
+        "plugins/monthSelect/style.css",
+        "plugins/monthSelect/style.min.css",
+        "plugins/weekSelect/weekSelect.js",
+        "plugins/weekSelect/weekSelect.min.js",
+        "plugins/minMaxTimePlugin.js",
+        "plugins/minMaxTimePlugin.min.js",
+        "plugins/momentPlugin.js",
+        "plugins/momentPlugin.min.js",
+        "plugins/rangePlugin.js",
+        "plugins/rangePlugin.min.js",
+        "plugins/scrollPlugin.js",
+        "plugins/scrollPlugin.min.js",
+        "l10n/es.js",
+        "l10n/es.min.js",
+        "ie.css",
+        "ie.min.css"
+      ]
     }
   ]
 }

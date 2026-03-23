@@ -14,8 +14,6 @@ public class Client
     [Display(Name = "Phone Number")]
     [Required]
     [StringLength(20)]
-    // TODO: Add custom validation attribute for regex (ch.11)
-    // TODO: Add unique validation attribute
     public string PhoneNumber { get; set; } = string.Empty;
 
     [Display(Name = "Email")]
