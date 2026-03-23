@@ -1,0 +1,12 @@
+﻿using System.ComponentModel.DataAnnotations;
+
+namespace Mvc.Models.Gallery;
+
+public class HairColor
+{
+    public int Id { get; set; }
+
+    [Required(ErrorMessage = "Please enter a hair color (e.g., black).")]
+    [StringLength(20, ErrorMessage = "Hair color must be 20 characters or less.")]
+    public string Color { get; set; } = string.Empty;
+}

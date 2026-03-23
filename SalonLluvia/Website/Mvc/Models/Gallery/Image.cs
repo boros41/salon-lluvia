@@ -12,9 +12,9 @@ public class Image
     public string FilePath { get; set; } = string.Empty;
 
     [Required(ErrorMessage = "Please enter a hair style.")]
-    public int? StyleId { get; set; }
+    public int? HairStyleId { get; set; }
 
     [ValidateNever]
-    public Style Style { get; set; } = null!;
+    public HairStyle HairStyle { get; set; } = null!;
 
 }

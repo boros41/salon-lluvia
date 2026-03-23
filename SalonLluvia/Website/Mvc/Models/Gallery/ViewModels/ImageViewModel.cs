@@ -15,9 +15,8 @@ public class ImageViewModel
     public string Gender { get; set; } = string.Empty;
 
     [Required(ErrorMessage = "Please enter a style (e.g., peinado).")]
-    public List<StyleTypeViewModel> Styles { get; set; } = [];
+    public List<HairTypeViewModel> HairTypes { get; set; } = [];
 
     [Required(ErrorMessage = "Please enter a hair color.")]
-    [StringLength(20, ErrorMessage = "Color must be 20 characters or less.")]
-    public string Color { get; set; } = string.Empty;
+    public List<HairColorViewModel> HairColors { get; set; } = [];
 }

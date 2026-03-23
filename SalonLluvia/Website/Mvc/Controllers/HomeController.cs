@@ -166,14 +166,25 @@ public class HomeController : Controller
     {
         ImageViewModel model = new ImageViewModel()
         {
-            Styles = new List<StyleTypeViewModel>()
+            HairTypes = new List<HairTypeViewModel>()
             {
-                new StyleTypeViewModel() { Type = "peinado" },
-                new StyleTypeViewModel() { Type = "tinte" },
-                new StyleTypeViewModel() { Type = "chino" },
-                new StyleTypeViewModel() { Type = "trenza" },
-                new StyleTypeViewModel() { Type = "corte" },
-                new StyleTypeViewModel() { Type = "otro" }
+                new HairTypeViewModel() { Type = "peinado" },
+                new HairTypeViewModel() { Type = "tinte" },
+                new HairTypeViewModel() { Type = "chino" },
+                new HairTypeViewModel() { Type = "trenzas" },
+                new HairTypeViewModel() { Type = "corte" },
+                new HairTypeViewModel() { Type = "largo" },
+                new HairTypeViewModel() { Type = "corto" },
+                new HairTypeViewModel() { Type = "otro" }
+        },
+            HairColors = new List<HairColorViewModel>()
+            {
+                new HairColorViewModel() {Color = "negro"},
+                new HairColorViewModel() {Color = "cafe"},
+                new HairColorViewModel() {Color = "rubio"},
+                new HairColorViewModel() {Color = "rojo"},
+                new HairColorViewModel() {Color = "mixto"},
+
             }
         };
 
@@ -183,7 +194,7 @@ public class HomeController : Controller
     [HttpPost]
     public IActionResult Gallery(ImageViewModel model)
     {
-        if (!model.Styles.Exists(styleType => styleType.IsChecked))
+        if (!model.HairTypes.Exists(styleType => styleType.IsChecked))
         {
             ModelState.AddModelError("Styles", "Please enter a hair style (e.g., peinado).");
         }
