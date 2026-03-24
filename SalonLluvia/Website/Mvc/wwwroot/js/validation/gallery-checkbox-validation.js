@@ -25,12 +25,14 @@ $(document).ready(function () {
         if ($hairstyleCheckboxes.is(":checked")) {
             $("#hairstyle-error").text("");
         } else {
+            event.preventDefault();
             $("#hairstyle-error").text("Please enter at least one hairstyle.").removeClass("field-validation-valid");
         }
 
         if ($hairColorCheckboxes.is(":checked")) {
             $("#hair-color-error").text("");
         } else {
+            event.preventDefault();
             $("#hair-color-error").text("Please enter at least one hair color.").removeClass("field-validation-valid");
         }
     });
