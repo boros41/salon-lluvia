@@ -166,16 +166,16 @@ public class HomeController : Controller
     {
         ImageViewModel model = new ImageViewModel()
         {
-            HairTypes = new List<HairTypeViewModel>()
+            HairStyles = new List<HairStyleViewModel>()
             {
-                new HairTypeViewModel() { Type = "peinado" },
-                new HairTypeViewModel() { Type = "tinte" },
-                new HairTypeViewModel() { Type = "chino" },
-                new HairTypeViewModel() { Type = "trenzas" },
-                new HairTypeViewModel() { Type = "corte" },
-                new HairTypeViewModel() { Type = "largo" },
-                new HairTypeViewModel() { Type = "corto" },
-                new HairTypeViewModel() { Type = "otro" }
+                new HairStyleViewModel() { Style = "peinado" },
+                new HairStyleViewModel() { Style = "tinte" },
+                new HairStyleViewModel() { Style = "chino" },
+                new HairStyleViewModel() { Style = "trenzas" },
+                new HairStyleViewModel() { Style = "corte" },
+                new HairStyleViewModel() { Style = "largo" },
+                new HairStyleViewModel() { Style = "corto" },
+                new HairStyleViewModel() { Style = "otro" }
         },
             HairColors = new List<HairColorViewModel>()
             {

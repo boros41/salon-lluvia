@@ -6,14 +6,14 @@ public class HairStyle
 {
     public int Id { get; set; }
 
-    [Required(ErrorMessage = "Please enter a gender.")]
-    [StringLength(6, ErrorMessage = "Gender must be 6 characters or less.")]
-    public string Gender { get; set; } = string.Empty;
+    [Required(ErrorMessage = "Please enter a hairstyle (e.g., peinado).")]
+    [StringLength(20, ErrorMessage = "Hairstyle must be 20 characters or less.")]
+    public string Style { get; set; } = string.Empty;
 
-    // collection navigational properties
-    public List<HairType> HairTypes { get; set; } = []; // a hairstyle can have many hair types (e.g., peinado, trenzas...)
-    public List<HairColor> HairColors { get; set; } = []; // a hairstyle can have many colors (e.g., black, brown...)
+    /*many-to-many relationship discovered by convention
 
-    [StringLength(50, ErrorMessage = "Description must be 50 characters or less.")]
-    public string? Description { get; set; }
+    HairStyle to HairProfile: many-to-many.
+    A person's hair profile can have many hairstyles (e.g., long, braids, etc.) and one
+    hairstyle can have many hair profiles (e.g., different colors, gender, etc.).*/
+    public List<HairProfile> HairProfiles { get; } = [];
 }

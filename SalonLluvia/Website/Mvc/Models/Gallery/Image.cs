@@ -12,9 +12,12 @@ public class Image
     public string FilePath { get; set; } = string.Empty;
 
     [Required(ErrorMessage = "Please enter a hair style.")]
-    public int? HairStyleId { get; set; }
+    public int? HairProfileId { get; set; } // foreign key linking to HairProfile
 
+    // one-to-many: One hair profile can have many images (multiple photos of the same person's hair), but one image can have only one hair profile.
     [ValidateNever]
-    public HairStyle HairStyle { get; set; } = null!;
+    public HairProfile HairProfile { get; set; } = null!;
 
+    [StringLength(50, ErrorMessage = "Description must be 50 characters or less.")]
+    public string? Description { get; set; }
 }

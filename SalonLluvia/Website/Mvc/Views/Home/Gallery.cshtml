@@ -72,17 +72,17 @@
                                         <span class="form-label fw-bold">Hair Types</span>
                                         
                                         @*asp-validation-for won't easily work with jQuery client-side validation since multiple checkboxes are generated, custom js is used.*@
-                                        <span asp-validation-for="HairTypes" id="hairstyle-error" class="text-danger"></span><br />
+                                        <span asp-validation-for="HairStyles" id="hairstyle-error" class="text-danger"></span><br />
                                         
                                         <div class="row">
-                                            @for (int i = 0; i < Model.HairTypes.Count; i++)
+                                            @for (int i = 0; i < Model.HairStyles.Count; i++)
                                             {
-                                                string label = char.ToUpper(Model.HairTypes[i].Type[0]) + Model.HairTypes[i].Type[1..].ToLower();
+                                                string label = char.ToUpper(Model.HairStyles[i].Style[0]) + Model.HairStyles[i].Style[1..].ToLower();
 
                                                 <div class="col-md-4">
-                                                    @Html.CheckBoxFor(model => model.HairTypes[i].IsChecked, hairstyleCheckboxClassAttribute)
-                                                    @Html.LabelFor(model => model.HairTypes[i].IsChecked, label, labelClassAttribute)
-                                                    <input asp-for="HairTypes[i].Type" type="hidden"/>
+                                                    @Html.CheckBoxFor(model => model.HairStyles[i].IsChecked, hairstyleCheckboxClassAttribute)
+                                                    @Html.LabelFor(model => model.HairStyles[i].IsChecked, label, labelClassAttribute)
+                                                    <input asp-for="HairStyles[i].Style" type="hidden" />
                                                 </div>
                                             }
                                         </div>
