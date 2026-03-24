@@ -34,7 +34,7 @@
                         <h1 class="modal-title fs-5" id="exampleModalLabel">Upload image</h1>
                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                     </div>
-                    <form asp-controller="Home" asp-action="Gallery" method="post">
+                    <form asp-controller="Home" asp-action="Gallery" method="post" id="upload-image-form">
                         <div class="modal-body">
                             <div class="container-fluid">
                                 <div class="row">
@@ -54,7 +54,7 @@
                                         <span class="form-label fw-bold">Gender</span>
                                         <span asp-validation-for="Gender" class="text-danger"></span><br />
 
-                                        <input asp-for="Gender" id="female" class="form-check-input" name="Gender" type="radio" value="F" />
+                                        <input asp-for="Gender" id="female" class="form-check-input" name="Gender" type="radio" value="F" checked/>
                                         <label for="female" class="form-check-label">Female</label>
                                         <input asp-for="Gender" id="male" class="form-check-input" name="Gender" type="radio" value="M"/>
                                         <label for="male" class="form-check-label">Male</label>
@@ -62,14 +62,17 @@
                                 </div>
                                 
                                 @{
-                                    var inputClassAttribute = new Dictionary<string, object>() { { "class", "form-check-input" } };
+                                    var hairstyleCheckboxClassAttribute = new Dictionary<string, object>() { { "class", "form-check-input gallery-hairstyle-checkbox" } };
+                                    var hairColorCheckboxClassAttribute = new Dictionary<string, object>() { { "class", "form-check-input gallery-haircolor-checkbox" } };
                                     var labelClassAttribute = new Dictionary<string, object>() { { "class", "form-check-label" } };
                                 }
                                 <div class="row mb-2">
                                     <div class="col">
                                         @*Hair type checkboxes such as "peinado"*@
                                         <span class="form-label fw-bold">Hair Types</span>
-                                        <span asp-validation-for="HairTypes" class="text-danger"></span><br />
+                                        
+                                        @*asp-validation-for won't easily work with jQuery client-side validation since multiple checkboxes are generated, custom js is used.*@
+                                        <span asp-validation-for="HairTypes" id="hairstyle-error" class="text-danger"></span><br />
                                         
                                         <div class="row">
                                             @for (int i = 0; i < Model.HairTypes.Count; i++)
@@ -77,7 +80,7 @@
                                                 string label = char.ToUpper(Model.HairTypes[i].Type[0]) + Model.HairTypes[i].Type[1..].ToLower();
 
                                                 <div class="col-md-4">
-                                                    @Html.CheckBoxFor(model => model.HairTypes[i].IsChecked, inputClassAttribute)
+                                                    @Html.CheckBoxFor(model => model.HairTypes[i].IsChecked, hairstyleCheckboxClassAttribute)
                                                     @Html.LabelFor(model => model.HairTypes[i].IsChecked, label, labelClassAttribute)
                                                     <input asp-for="HairTypes[i].Type" type="hidden"/>
                                                 </div>
@@ -89,7 +92,9 @@
                                     <div class="col">
                                         @*Hair color checkboxes*@
                                         <span class="form-label fw-bold">Hair Colors</span>
-                                        <span asp-validation-for="HairColors" class="text-danger"></span><br />
+                                        
+                                        @*asp-validation-for won't easily work with jQuery client-side validation since multiple checkboxes are generated, custom js is used.*@
+                                        <span asp-validation-for="HairColors" id="hair-color-error" class="text-danger"></span><br />
                                         
                                         <div class="row">
                                             @for (int i = 0; i < Model.HairColors.Count; i++)
@@ -97,9 +102,9 @@
                                                 string label = char.ToUpper(Model.HairColors[i].Color[0]) + Model.HairColors[i].Color[1..].ToLower();
                                             
                                                 <div class="col-md-4">
-                                                    @Html.CheckBoxFor(model => model.HairColors[i].IsChecked, inputClassAttribute)
+                                                    @Html.CheckBoxFor(model => model.HairColors[i].IsChecked, hairColorCheckboxClassAttribute)
                                                     @Html.LabelFor(model => model.HairColors[i].IsChecked, label, labelClassAttribute)
-                                                    <input asp-for="HairColors[i].Color" type="hidden" />
+                                                    <input asp-for="HairColors[i].Color" type="hidden"/>
                                                 </div>
                                             }
                                         </div>
@@ -220,7 +225,8 @@
 
 <!-- Gallery End -->
 
-@section Masonry
+@section Gallery
 {
     <script src="~/lib/masonry/masonry.pkgd.min.js" asp-append-version="true"></script>
+    <script src="~/js/validation/gallery-checkbox-validation.js" asp-append-version="true"></script>
 }
