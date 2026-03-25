@@ -2,13 +2,14 @@
 
 namespace Mvc.Models.Gallery;
 
+// Seeded as lookup data in SalonContext.cs
 public class HairStyle
 {
     public int Id { get; set; }
 
     [Required(ErrorMessage = "Please enter a hairstyle (e.g., peinado).")]
     [StringLength(20, ErrorMessage = "Hairstyle must be 20 characters or less.")]
-    public string Style { get; set; } = string.Empty;
+    public string Style { get; init; } = string.Empty;
 
     /*many-to-many relationship discovered by convention
 

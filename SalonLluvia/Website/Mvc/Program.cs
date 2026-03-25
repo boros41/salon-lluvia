@@ -3,6 +3,7 @@ using Microsoft.EntityFrameworkCore;
 using Mvc.Data.Repository;
 using Mvc.Integrations.Calendly;
 using Mvc.Models;
+using Mvc.Models.Gallery;
 using Mvc.Utilities;
 
 namespace Mvc;
@@ -23,6 +24,8 @@ public class Program
         // Map dependencies
         builder.Services.AddTransient(typeof(IRepository<Appointment>), typeof(Repository<Appointment>));
         builder.Services.AddTransient(typeof(IRepository<Client>), typeof(Repository<Client>));
+        builder.Services.AddTransient(typeof(IRepository<HairStyle>), typeof(Repository<HairStyle>));
+        builder.Services.AddTransient(typeof(IRepository<HairColor>), typeof(Repository<HairColor>));
         builder.Services.AddTransient<ICalendlyAvailableDays, CalendlyAvailableDays>();
         builder.Services.AddTransient<ICalendlyAppointment, CalendlyAppointment>();
 

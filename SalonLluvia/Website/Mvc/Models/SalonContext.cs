@@ -18,5 +18,26 @@ public class SalonContext : IdentityDbContext<User>
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         base.OnModelCreating(modelBuilder);
+
+        #region HairStyle HairColor Lookup Data
+        modelBuilder.Entity<HairStyle>().HasData(
+            new HairStyle() { Id = 1, Style = "peinado" },
+            new HairStyle() { Id = 2, Style = "tinte" },
+            new HairStyle() { Id = 3, Style = "chino" },
+            new HairStyle() { Id = 4, Style = "trenzas" },
+            new HairStyle() { Id = 5, Style = "corte" },
+            new HairStyle() { Id = 6, Style = "largo" },
+            new HairStyle() { Id = 7, Style = "corto" },
+            new HairStyle() { Id = 8, Style = "otro" }
+        );
+
+        modelBuilder.Entity<HairColor>().HasData(
+            new HairColor() { Id = 1, Color = "negro" },
+            new HairColor() { Id = 2, Color = "cafe" },
+            new HairColor() { Id = 3, Color = "rubio" },
+            new HairColor() { Id = 4, Color = "rojo" },
+            new HairColor() { Id = 5, Color = "mixto" }
+            );
+        #endregion
     }
 }

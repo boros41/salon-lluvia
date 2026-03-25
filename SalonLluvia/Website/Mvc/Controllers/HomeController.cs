@@ -3,6 +3,7 @@ using Microsoft.Extensions.Caching.Memory;
 using Mvc.Data.Repository;
 using Mvc.Integrations.Calendly;
 using Mvc.Models;
+using Mvc.Models.Gallery;
 using Mvc.Models.Gallery.ViewModels;
 using Mvc.Models.ViewModels;
 using Mvc.Utilities;
@@ -15,13 +16,18 @@ public class HomeController : Controller
 {
     private readonly IRepository<Appointment> _appointmentRepo;
     private readonly IRepository<Client> _clientRepo;
+    private readonly IRepository<HairStyle> _hairstyleRepo;
+    private readonly IRepository<HairColor> _hairColorRepo;
     private readonly ICalendlyAppointment _calendlyAppointment;
     private readonly IMemoryCache _memoryCache;
 
-    public HomeController(IRepository<Appointment> appointmentRepo, IRepository<Client> clientRepo, ICalendlyAppointment appointment, IMemoryCache memoryCache)
+    public HomeController(IRepository<Appointment> appointmentRepo, IRepository<Client> clientRepo,
+        IRepository<HairStyle> hairstyleRepo, IRepository<HairColor> hairColorRepo, ICalendlyAppointment appointment, IMemoryCache memoryCache)
     {
         _appointmentRepo = appointmentRepo;
         _clientRepo = clientRepo;
+        _hairstyleRepo = hairstyleRepo;
+        _hairColorRepo = hairColorRepo;
         _calendlyAppointment = appointment;
         _memoryCache = memoryCache;
     }
@@ -164,29 +170,21 @@ public class HomeController : Controller
     [HttpGet]
     public IActionResult Gallery()
     {
+        #region Lookup data for hairstyle & hair color checkboxes in admin upload image button
+        IEnumerable<HairStyle> hairstyles = _hairstyleRepo.List(new QueryOptions<HairStyle>());
+        IEnumerable<HairColor> hairColors = _hairColorRepo.List(new QueryOptions<HairColor>());
+        List<HairStyleViewModel> hairStyleViewModels = [];
+        List<HairColorViewModel> hairColorViewModels = [];
+
+        hairStyleViewModels.AddRange(hairstyles.Select(hairstyle => new HairStyleViewModel() { Style = hairstyle.Style }));
+        hairColorViewModels.AddRange(hairColors.Select(hairColor => new HairColorViewModel() { Color = hairColor.Color }));
+
         ImageViewModel model = new ImageViewModel()
         {
-            HairStyles = new List<HairStyleViewModel>()
-            {
-                new HairStyleViewModel() { Style = "peinado" },
-                new HairStyleViewModel() { Style = "tinte" },
-                new HairStyleViewModel() { Style = "chino" },
-                new HairStyleViewModel() { Style = "trenzas" },
-                new HairStyleViewModel() { Style = "corte" },
-                new HairStyleViewModel() { Style = "largo" },
-                new HairStyleViewModel() { Style = "corto" },
-                new HairStyleViewModel() { Style = "otro" }
-        },
-            HairColors = new List<HairColorViewModel>()
-            {
-                new HairColorViewModel() {Color = "negro"},
-                new HairColorViewModel() {Color = "cafe"},
-                new HairColorViewModel() {Color = "rubio"},
-                new HairColorViewModel() {Color = "rojo"},
-                new HairColorViewModel() {Color = "mixto"},
-
-            }
+            HairStyles = hairStyleViewModels,
+            HairColors = hairColorViewModels
         };
+        #endregion
 
         return View(model);
     }
