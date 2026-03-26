@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc.ModelBinding.Validation;
+using Mvc.Utilities;
 using System.ComponentModel.DataAnnotations;
 
 namespace Mvc.Models.Gallery;
@@ -10,6 +11,10 @@ public class Image
     [Required(ErrorMessage = "Please enter a filepath.")]
     [StringLength(260, ErrorMessage = "Filepath must be 260 characters or less.")]
     public string FilePath { get; set; } = string.Empty;
+
+    [Required(ErrorMessage = "Please enter an image hashcode.")]
+    [StringLength(Tags.SHA256HashHexLength)]
+    public string ImageHash { get; set; } = string.Empty;
 
     [Required(ErrorMessage = "Please enter a hair style.")]
     public int? HairProfileId { get; set; } // foreign key linking to HairProfile

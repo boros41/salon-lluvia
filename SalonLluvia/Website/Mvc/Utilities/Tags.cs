@@ -5,6 +5,7 @@ namespace Mvc.Utilities;
 public static class Tags
 {
     public const string BusinessName = "salonlluvia";
+    public const int SHA256HashHexLength = 64;
 
     public record ToastValues(string Header, string Message, bool IsSuccess);
 
