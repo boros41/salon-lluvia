@@ -1,6 +1,8 @@
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Mvc.Data.Repository;
+using Mvc.Integrations.AzureBlobStorage;
+using Mvc.Integrations.AzureBlobStorage.Interfaces;
 using Mvc.Integrations.Calendly;
 using Mvc.Models;
 using Mvc.Models.Gallery;
@@ -21,13 +23,20 @@ public class Program
                         .AddEntityFrameworkStores<SalonContext>()
                         .AddDefaultTokenProviders();
 
-        // Map dependencies
+        #region Map dependencies for DI
+        // repository pattern
         builder.Services.AddTransient(typeof(IRepository<Appointment>), typeof(Repository<Appointment>));
         builder.Services.AddTransient(typeof(IRepository<Client>), typeof(Repository<Client>));
         builder.Services.AddTransient(typeof(IRepository<HairStyle>), typeof(Repository<HairStyle>));
         builder.Services.AddTransient(typeof(IRepository<HairColor>), typeof(Repository<HairColor>));
+
+        // Calendly API service
         builder.Services.AddTransient<ICalendlyAvailableDays, CalendlyAvailableDays>();
         builder.Services.AddTransient<ICalendlyAppointment, CalendlyAppointment>();
+
+        // Azure Blob Storage API service
+        builder.Services.AddTransient<IAzureBlobStorageImages, AzureBlobStorageImages>();
+        #endregion
 
         string? connectionString = builder.Configuration.GetConnectionString("SalonContext");
         // Add EF Core DI

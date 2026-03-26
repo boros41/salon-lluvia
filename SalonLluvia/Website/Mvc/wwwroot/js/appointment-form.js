@@ -1,15 +1,13 @@
 ﻿"use strict";
 //https://flatpickr.js.org/
 
-const url = "https://localhost:7187/api/calendly/available-days";
+const url = "/api/calendly/available-days";
 
 const options = {
     method: 'GET',
     headers: {
         "Content-Type": "application/json",
         Accept: "application/json",
-        Authorization: "Bearer "
-
     }
 };
 
