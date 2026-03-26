@@ -7,6 +7,7 @@ using Mvc.Models.Gallery;
 using Mvc.Models.Gallery.ViewModels;
 using Mvc.Models.ViewModels;
 using Mvc.Utilities;
+using Mvc.Utilities.Interfaces;
 using System.Diagnostics;
 
 namespace Mvc.Controllers;
@@ -190,15 +191,21 @@ public class HomeController : Controller
     }
 
     [HttpPost]
-    public IActionResult Gallery(ImageViewModel model)
+    public async Task<IActionResult> Gallery(ImageViewModel model, [FromServices] IImageHelper imageHelper)
     {
         if (!ModelState.IsValid)
         {
             return View(model);
         }
 
+        const string purpose = "gallery";
+        const string variant = "original";
+        string imageHash = await imageHelper.GetFileHashCodeAsync(model.Image)
+            ;
+        string filename = $"{Tags.BusinessName}-{purpose}-{variant}-{imageHash}";
+
         // RDG pattern
-        return View();
+        return RedirectToAction("Gallery");
     }
 
     public IActionResult Team()

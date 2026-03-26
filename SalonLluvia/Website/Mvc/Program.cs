@@ -7,6 +7,7 @@ using Mvc.Integrations.Calendly;
 using Mvc.Models;
 using Mvc.Models.Gallery;
 using Mvc.Utilities;
+using Mvc.Utilities.Interfaces;
 
 namespace Mvc;
 
@@ -36,6 +37,9 @@ public class Program
 
         // Azure Blob Storage API service
         builder.Services.AddTransient<IAzureBlobStorageImages, AzureBlobStorageImages>();
+
+        // File helper in HomeController.Gallery POST
+        builder.Services.AddTransient<IImageHelper, ImageHelper>();
         #endregion
 
         string? connectionString = builder.Configuration.GetConnectionString("SalonContext");

@@ -4,6 +4,8 @@ namespace Mvc.Utilities;
 
 public static class Tags
 {
+    public const string BusinessName = "salonlluvia";
+
     public record ToastValues(string Header, string Message, bool IsSuccess);
 
     public static void ToastMessage(ITempDataDictionary tempData, ToastValues values)

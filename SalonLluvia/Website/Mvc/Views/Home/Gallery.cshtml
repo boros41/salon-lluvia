@@ -12,13 +12,13 @@
         <h1 class="font-dancing-script text-primary">Gallery</h1>
         <h1 class="mb-4">Explore Our Gallery</h1>
     </div>
-    
+
     @*Admin Upload Image Modal*@
     @using Microsoft.AspNetCore.Identity
     
-@using Mvc.Models.Gallery
-@using Mvc.Models.Gallery.ViewModels
-@inject SignInManager<User> SignInManager
+    @using Mvc.Models.Gallery
+    @using Mvc.Models.Gallery.ViewModels
+    @inject SignInManager<User> SignInManager
     @if (SignInManager.IsSignedIn(User) && User.IsInRole("Admin"))
     {
         <div class="row justify-content-center mb-3">
@@ -34,7 +34,7 @@
                         <h1 class="modal-title fs-5" id="exampleModalLabel">Upload image</h1>
                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                     </div>
-                    <form asp-controller="Home" asp-action="Gallery" method="post" id="upload-image-form">
+                    <form enctype="multipart/form-data" asp-controller="Home" asp-action="Gallery" method="post" id="upload-image-form">
                         <div class="modal-body">
                             <div class="container-fluid">
                                 <div class="row">
