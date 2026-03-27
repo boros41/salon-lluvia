@@ -1,6 +1,9 @@
+using Azure;
+using Azure.Storage.Blobs.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Caching.Memory;
 using Mvc.Data.Repository;
+using Mvc.Integrations.AzureBlobStorage.Interfaces;
 using Mvc.Integrations.Calendly;
 using Mvc.Models;
 using Mvc.Models.Gallery;
@@ -191,18 +194,41 @@ public class HomeController : Controller
     }
 
     [HttpPost]
-    public async Task<IActionResult> Gallery(ImageViewModel model, [FromServices] IImageHelper imageHelper)
+    public async Task<IActionResult> Gallery(ImageViewModel model, [FromServices] IImageHelper imageHelper, [FromServices] IAzureBlobStorageImages azureBlobStorageImages)
     {
+        HashSet<string> acceptedMediaType = ["image/jpeg", "image/png", "image/webp"];
+
+        bool isMediaTypeAccepted = acceptedMediaType.Contains(model.Image.ContentType);
+
+        if (!isMediaTypeAccepted)
+        {
+            ModelState.AddModelError(nameof(model.Image), "Please upload a \".jpg\", \".png\", or \".webp\" image.");
+        }
+
         if (!ModelState.IsValid)
         {
             return View(model);
         }
 
+        const string directory = "gallery";
         const string purpose = "gallery";
         const string variant = "original";
-        string imageHash = await imageHelper.GetFileHashCodeAsync(model.Image)
-            ;
-        string filename = $"{Tags.BusinessName}-{purpose}-{variant}-{imageHash}";
+        string imageHash = await imageHelper.GetFileHashCodeAsync(model.Image);
+        string filename = $"{directory}/{Tags.BusinessName}-{purpose}-{variant}-{imageHash}";
+
+        Response<BlobContentInfo> response;
+
+        try
+        {
+            response = await azureBlobStorageImages.PostImageAsync(filename, model.Image);
+        }
+        catch (RequestFailedException e)
+        {
+            ModelState.AddModelError(nameof(model.Image), "The specified image already exists.");
+            return View(model);
+        }
+
+        Tags.ToastMessage(TempData, new Tags.ToastValues("Image Upload", "Successfully uploaded image!", true));
 
         // RDG pattern
         return RedirectToAction("Gallery");

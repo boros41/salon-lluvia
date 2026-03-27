@@ -1,3 +1,5 @@
+using Azure.Identity;
+using Azure.Storage.Blobs;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Mvc.Data.Repository;
@@ -35,11 +37,26 @@ public class Program
         builder.Services.AddTransient<ICalendlyAvailableDays, CalendlyAvailableDays>();
         builder.Services.AddTransient<ICalendlyAppointment, CalendlyAppointment>();
 
-        // Azure Blob Storage API service
+        // Azure Blob Storage API gateway service
         builder.Services.AddTransient<IAzureBlobStorageImages, AzureBlobStorageImages>();
 
         // File helper in HomeController.Gallery POST
         builder.Services.AddTransient<IImageHelper, ImageHelper>();
+
+        // Azure Blob Container Client object
+        builder.Services.AddSingleton<BlobContainerClient>(sp =>
+        {
+            const string storageAccountName = "stsalonlluviaimgprod01";
+            const string containerName = "images";
+
+            string tenantId = builder.Configuration["AZURE_TENANT_ID"] ?? throw new InvalidOperationException("AZURE_TENANT_ID environment variable not found.");
+            string clientId = builder.Configuration["AZURE_CLIENT_ID"] ?? throw new InvalidOperationException("AZURE_CLIENT_ID environment variable not found.");
+            string clientSecret = builder.Configuration["AZURE_CLIENT_SECRET"] ?? throw new InvalidOperationException("AZURE_CLIENT_SECRET environment variable not found.");
+
+            return new BlobContainerClient(
+                new Uri($"https://{storageAccountName}.blob.core.windows.net/{containerName}"),
+                new ClientSecretCredential(tenantId, clientId, clientSecret));
+        });
         #endregion
 
         string? connectionString = builder.Configuration.GetConnectionString("SalonContext");
