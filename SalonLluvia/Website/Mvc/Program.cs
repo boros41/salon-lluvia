@@ -108,8 +108,6 @@ public class Program
 
         app.UseStatusCodePagesWithReExecute("/Error/{0}");
 
-        app.UseAuthorization();
-
         app.MapStaticAssets();
 
         app.MapAreaControllerRoute(
@@ -132,6 +130,6 @@ public class Program
             pattern: "{controller=Home}/{action=Index}/{id?}")
            .WithStaticAssets();
 
-        app.Run();
+        await app.RunAsync();
     }
 }
