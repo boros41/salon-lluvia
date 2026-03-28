@@ -50,6 +50,8 @@ $(document).ready(function () {
                 // At this point, the <img> tag is created, but the image blob is not loaded causing Masonry.js grid items to overlap
                 $grid.append($imageCard).masonry("appended", $imageCard);
 
+                $("#gallery-spinner").addClass("d-none");
+
                 // Wait for the image to load then notify Masonry.js to lay out the grid item again since its size has changed
                 // https://masonry.desandro.com/layout#imagesloaded:~:text=Unloaded%20images%20can,each%20image%20loads.
                 $grid.imagesLoaded().progress(function () {
