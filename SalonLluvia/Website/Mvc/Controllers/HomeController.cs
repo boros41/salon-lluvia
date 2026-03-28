@@ -172,7 +172,7 @@ public class HomeController : Controller
     }
 
     [HttpGet]
-    public async Task<IActionResult> Gallery([FromServices] IAzureBlobStorageImages azureBlobStorageImages)
+    public IActionResult Gallery([FromServices] IAzureBlobStorageImages azureBlobStorageImages)
     {
         #region Lookup data for hairstyle & hair color checkboxes in admin upload image button
         IEnumerable<HairStyle> hairstyles = _hairstyleRepo.List(new QueryOptions<HairStyle>());
