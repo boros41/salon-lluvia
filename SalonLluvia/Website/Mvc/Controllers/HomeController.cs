@@ -118,7 +118,7 @@ public class HomeController : Controller
         try
         {
             await _calendlyAppointment.CreateAppointment(model);
-            _memoryCache.Remove("available-days"); // the date the user just booked is no longer available
+            _memoryCache.Remove(Tags.AvailableDaysCacheKey); // the date the user just booked is no longer available
         }
         catch (HttpRequestException e)
         {
@@ -172,7 +172,7 @@ public class HomeController : Controller
     }
 
     [HttpGet]
-    public IActionResult Gallery()
+    public async Task<IActionResult> Gallery([FromServices] IAzureBlobStorageImages azureBlobStorageImages)
     {
         #region Lookup data for hairstyle & hair color checkboxes in admin upload image button
         IEnumerable<HairStyle> hairstyles = _hairstyleRepo.List(new QueryOptions<HairStyle>());
@@ -210,21 +210,26 @@ public class HomeController : Controller
             return View(model);
         }
 
-        const string directory = "gallery";
         const string purpose = "gallery";
         const string variant = "original";
         string imageHash = await imageHelper.GetFileHashCodeAsync(model.Image);
-        string filename = $"{directory}/{Tags.BusinessName}-{purpose}-{variant}-{imageHash}";
+        string filename = $"{Tags.BusinessName}-{purpose}-{variant}-{imageHash}";
 
         Response<BlobContentInfo> response;
 
         try
         {
             response = await azureBlobStorageImages.PostImageAsync(filename, model.Image);
+
+            _memoryCache.Remove(Tags.GalleryImagesCacheKey); // refresh cache after uploading image so it shows after redirect
         }
         catch (RequestFailedException e)
         {
-            ModelState.AddModelError(nameof(model.Image), "The specified image already exists.");
+            const string errorMessage = "The specified image already exists.";
+            ModelState.AddModelError(nameof(model.Image), errorMessage);
+
+            Tags.ToastMessage(TempData, new Tags.ToastValues("Image Upload", errorMessage, false));
+
             return View(model);
         }
 

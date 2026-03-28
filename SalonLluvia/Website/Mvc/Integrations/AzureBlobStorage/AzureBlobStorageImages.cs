@@ -1,6 +1,8 @@
 ﻿using Azure;
 using Azure.Storage.Blobs;
 using Azure.Storage.Blobs.Models;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Caching.Memory;
 using Mvc.Integrations.AzureBlobStorage.Interfaces;
 
 namespace Mvc.Integrations.AzureBlobStorage;
@@ -8,18 +10,32 @@ namespace Mvc.Integrations.AzureBlobStorage;
 public class AzureBlobStorageImages : IAzureBlobStorageImages
 {
     private readonly BlobContainerClient _blobContainerClient;
-    public AzureBlobStorageImages(BlobContainerClient blobContainerClient)
+    private readonly IMemoryCache _memoryCache;
+
+    public AzureBlobStorageImages(BlobContainerClient blobContainerClient, IMemoryCache memoryCache)
     {
         _blobContainerClient = blobContainerClient;
+        _memoryCache = memoryCache;
     }
 
-    public Task<string> GetImageUrl()
+    public async Task<HashSet<string>> GetImageUrlsAsync()
     {
-        return Task.Run(() => "test from server");
+        AsyncPageable<BlobItem> allBlobItems = _blobContainerClient.GetBlobsAsync();
+
+        HashSet<string> blobUris = [];
+        await foreach (BlobItem currentBlobItem in allBlobItems)
+        {
+            string blobUri = _blobContainerClient.GetBlobClient(currentBlobItem.Name).Uri.ToString();
+            blobUris.Add(blobUri);
+        }
+
+        return blobUris;
     }
 
+    [NonAction]
     public async Task<Response<BlobContentInfo>> PostImageAsync(string filename, IFormFile file)
     {
+
         await using Stream imageStream = file.OpenReadStream();
 
         BlobUploadOptions uploadOptions = new BlobUploadOptions()

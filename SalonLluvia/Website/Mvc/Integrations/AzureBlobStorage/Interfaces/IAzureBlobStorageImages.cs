@@ -5,6 +5,6 @@ namespace Mvc.Integrations.AzureBlobStorage.Interfaces;
 
 public interface IAzureBlobStorageImages
 {
-    Task<string> GetImageUrl();
+    Task<HashSet<string>> GetImageUrlsAsync();
     Task<Response<BlobContentInfo>> PostImageAsync(string filename, IFormFile file);
 }

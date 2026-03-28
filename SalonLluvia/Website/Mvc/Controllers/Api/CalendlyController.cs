@@ -2,6 +2,7 @@
 using Microsoft.Extensions.Caching.Memory;
 using Microsoft.Extensions.Primitives;
 using Mvc.Integrations.Calendly;
+using Mvc.Utilities;
 using System.Text.Json;
 
 namespace Mvc.Controllers.Api;
@@ -26,13 +27,12 @@ public class CalendlyController : ControllerBase
 
         try
         {
-            const string key = "available-days";
-            HashSet<string> availableDays = await _memoryCache.GetOrCreateAsync(key, cacheEntry =>
+            HashSet<string> availableDays = await _memoryCache.GetOrCreateAsync(Tags.AvailableDaysCacheKey, cacheEntry =>
             {
                 cacheEntry.AbsoluteExpirationRelativeToNow = TimeSpan.FromMinutes(5);
 
                 return _availableDays.GetAvailableDays();
-            }) ?? throw new InvalidOperationException($"Value for memory cache \"{key}\" was null");
+            }) ?? throw new InvalidOperationException($"Value for memory cache \"{Tags.AvailableDaysCacheKey}\" was null");
 
             return Ok(availableDays);
         }

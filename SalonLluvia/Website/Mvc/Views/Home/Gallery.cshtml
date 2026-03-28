@@ -127,25 +127,8 @@
         </div>
     }
     
-    <!-- Gallery Start -->
-
-    <div class="row g-2" data-masonry='{"percentPosition": true }'>
-
-        <div class="col-sm-6 col-lg-3 wow fadeIn">
-            <div class="card">
-                <div class="gallery-item">
-                    <img src="~/img/gallery-2.jpg" class="card-img-top" alt=""/>
-                    <div class="gallery-icon">
-                        <a href="~/img/gallery-2.jpg" class="btn btn-primary btn-lg-square" data-lightbox="Gallery-1">
-                            <i class="fa fa-eye"></i>
-                        </a>
-                    </div>
-                </div>
-                <div class="card-body">
-                    <p class="card-text">A nice peinado</p>
-                </div>
-            </div>
-        </div>
+    <!-- Gallery Start: Populated with AJAX in gallery.js -->
+    <div class="row g-2" id="gallery" data-masonry='{"percentPosition": true }'>
 
     </div>
 </div>
@@ -154,6 +137,7 @@
 
 @section Gallery
 {
+    <script src="~/lib/imagesloaded/imagesloaded.pkgd.min.js" asp-append-version="true"></script>
     <script src="~/lib/masonry/masonry.pkgd.min.js" asp-append-version="true"></script>
     <script src="~/js/gallery/gallery.js" asp-append-version="true"></script>
     <script src="~/js/validation/gallery-checkbox-validation.js" asp-append-version="true"></script>

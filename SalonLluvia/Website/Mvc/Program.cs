@@ -47,7 +47,7 @@ public class Program
         builder.Services.AddSingleton<BlobContainerClient>(sp =>
         {
             const string storageAccountName = "stsalonlluviaimgprod01";
-            const string containerName = "images";
+            const string containerName = "gallery-images";
 
             string tenantId = builder.Configuration["AZURE_TENANT_ID"] ?? throw new InvalidOperationException("AZURE_TENANT_ID environment variable not found.");
             string clientId = builder.Configuration["AZURE_CLIENT_ID"] ?? throw new InvalidOperationException("AZURE_CLIENT_ID environment variable not found.");

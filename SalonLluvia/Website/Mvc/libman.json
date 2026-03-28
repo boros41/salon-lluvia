@@ -37,7 +37,6 @@
       "destination": "wwwroot/lib/masonry/"
     },
     {
-      "provider": "cdnjs",
       "library": "flatpickr@4.6.13",
       "destination": "wwwroot/lib/flatpickr/",
       "files": [
@@ -84,6 +83,11 @@
         "ie.css",
         "ie.min.css"
       ]
+    },
+    {
+      "provider": "unpkg",
+      "library": "imagesloaded@5.0.0",
+      "destination": "wwwroot/lib/imagesloaded/"
     }
   ]
 }
