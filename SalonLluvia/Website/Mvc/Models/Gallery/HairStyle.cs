@@ -11,7 +11,7 @@ public class HairStyle
     [StringLength(20, ErrorMessage = "Hairstyle must be 20 characters or less.")]
     public string Style { get; init; } = string.Empty;
 
-    /*many-to-many relationship discovered by convention
+    /*many-to-many relationship discovered by convention w/ skip navigations
 
     HairStyle to HairProfile: many-to-many.
     A person's hair profile can have many hairstyles (e.g., long, braids, etc.) and one

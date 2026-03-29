@@ -8,13 +8,9 @@ public class Image
 {
     public int Id { get; set; }
 
-    [Required(ErrorMessage = "Please enter a filepath.")]
-    [StringLength(260, ErrorMessage = "Filepath must be 260 characters or less.")]
-    public string FilePath { get; set; } = string.Empty;
-
-    [Required(ErrorMessage = "Please enter an image hashcode.")]
-    [StringLength(Tags.SHA256HashHexLength)]
-    public string ImageHash { get; set; } = string.Empty;
+    [Required(ErrorMessage = "Please enter an image name.")]
+    [StringLength(Tags.GalleryImageNameLength, ErrorMessage = "Filepath must be 260 characters or less.")]
+    public string Name { get; set; } = string.Empty; // {imageHash}-{Tags.BusinessName}-{purpose}-{variant} 
 
     [Required(ErrorMessage = "Please enter a hair style.")]
     public int? HairProfileId { get; set; } // foreign key linking to HairProfile

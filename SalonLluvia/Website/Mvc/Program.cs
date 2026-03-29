@@ -32,6 +32,9 @@ public class Program
         builder.Services.AddTransient(typeof(IRepository<Client>), typeof(Repository<Client>));
         builder.Services.AddTransient(typeof(IRepository<HairStyle>), typeof(Repository<HairStyle>));
         builder.Services.AddTransient(typeof(IRepository<HairColor>), typeof(Repository<HairColor>));
+        builder.Services.AddTransient(typeof(IRepository<HairProfile>), typeof(Repository<HairProfile>));
+        builder.Services.AddTransient(typeof(IRepository<Image>), typeof(Repository<Image>));
+        builder.Services.AddTransient(typeof(GalleryData<Image, HairProfile, HairStyle, HairColor>), typeof(GalleryData<Image, HairProfile, HairStyle, HairColor>));
 
         // Calendly API service
         builder.Services.AddTransient<ICalendlyAvailableDays, CalendlyAvailableDays>();

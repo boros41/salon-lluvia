@@ -20,18 +20,16 @@ public class HomeController : Controller
 {
     private readonly IRepository<Appointment> _appointmentRepo;
     private readonly IRepository<Client> _clientRepo;
-    private readonly IRepository<HairStyle> _hairstyleRepo;
-    private readonly IRepository<HairColor> _hairColorRepo;
+    private readonly GalleryData<Image, HairProfile, HairStyle, HairColor> _galleryData;
     private readonly ICalendlyAppointment _calendlyAppointment;
     private readonly IMemoryCache _memoryCache;
 
     public HomeController(IRepository<Appointment> appointmentRepo, IRepository<Client> clientRepo,
-        IRepository<HairStyle> hairstyleRepo, IRepository<HairColor> hairColorRepo, ICalendlyAppointment appointment, IMemoryCache memoryCache)
+        GalleryData<Image, HairProfile, HairStyle, HairColor> galleryData, ICalendlyAppointment appointment, IMemoryCache memoryCache)
     {
         _appointmentRepo = appointmentRepo;
         _clientRepo = clientRepo;
-        _hairstyleRepo = hairstyleRepo;
-        _hairColorRepo = hairColorRepo;
+        _galleryData = galleryData;
         _calendlyAppointment = appointment;
         _memoryCache = memoryCache;
     }
@@ -175,8 +173,9 @@ public class HomeController : Controller
     public IActionResult Gallery([FromServices] IAzureBlobStorageImages azureBlobStorageImages)
     {
         #region Lookup data for hairstyle & hair color checkboxes in admin upload image button
-        IEnumerable<HairStyle> hairstyles = _hairstyleRepo.List(new QueryOptions<HairStyle>());
-        IEnumerable<HairColor> hairColors = _hairColorRepo.List(new QueryOptions<HairColor>());
+
+        IEnumerable<HairStyle> hairstyles = _galleryData.HairstyleRepo.List(new QueryOptions<HairStyle>());
+        IEnumerable<HairColor> hairColors = _galleryData.HairColorRepo.List(new QueryOptions<HairColor>());
         List<HairStyleViewModel> hairStyleViewModels = [];
         List<HairColorViewModel> hairColorViewModels = [];
 
@@ -210,16 +209,16 @@ public class HomeController : Controller
             return View(model);
         }
 
-        const string purpose = "gallery";
-        const string variant = "original";
         string imageHash = await imageHelper.GetFileHashCodeAsync(model.Image);
-        string filename = $"{Tags.BusinessName}-{purpose}-{variant}-{imageHash}";
+
+        // hash first so we can easily search the image in Azure Blob Storage only by this prefix
+        string imageName = $"{imageHash}-{Tags.BusinessName}-{Tags.ImagePurpose}-{Tags.ImageVariant}";
 
         Response<BlobContentInfo> response;
 
         try
         {
-            response = await azureBlobStorageImages.PostImageAsync(filename, model.Image);
+            response = await azureBlobStorageImages.PostImageAsync(imageName, model.Image);
 
             _memoryCache.Remove(Tags.GalleryImagesCacheKey); // refresh cache after uploading image so it shows after redirect
         }
@@ -232,6 +231,49 @@ public class HomeController : Controller
 
             return View(model);
         }
+
+        HairProfile hairProfile = new HairProfile() { Gender = model.Gender };
+
+        List<string> selectedHairstyles = model.HairStyles
+                                               .Where(hairstyleVm => hairstyleVm.IsChecked)
+                                               .Select(hairstyleVm => hairstyleVm.Style)
+                                               .ToList();
+
+        List<string> selectedHairColors = model.HairColors
+                                               .Where(hairColorVm => hairColorVm.IsChecked)
+                                               .Select(hairColorVm => hairColorVm.Color)
+                                               .ToList();
+
+        // This is the skip navigation property in HairProfile so adding these hairstyles from the DB should populate the HairProfileHairStyle junction table
+        // E.g., if 3 hairstyles were selected, EF Core will add an entry to the HairProfile table and 3 new junction table entries linking that HairProfile.Id to those 3 HairStyle.Ids
+        List<HairStyle> existingHairStyles = _galleryData.HairstyleRepo
+                                                         .List(new QueryOptions<HairStyle>()
+                                                         {
+                                                             Where = hairstyle => selectedHairstyles.Contains(hairstyle.Style)
+                                                         })
+                                                         .ToList();
+
+        // This is the skip navigation property in HairProfile so adding these hair colors from the DB should populate the HairProfileHairColor junction table
+        // E.g., if 3 hair colors were selected, EF Core will add an entry to the HairProfile table and 3 new junction table entries linking that HairProfile.Id to those 3 HairColor.Ids
+        List<HairColor> existingHairColors = _galleryData.HairColorRepo
+                                                         .List(new QueryOptions<HairColor>()
+                                                         {
+                                                             Where = hairColor => selectedHairColors.Contains(hairColor.Color)
+                                                         })
+                                                         .ToList();
+
+        hairProfile.HairStyles.AddRange(existingHairStyles);
+        hairProfile.HairColors.AddRange(existingHairColors);
+
+        Image uploadedImage = new Image()
+        {
+            Name = imageName,
+            Description = model.Description,
+            HairProfile = hairProfile
+        };
+
+        _galleryData.ImageRepo.Insert(uploadedImage);
+        _galleryData.ImageRepo.Save();
 
         Tags.ToastMessage(TempData, new Tags.ToastValues("Image Upload", "Successfully uploaded image!", true));
 

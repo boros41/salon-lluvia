@@ -11,7 +11,7 @@ public class HairColor
     [StringLength(20, ErrorMessage = "Hair color must be 20 characters or less.")]
     public string Color { get; init; } = string.Empty;
 
-    /*many-to-many relationship discovered by convention
+    /*many-to-many relationship discovered by convention w/ skip navigations
 
     HairColor to HairProfile: many-to-many.
     A person's hair profile can have many hair colors (e.g., black, blonde, etc.) and one 
