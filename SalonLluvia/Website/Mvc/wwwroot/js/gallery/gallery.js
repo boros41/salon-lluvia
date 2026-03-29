@@ -20,25 +20,31 @@ $(document).ready(function () {
         })
         .then(response => {
             const $grid = $("#gallery");
+            const images = response.images;
 
-            $.each(response, function (index, value) {
-                const thumbnailUrl = value; // url points to the image blob in Azure Blob Storage
+            $.each(images, function (index, value) {
+                const image = value;
+                const thumbnailUrl = image.url; // url points to the image blob in Azure Blob Storage
                 const imageUrl = null; // this should be a full resolution image that opens on the <a> tag but I've yet to implement
+                const imageDescription = image.description;
+                const hairstyles = image.hairstyles;
+                const hairColors = image.hair_colors;
 
                 // Bootstrap card holding one image in the gallery: https://getbootstrap.com/docs/4.0/components/card/
                 const imageCardHtmlString = `
                 <div class="col-sm-6 col-lg-3 wow fadeIn">
                     <div class="card">
                         <div class="gallery-item">
-                            <img src="${thumbnailUrl}" class="card-img-top img-thumbnail" alt=""/>
+                            <img src="${thumbnailUrl}" class="card-img-top img-thumbnail" alt="${imageDescription}"/>
                             <div class="gallery-icon">
-                                <a href="${thumbnailUrl}" class="btn btn-primary btn-lg-square img-full" data-lightbox="Gallery-1">
+                                <a href="${thumbnailUrl}" class="btn btn-primary btn-lg-square img-full" 
+                                data-lightbox="gallery" data-title="${imageDescription}" data-alt="${imageDescription}">
                                     <i class="fa fa-eye"></i>
                                 </a>
                             </div>
                         </div>
                         <div class="card-body">
-                            <p class="card-text">IMPLEMENT DESCRIPTION</p>
+                            <p class="card-text">${imageDescription}</p>
                         </div>
                     </div>
                 </div>`;

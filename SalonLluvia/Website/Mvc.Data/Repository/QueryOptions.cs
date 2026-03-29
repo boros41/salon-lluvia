@@ -18,6 +18,17 @@ public sealed class QueryOptions<TEntity> where TEntity : class
         return _includes;
     }
 
+    private string[] _thenIncludes = [];
+    public string ThenIncludes
+    {
+        set => _thenIncludes = value.Replace(" ", "").Split(",");
+    }
+
+    public string[] GetThenIncludes()
+    {
+        return _thenIncludes;
+    }
+
     public bool HasWhere => Where is not null;
     public bool HasOrderBy => OrderBy is not null;
 }

@@ -18,18 +18,24 @@ public class AzureBlobStorageImages : IAzureBlobStorageImages
         _memoryCache = memoryCache;
     }
 
-    public async Task<HashSet<string>> GetImageUrlsAsync()
+    public async Task<HashSet<Dictionary<string, string>>> GetImageUrlsAsync()
     {
         AsyncPageable<BlobItem> allBlobItems = _blobContainerClient.GetBlobsAsync();
 
-        HashSet<string> blobUris = [];
+        // the filename key will be used to query the DB for the image's metadata such as description to later display in the gallery page
+        HashSet<Dictionary<string, string>> blobUriMappings = [];
         await foreach (BlobItem currentBlobItem in allBlobItems)
         {
             string blobUri = _blobContainerClient.GetBlobClient(currentBlobItem.Name).Uri.ToString();
-            blobUris.Add(blobUri);
+            Dictionary<string, string> blobUriByFileName = new()
+            {
+                {currentBlobItem.Name, blobUri}
+            };
+
+            blobUriMappings.Add(blobUriByFileName);
         }
 
-        return blobUris;
+        return blobUriMappings;
     }
 
     [NonAction]

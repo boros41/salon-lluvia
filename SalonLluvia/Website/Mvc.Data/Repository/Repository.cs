@@ -24,7 +24,19 @@ public class Repository<TEntity> : IRepository<TEntity> where TEntity : class
 
         foreach (string include in options.GetIncludes())
         {
-            query = query.Include(include);
+            if (options.GetThenIncludes().Length == 0)
+            {
+                query = query.Include(include);
+
+                continue;
+            }
+
+            foreach (string thenInclude in options.GetThenIncludes())
+            {
+                // Further navigation properties to be included can be appended, separated by the "." character.
+                // https://learn.microsoft.com/en-us/dotnet/api/microsoft.entityframeworkcore.entityframeworkqueryableextensions.include?view=efcore-10.0&utm_source=chatgpt.com#microsoft-entityframeworkcore-entityframeworkqueryableextensions-include-1(system-linq-iqueryable((-0))-system-string):~:text=queried%20(TEntity).-,Further%20navigation%20properties%20to%20be%20included%20can%20be%20appended%2C%20separated%20by%20the%20%27.%27%20character.,-C%23
+                query = query.Include(include + "." + thenInclude);
+            }
         }
 
         if (options.HasWhere)
