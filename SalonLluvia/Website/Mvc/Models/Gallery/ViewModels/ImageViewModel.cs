@@ -17,9 +17,9 @@ public class ImageViewModel
 
     [Required(ErrorMessage = "Please enter a style (e.g., peinado).")]
     [Checkbox(ErrorMessage = "Please enter at least one hair type.")]
-    public List<HairStyleViewModel> HairStyles { get; set; } = [];
+    public List<HairstyleCheckboxVm> HairStyles { get; set; } = [];
 
     [Required(ErrorMessage = "Please enter a hair color.")]
     [Checkbox(ErrorMessage = "Please enter at least one hair color.")]
-    public List<HairColorViewModel> HairColors { get; set; } = [];
+    public List<HairColorCheckboxVm> HairColors { get; set; } = [];
 }

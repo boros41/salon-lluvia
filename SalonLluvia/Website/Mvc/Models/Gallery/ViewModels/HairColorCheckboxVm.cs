@@ -4,7 +4,7 @@ using System.ComponentModel.DataAnnotations;
 namespace Mvc.Models.Gallery.ViewModels;
 
 // Used by Gallery.cshtml to iterate and generate @Html.CheckBoxesFor for each hair color
-public class HairColorViewModel : ICheckbox
+public class HairColorCheckboxVm : ICheckbox
 {
     public bool IsChecked { get; set; }
 

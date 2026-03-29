@@ -173,14 +173,13 @@ public class HomeController : Controller
     public IActionResult Gallery([FromServices] IAzureBlobStorageImages azureBlobStorageImages)
     {
         #region Lookup data for hairstyle & hair color checkboxes in admin upload image button
-
         IEnumerable<HairStyle> hairstyles = _galleryData.HairstyleRepo.List(new QueryOptions<HairStyle>());
         IEnumerable<HairColor> hairColors = _galleryData.HairColorRepo.List(new QueryOptions<HairColor>());
-        List<HairStyleViewModel> hairStyleViewModels = [];
-        List<HairColorViewModel> hairColorViewModels = [];
+        List<HairstyleCheckboxVm> hairStyleViewModels = [];
+        List<HairColorCheckboxVm> hairColorViewModels = [];
 
-        hairStyleViewModels.AddRange(hairstyles.Select(hairstyle => new HairStyleViewModel() { Style = hairstyle.Style }));
-        hairColorViewModels.AddRange(hairColors.Select(hairColor => new HairColorViewModel() { Color = hairColor.Color }));
+        hairStyleViewModels.AddRange(hairstyles.Select(hairstyle => new HairstyleCheckboxVm() { Style = hairstyle.Style }));
+        hairColorViewModels.AddRange(hairColors.Select(hairColor => new HairColorCheckboxVm() { Color = hairColor.Color }));
 
         ImageViewModel model = new ImageViewModel()
         {
@@ -224,7 +223,7 @@ public class HomeController : Controller
         }
         catch (RequestFailedException e)
         {
-            const string errorMessage = "The specified image already exists.";
+            const string errorMessage = "The specified image already exists in Azure Blob Storage.";
             ModelState.AddModelError(nameof(model.Image), errorMessage);
 
             Tags.ToastMessage(TempData, new Tags.ToastValues("Image Upload", errorMessage, false));
@@ -271,6 +270,18 @@ public class HomeController : Controller
             Description = model.Description,
             HairProfile = hairProfile
         };
+
+        bool isImageInDatabase = _galleryData.ImageRepo
+                                             .List(new QueryOptions<Image>())
+                                             .FirstOrDefault(image => image.Name == imageName) is not null;
+
+        if (isImageInDatabase)
+        {
+            const string message = "Image was already uploaded to the database, but did not exist in Azure. Now saved to both.";
+            Tags.ToastMessage(TempData, new Tags.ToastValues("Image Upload", message, true));
+
+            return RedirectToAction("Gallery");
+        }
 
         _galleryData.ImageRepo.Insert(uploadedImage);
         _galleryData.ImageRepo.Save();

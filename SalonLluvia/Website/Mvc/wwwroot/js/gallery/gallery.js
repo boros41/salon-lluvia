@@ -6,7 +6,7 @@ $(document).ready(function () {
     const options = {
         method: "GET",
         headers: {
-            Accept: "text/plain",
+            Accept: "application/json",
         }
     };
 
@@ -22,7 +22,7 @@ $(document).ready(function () {
             const $grid = $("#gallery");
             const images = response.images;
 
-            $.each(images, function (index, value) {
+            $.each(images, function (imageIndex, value) {
                 const image = value;
                 const thumbnailUrl = image.url; // url points to the image blob in Azure Blob Storage
                 const imageUrl = null; // this should be a full resolution image that opens on the <a> tag but I've yet to implement
@@ -43,8 +43,17 @@ $(document).ready(function () {
                                 </a>
                             </div>
                         </div>
-                        <div class="card-body">
-                            <p class="card-text">${imageDescription}</p>
+                        <div class="card-body pt-1 pb-1" id="card-body-img-${imageIndex}">
+                            <span class="fw-semibold mb-0">Description:</span>
+                            <span class="card-text mb-1">${imageDescription}</span>
+
+                            <div class="hairstyle-badge mb-1">
+                                <span class="fw-semibold mb-0">Hairstyles:</span>
+                            </div>
+
+                            <div class="hair-color-badge">
+                                <span class="fw-semibold mb-0">Hair Colors:</span>
+                            </div>
                         </div>
                     </div>
                 </div>`;
@@ -53,20 +62,42 @@ $(document).ready(function () {
                 // https://masonry.desandro.com/methods#adding-removing-items:~:text=demo%20on%20CodePen-,While,-jQuery%20can%20add
                 const $imageCard = $(imageCardHtmlString);
 
-                // At this point, the <img> tag is created, but the image blob is not loaded causing Masonry.js grid items to overlap
-                $grid.append($imageCard).masonry("appended", $imageCard);
+                // At this point, the <img> is created, but the image blob might not be loaded, we will init Masonry.js after all are loaded to lay them out
+                $grid.append($imageCard);
 
                 $("#gallery-spinner").addClass("d-none");
 
-                // Wait for the image to load then notify Masonry.js to lay out the grid item again since its size has changed
-                // https://masonry.desandro.com/layout#imagesloaded:~:text=Unloaded%20images%20can,each%20image%20loads.
-                $grid.imagesLoaded().progress(function () {
-                    $grid.masonry("layout");
+                // Bootstrap badges for the image's hair color metadata
+                $.each(hairColors, function (index, currentHairColor) {
+                    const hairColor = currentHairColor.color;
+                    const hairColorBadgeHtmlString = `<span class="badge rounded-pill text-bg-primary">${hairColor}</span>`;
+                    const $badgeParent = $(`#card-body-img-${imageIndex} .hair-color-badge`);
+
+                    $(hairColorBadgeHtmlString).appendTo($badgeParent);
                 });
+
+                // Bootstrap badges for the image's hairstyle metadata
+                $.each(hairstyles, function (index, currentHairStyle) {
+                    const hairstyle = currentHairStyle.style;
+                    const hairstyleBadgeHtmlString = `<span class="badge rounded-pill text-bg-secondary">${hairstyle}</span>`;
+                    const $badgeParent = $(`#card-body-img-${imageIndex} .hairstyle-badge`);
+
+                    $(hairstyleBadgeHtmlString).appendTo($badgeParent);
+                });
+
             });
 
             if ($grid.children().length === 0) {
                 console.log("No images found!!!");
+                return;
             }
+
+            $grid.imagesLoaded(function () {
+                // init Masonry.js after all images have loaded
+                // https://masonry.desandro.com/layout#imagesloaded:~:text=Or%2C%20initialize%20Masonry%20after%20all%20images%20have%20been%20loaded.
+                $grid.masonry({
+                    percentPosition: true
+                });
+            });
         })
 });
