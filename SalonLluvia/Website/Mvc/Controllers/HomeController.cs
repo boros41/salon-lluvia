@@ -223,14 +223,49 @@ public class HomeController : Controller
         }
         catch (RequestFailedException e)
         {
-            const string errorMessage = "The specified image already exists in Azure Blob Storage.";
-            ModelState.AddModelError(nameof(model.Image), errorMessage);
+            if (e.Status != StatusCodes.Status409Conflict)
+            {
+                return View(model);
+            }
 
-            Tags.ToastMessage(TempData, new Tags.ToastValues("Image Upload", errorMessage, false));
+            string errorMessage;
+            bool isSuccess;
+
+            if (IsImageInDatabase(imageName))
+            {
+                errorMessage = "The specified image already exists in Azure Blob Storage & the database.";
+                ModelState.AddModelError(nameof(model.Image), errorMessage);
+                isSuccess = false;
+            }
+            else
+            {
+                errorMessage = "The specified image already exists in Azure Blob Storage, but not the database. Now saved to both.";
+                isSuccess = true;
+                UploadImage(model, imageName);
+            }
+
+            Tags.ToastMessage(TempData, new Tags.ToastValues("Image Upload", errorMessage, isSuccess));
 
             return View(model);
         }
 
+        UploadImage(model, imageName);
+
+        // RDG pattern
+        return RedirectToAction("Gallery");
+    }
+
+    [NonAction]
+    private bool IsImageInDatabase(string name)
+    {
+        return _galleryData.ImageRepo
+                           .List(new QueryOptions<Image>())
+                           .FirstOrDefault(image => image.Name == name) is not null;
+    }
+
+    [NonAction]
+    private void UploadImage(ImageViewModel model, string imageName)
+    {
         HairProfile hairProfile = new HairProfile() { Gender = model.Gender };
 
         List<string> selectedHairstyles = model.HairStyles
@@ -271,25 +306,18 @@ public class HomeController : Controller
             HairProfile = hairProfile
         };
 
-        bool isImageInDatabase = _galleryData.ImageRepo
-                                             .List(new QueryOptions<Image>())
-                                             .FirstOrDefault(image => image.Name == imageName) is not null;
-
-        if (isImageInDatabase)
+        if (IsImageInDatabase(imageName))
         {
             const string message = "Image was already uploaded to the database, but did not exist in Azure. Now saved to both.";
             Tags.ToastMessage(TempData, new Tags.ToastValues("Image Upload", message, true));
 
-            return RedirectToAction("Gallery");
+            return;
         }
 
         _galleryData.ImageRepo.Insert(uploadedImage);
         _galleryData.ImageRepo.Save();
 
         Tags.ToastMessage(TempData, new Tags.ToastValues("Image Upload", "Successfully uploaded image!", true));
-
-        // RDG pattern
-        return RedirectToAction("Gallery");
     }
 
     public IActionResult Team()

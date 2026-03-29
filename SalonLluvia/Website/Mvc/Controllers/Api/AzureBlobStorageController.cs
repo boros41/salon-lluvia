@@ -46,7 +46,7 @@ public class AzureBlobStorageController : ControllerBase
 
                     List<string> imageNamesInDb = imagesInDb.Select(image => image.Name).ToList();
 
-                    // since imageName came from Azure Blob Storage, it may not be stored in the DB if uploaded through Azure & not the web app
+                    // since imageNameInAzure came from Azure Blob Storage, it may not be stored in the DB if uploaded through Azure & not the web app
                     if (!imageNamesInDb.Contains(imageNameInAzure))
                     {
                         continue;

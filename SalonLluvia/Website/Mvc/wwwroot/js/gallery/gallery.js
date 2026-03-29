@@ -98,6 +98,15 @@ $(document).ready(function () {
                 $grid.masonry({
                     percentPosition: true
                 });
+            })
+            .progress(function (instance, image) {
+                var result = image.isLoaded ? "loaded" : "broken";
+
+                // This is true if the image blob was deleted in Azure but the server's memory cache still contained the image's URL
+                if (result === "broken") {
+                    console.log(`Removing broken image: ${image.img.src}`);
+                    $(image.img).parents(".card").parent("div").remove();
+                }
             });
         })
 });
