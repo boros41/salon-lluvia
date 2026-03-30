@@ -34,9 +34,7 @@
                     {
                         string label = char.ToUpper(hairstyleCheckbox.Style[0]) + hairstyleCheckbox.Style[1..].ToLower();
 
-                        <span class="badge text-bg-secondary filter-hairstyle">
-                            @label
-                        </span>
+                        <span class="badge text-bg-secondary filter-hairstyle">@label</span>
                     }
                 </div>
             </div>
@@ -49,9 +47,7 @@
                     {
                         string label = char.ToUpper(Model.HairColors[i].Color[0]) + Model.HairColors[i].Color[1..].ToLower();
                                     
-                        <span class="badge text-bg-secondary filter-hair-color">
-                            @label
-                        </span>
+                        <span class="badge text-bg-secondary filter-hair-color">@label</span>
                     }
                 </div>
             </div>

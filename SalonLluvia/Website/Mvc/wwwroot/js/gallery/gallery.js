@@ -8,6 +8,13 @@ $("footer").remove();
 
 const $grid = $("#gallery");
 
+const options = {
+    method: "GET",
+    headers: {
+        Accept: "application/json",
+    }
+};
+
 $(document).ready(function () {
 
     // init Masonry.js after all images have loaded
@@ -26,13 +33,6 @@ $(document).ready(function () {
 function fetchAllImages() {
     const resourceUrl = "/api/azureblobstorage/image-url";
 
-    const options = {
-        method: "GET",
-        headers: {
-            Accept: "application/json",
-        }
-    };
-
     fetch(resourceUrl, options)
     .then(response => {
         if (!response.ok) {
@@ -50,53 +50,35 @@ function fetchAllImages() {
 
 function addFilterClickListeners() {
     $(".filter-gender").on("click", filterImagesByGender);
+    $(".filter-hairstyle").on("click", filterImagesByHairstyle);
 }
+
 function filterImagesByGender(event) {
     const $element = $(this);
     $element.siblings(".badge.text-bg-primary").removeClass("text-bg-primary").addClass("text-bg-secondary");
     $element.removeClass("text-bg-secondary").addClass("text-bg-primary");
 
     let gender = $element.text();
+    const $hairstyleFilters = $(".filter-hairstyle-true");
 
-    // These are how the server represents genders. I should add proper localization...
-    switch (gender) {
-        case "Ambos":
-            gender = "both";
-            break;
-        case "Mujer":
-            gender = "F";
-            break;
-        case "Hombre":
-            gender = "M";
-            break;
+    fetchFilteredImages(gender, $hairstyleFilters, null);
+}
+
+function filterImagesByHairstyle(event) {
+    const $element = $(this);
+
+    if ($element.hasClass("text-bg-primary")) {
+        $element.removeClass("text-bg-primary").addClass("text-bg-secondary");
+        $element.removeClass("filter-hairstyle-true");
+    } else if ($element.hasClass("text-bg-secondary")) {
+        $element.removeClass("text-bg-secondary").addClass("text-bg-primary");
+        $element.removeClass("filter-hairstyle-false").addClass("filter-hairstyle-true");
     }
 
-    const resourceUrl = `/api/azureblobstorage/image-url?gender=${encodeURIComponent(gender)}`;
+    const gender = $(".filter-gender.text-bg-primary").text();
+    const $hairstyleFilters = $(".filter-hairstyle-true");
 
-    const options = {
-        method: "GET",
-        headers: {
-            Accept: "application/json",
-        }
-    };
-
-    fetch(resourceUrl, options)
-    .then(response => {
-        if (!response.ok) {
-            throw new Error(`HTTP ${response.status}`);
-        }
-
-        return response.json();
-    })
-    .then(response => {
-        const images = response.images;
-
-        const $allGridItems = $grid.children(".grid-item");
-        $grid.masonry("remove", $allGridItems).masonry("layout");
-        $grid.empty(); // simply recreate the newly filtered images
-
-        createImageCards(images);
-    });
+    fetchFilteredImages(gender, $hairstyleFilters, null);
 }
 
 function createImageCards(images) {
@@ -191,4 +173,51 @@ function createImageCards(images) {
 
         $grid.masonry("layout");
     });
+}
+
+function fetchFilteredImages(gender, $hairstyles, hairColors) {
+    const queryParams = new URLSearchParams();
+
+    // These are how the server represents genders. I should add proper localization...
+    switch (gender) {
+        case "Ambos":
+            gender = "both";
+            break;
+        case "Mujer":
+            gender = "F";
+            break;
+        case "Hombre":
+            gender = "M";
+            break;
+    }
+
+    queryParams.append("gender", gender);
+
+    $hairstyles.each(function (index, element) {
+        const queryValue = element.textContent.trim().toLowerCase();
+        queryParams.append("hairstyles", queryValue);
+    });
+
+
+    const resourceUrl = `/api/azureblobstorage/image-url?${queryParams.toString()}`;
+
+    console.log(`Hairstyles filter URL: ${resourceUrl}`);
+
+    fetch(resourceUrl, options)
+        .then(response => {
+            if (!response.ok) {
+                throw new Error(`HTTP ${response.status}`);
+            }
+
+            return response.json();
+        })
+        .then(response => {
+            const images = response.images;
+
+            const $allGridItems = $grid.children(".grid-item");
+            $grid.masonry("remove", $allGridItems).masonry("layout");
+            $grid.empty(); // simply recreate the newly filtered images
+
+            createImageCards(images);
+        });
 }

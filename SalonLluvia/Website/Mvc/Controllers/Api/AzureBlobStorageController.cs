@@ -46,8 +46,10 @@ public class AzureBlobStorageController : ControllerBase
                     {
                         Includes = "HairProfile",
                         ThenIncludes = "HairStyles, HairColors",
+                        FilterHairstyles = filters.Hairstyles
                     };
 
+                    // gender filters
                     if (!filters.Gender.Equals("both", StringComparison.CurrentCultureIgnoreCase))
                     {
                         if (!IsValidGenderFilter(filters.Gender))
@@ -58,6 +60,14 @@ public class AzureBlobStorageController : ControllerBase
                         // Database uses "F" & "M" and also unable to use string.Equals() with a comparator with EF Core
                         string filterGender = filters.Gender.ToUpper();
                         queryOptions.GenderFilter = image => image.HairProfile.Gender == filterGender;
+                    }
+
+                    // hairstyle filters
+                    foreach (string hairstyle in queryOptions.FilterHairstyles)
+                    {
+                        // since there can be multiple hairstyle filters, we need a list of predicates for a chain of Where() calls
+                        queryOptions.HairstylePredicates
+                                    .Add(imageInQuerySet => imageInQuerySet.HairProfile.HairStyles.Any(hairstyleInQuerySet => queryOptions.FilterHairstyles.Contains(hairstyleInQuerySet.Style)));
                     }
 
                     // name has the image's hash code so it will be unique to safely query
