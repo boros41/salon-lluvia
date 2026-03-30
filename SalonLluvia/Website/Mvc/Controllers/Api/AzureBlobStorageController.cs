@@ -49,7 +49,7 @@ public class AzureBlobStorageController : ControllerBase
                         FilterHairstyles = filters.Hairstyles
                     };
 
-                    // gender filters
+                    // gender filters ( (gender) && (hairstyle1 OR hairstyle2...) && (hairColor1 OR hairColor2...) )
                     if (!filters.Gender.Equals("both", StringComparison.CurrentCultureIgnoreCase))
                     {
                         if (!IsValidGenderFilter(filters.Gender))
@@ -62,12 +62,14 @@ public class AzureBlobStorageController : ControllerBase
                         queryOptions.GenderFilter = image => image.HairProfile.Gender == filterGender;
                     }
 
-                    // hairstyle filters
+                    // hairstyle filters ( (gender) && (hairstyle1 OR hairstyle2...) && (hairColor1 OR hairColor2...) )
                     foreach (string hairstyle in queryOptions.FilterHairstyles)
                     {
                         // since there can be multiple hairstyle filters, we need a list of predicates for a chain of Where() calls
                         queryOptions.HairstylePredicates
-                                    .Add(imageInQuerySet => imageInQuerySet.HairProfile.HairStyles.Any(hairstyleInQuerySet => queryOptions.FilterHairstyles.Contains(hairstyleInQuerySet.Style)));
+                                    .Add(imageInQuerySet => imageInQuerySet.HairProfile
+                                                                           .HairStyles
+                                                                           .Any(hairstyleInQuerySet => queryOptions.FilterHairstyles.Contains(hairstyleInQuerySet.Style)));
                     }
 
                     // name has the image's hash code so it will be unique to safely query
