@@ -7,176 +7,184 @@
     <link href="~/css/gallery.css" rel="stylesheet" asp-append-version="true">
 }
 
-<div class="container gallery py-5">
+<div class="container gallery pt-2">
     <div class="text-center wow animate__fadeInLeft" data-wow-delay="0.2s">
         <h1 class="font-dancing-script text-primary">Gallery</h1>
-        <h1 class="mb-4">Explore Our Gallery</h1>
+        <h1 class="">Explore Our Gallery</h1>
     </div>
     
     <!-- Filter start -->
-    <div class="modal-body">
-        <div class="container-fluid">
-            <div class="row mb-2">
-                <div class="col">
-                    <span class="form-label fw-bold">Gender</span><br/>
+    <div class="accordion mb-2">
+        <div class="accordion-item">
+            <h2 class="accordion-header">
+                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseFilter" aria-expanded="true" aria-controls="collapseOne">
+                    Filter Options
+                </button>
+            </h2>
+            <div id="collapseFilter" class="accordion-collapse collapse" data-bs-parent="#accordionExample">
+                <div class="accordion-body">
+                    <div class="row mb-2">
+                        <div class="col">
+                            <span class="form-label fw-bold">Gender</span><br/>
 
-                    <span class="badge text-bg-primary filter-gender">Ambos</span>
-                    <span class="badge text-bg-secondary filter-gender">Mujer</span>
-                    <span class="badge text-bg-secondary filter-gender">Hombre</span>
-                </div>
-            </div>
-            <div class="row mb-2">
-                <div class="col">
-                    @*Hair type checkboxes such as "peinado"*@
-                    <span class="form-label fw-bold">Hair Types</span><br/>
+                            <span class="badge text-bg-primary filter-gender">Ambos</span>
+                            <span class="badge text-bg-secondary filter-gender">Mujer</span>
+                            <span class="badge text-bg-secondary filter-gender">Hombre</span>
+                        </div>
+                    </div>
+                    <div class="row mb-2">
+                        <div class="col">
+                            @*Hair type checkboxes such as "peinado"*@
+                            <span class="form-label fw-bold">Hair Types</span><br/>
 
-                    @foreach (HairstyleCheckboxVm hairstyleCheckbox in Model.HairStyles)
-                    {
-                        string label = char.ToUpper(hairstyleCheckbox.Style[0]) + hairstyleCheckbox.Style[1..].ToLower();
+                            @foreach (HairstyleCheckboxVm hairstyleCheckbox in Model.HairStyles)
+                            {
+                                string label = char.ToUpper(hairstyleCheckbox.Style[0]) + hairstyleCheckbox.Style[1..].ToLower();
 
-                        <span class="badge text-bg-secondary filter-hairstyle">@label</span>
-                    }
-                </div>
-            </div>
-            <div class="row mb-2">
-                <div class="col">
-                    @*Hair color checkboxes*@
-                    <span class="form-label fw-bold">Hair Colors</span><br/>
+                                <span class="badge text-bg-secondary filter-hairstyle">@label</span>
+                            }
+                        </div>
+                    </div>
+                    <div class="row mb-2">
+                        <div class="col">
+                            @*Hair color checkboxes*@
+                            <span class="form-label fw-bold">Hair Colors</span><br/>
 
-                    @for (int i = 0; i < Model.HairColors.Count; i++)
-                    {
-                        string label = char.ToUpper(Model.HairColors[i].Color[0]) + Model.HairColors[i].Color[1..].ToLower();
-                                    
-                        <span class="badge text-bg-secondary filter-hair-color">@label</span>
-                    }
+                            @for (int i = 0; i < Model.HairColors.Count; i++)
+                            {
+                                string label = char.ToUpper(Model.HairColors[i].Color[0]) + Model.HairColors[i].Color[1..].ToLower();
+                            
+                                <span class="badge text-bg-secondary filter-hair-color">@label</span>
+                            }
+                        </div>
+                    </div>
+                    @*Admin Upload Image Start*@
+                    <div class="row justify-content-center">
+                        @using Microsoft.AspNetCore.Identity
+                        @using Mvc.Models.Gallery.ViewModels
+                        @inject SignInManager<User> SignInManager
+                        @if (SignInManager.IsSignedIn(User) && User.IsInRole("Admin"))
+                        {
+                        <button type="button" class="btn btn-primary w-auto" data-bs-toggle="modal" data-bs-target="#upload-image-modal">
+                            Upload Image
+                        </button>
+                        <div class="modal fade" id="upload-image-modal" tabindex="-1" aria-labelledby="upload-image-modal" aria-hidden="true">
+                            <div class="modal-dialog">
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                        <h1 class="modal-title fs-5" id="exampleModalLabel">Upload image</h1>
+                                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                    </div>
+                                    <form enctype="multipart/form-data" asp-controller="Home" asp-action="Gallery" method="post" id="upload-image-form">
+                                        <div class="modal-body">
+                                            <div class="container-fluid">
+                                                <div class="row">
+                                                    <div class="col">
+                                                        <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                                                    </div>
+                                                </div>
+                                                <div class="row mb-2">
+                                                    <div class="col">
+                                                        <label asp-for="Image" class="form-label fw-bold"></label>
+                                                        <span asp-validation-for="Image" class="text-danger"></span>
+                                                        <input asp-for="Image" type="file" class="form-control" />
+                                                    </div>
+                                                </div>
+                                                <div class="row mb-2">
+                                                    <div class="col">
+                                                        <span class="form-label fw-bold">Gender</span>
+                                                        <span asp-validation-for="Gender" class="text-danger"></span><br />
+
+                                                        <input asp-for="Gender" id="female" class="form-check-input" name="Gender" type="radio" value="F" checked />
+                                                        <label for="female" class="form-check-label">Female</label>
+                                                        <input asp-for="Gender" id="male" class="form-check-input" name="Gender" type="radio" value="M" />
+                                                        <label for="male" class="form-check-label">Male</label>
+                                                    </div>
+                                                </div>
+                    
+                                                @{
+                                                var hairstyleCheckboxClassAttribute = new Dictionary<string, object>() { { "class", "form-check-input gallery-hairstyle-checkbox" } };
+                                                var hairColorCheckboxClassAttribute = new Dictionary<string, object>() { { "class", "form-check-input gallery-haircolor-checkbox" } };
+                                                var labelClassAttribute = new Dictionary<string, object>() { { "class", "form-check-label" } };
+                                                }
+                                                <div class="row mb-2">
+                                                    <div class="col">
+                                                        @*Hair type checkboxes such as "peinado"*@
+                                                        <span class="form-label fw-bold">Hair Types</span>
+                            
+                                                        @*asp-validation-for won't easily work with jQuery client-side validation since multiple checkboxes are generated, custom js is used.*@
+                                                        <span asp-validation-for="HairStyles" id="hairstyle-error" class="text-danger"></span><br />
+                            
+                                                        <div class="row">
+                                                            @for (int i = 0; i < Model.HairStyles.Count; i++)
+                                                            {
+                                                            string label = char.ToUpper(Model.HairStyles[i].Style[0]) + Model.HairStyles[i].Style[1..].ToLower();
+
+                                                            <div class="col-md-4">
+                                                                @Html.CheckBoxFor(model => model.HairStyles[i].IsChecked, hairstyleCheckboxClassAttribute)
+                                                                @Html.LabelFor(model => model.HairStyles[i].IsChecked, label, labelClassAttribute)
+                                                                <input asp-for="HairStyles[i].Style" type="hidden" />
+                                                            </div>
+                                                            }
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="row mb-2">
+                                                    <div class="col">
+                                                        @*Hair color checkboxes*@
+                                                        <span class="form-label fw-bold">Hair Colors</span>
+                            
+                                                        @*asp-validation-for won't easily work with jQuery client-side validation since multiple checkboxes are generated, custom js is used.*@
+                                                        <span asp-validation-for="HairColors" id="hair-color-error" class="text-danger"></span><br />
+                            
+                                                        <div class="row">
+                                                            @for (int i = 0; i < Model.HairColors.Count; i++)
+                                                            {
+                                                            string label = char.ToUpper(Model.HairColors[i].Color[0]) + Model.HairColors[i].Color[1..].ToLower();
+                            
+                                                            <div class="col-md-4">
+                                                                @Html.CheckBoxFor(model => model.HairColors[i].IsChecked, hairColorCheckboxClassAttribute)
+                                                                @Html.LabelFor(model => model.HairColors[i].IsChecked, label, labelClassAttribute)
+                                                                <input asp-for="HairColors[i].Color" type="hidden" />
+                                                            </div>
+                                                            }
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="row">
+                                                    <div class="col">
+                                                        <label asp-for="Description" class="form-label fw-bold"></label>
+                                                        <span asp-validation-for="Description" class="text-danger"></span><br />
+                                                        <input asp-for="Description" class="form-control" />
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="modal-footer">
+                                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                                            <button type="submit" class="btn btn-primary">Save changes</button>
+                                        </div>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                        }
+                    </div>
+                    @*Admin Upload Image End*@
                 </div>
             </div>
         </div>
     </div>
     <!-- Filter end -->
-
-    @*Admin Upload Image Modal*@
-    @using Microsoft.AspNetCore.Identity
-    @using Mvc.Models.Gallery.ViewModels
-
-    @inject SignInManager<User> SignInManager
-    @if (SignInManager.IsSignedIn(User) && User.IsInRole("Admin"))
-    {
-        <div class="row justify-content-center mb-3">
-            <button type="button" class="btn btn-primary w-auto" data-bs-toggle="modal" data-bs-target="#upload-image-modal">
-                Upload Image
-            </button>
-        </div>
-
-        <div class="modal fade" id="upload-image-modal" tabindex="-1" aria-labelledby="upload-image-modal" aria-hidden="true">
-            <div class="modal-dialog">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <h1 class="modal-title fs-5" id="exampleModalLabel">Upload image</h1>
-                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                    </div>
-                    <form enctype="multipart/form-data" asp-controller="Home" asp-action="Gallery" method="post" id="upload-image-form">
-                        <div class="modal-body">
-                            <div class="container-fluid">
-                                <div class="row">
-                                    <div class="col">
-                                        <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-                                    </div>
-                                </div>
-                                <div class="row mb-2">
-                                    <div class="col">
-                                        <label asp-for="Image" class="form-label fw-bold"></label>
-                                        <span asp-validation-for="Image" class="text-danger"></span>
-                                        <input asp-for="Image" type="file" class="form-control"/>
-                                    </div>
-                                </div>
-                                <div class="row mb-2">
-                                    <div class="col">
-                                        <span class="form-label fw-bold">Gender</span>
-                                        <span asp-validation-for="Gender" class="text-danger"></span><br />
-
-                                        <input asp-for="Gender" id="female" class="form-check-input" name="Gender" type="radio" value="F" checked/>
-                                        <label for="female" class="form-check-label">Female</label>
-                                        <input asp-for="Gender" id="male" class="form-check-input" name="Gender" type="radio" value="M"/>
-                                        <label for="male" class="form-check-label">Male</label>
-                                    </div>
-                                </div>
-                                
-                                @{
-                                    var hairstyleCheckboxClassAttribute = new Dictionary<string, object>() { { "class", "form-check-input gallery-hairstyle-checkbox" } };
-                                    var hairColorCheckboxClassAttribute = new Dictionary<string, object>() { { "class", "form-check-input gallery-haircolor-checkbox" } };
-                                    var labelClassAttribute = new Dictionary<string, object>() { { "class", "form-check-label" } };
-                                }
-                                <div class="row mb-2">
-                                    <div class="col">
-                                        @*Hair type checkboxes such as "peinado"*@
-                                        <span class="form-label fw-bold">Hair Types</span>
-                                        
-                                        @*asp-validation-for won't easily work with jQuery client-side validation since multiple checkboxes are generated, custom js is used.*@
-                                        <span asp-validation-for="HairStyles" id="hairstyle-error" class="text-danger"></span><br />
-                                        
-                                        <div class="row">
-                                            @for (int i = 0; i < Model.HairStyles.Count; i++)
-                                            {
-                                                string label = char.ToUpper(Model.HairStyles[i].Style[0]) + Model.HairStyles[i].Style[1..].ToLower();
-
-                                                <div class="col-md-4">
-                                                    @Html.CheckBoxFor(model => model.HairStyles[i].IsChecked, hairstyleCheckboxClassAttribute)
-                                                    @Html.LabelFor(model => model.HairStyles[i].IsChecked, label, labelClassAttribute)
-                                                    <input asp-for="HairStyles[i].Style" type="hidden" />
-                                                </div>
-                                            }
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="row mb-2">
-                                    <div class="col">
-                                        @*Hair color checkboxes*@
-                                        <span class="form-label fw-bold">Hair Colors</span>
-                                        
-                                        @*asp-validation-for won't easily work with jQuery client-side validation since multiple checkboxes are generated, custom js is used.*@
-                                        <span asp-validation-for="HairColors" id="hair-color-error" class="text-danger"></span><br />
-                                        
-                                        <div class="row">
-                                            @for (int i = 0; i < Model.HairColors.Count; i++)
-                                            {
-                                                string label = char.ToUpper(Model.HairColors[i].Color[0]) + Model.HairColors[i].Color[1..].ToLower();
-                                            
-                                                <div class="col-md-4">
-                                                    @Html.CheckBoxFor(model => model.HairColors[i].IsChecked, hairColorCheckboxClassAttribute)
-                                                    @Html.LabelFor(model => model.HairColors[i].IsChecked, label, labelClassAttribute)
-                                                    <input asp-for="HairColors[i].Color" type="hidden"/>
-                                                </div>
-                                            }
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="row">
-                                    <div class="col">
-                                        <label asp-for="Description" class="form-label fw-bold"></label>
-                                        <span asp-validation-for="Description" class="text-danger"></span><br />
-                                        <input asp-for="Description" class="form-control" />
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="modal-footer">
-                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                            <button type="submit" class="btn btn-primary">Save changes</button>
-                        </div>
-                    </form>
-                </div>
-            </div>
-        </div>
-    }
     
+    <!-- Gallery Start -->
     <div id="gallery-spinner" class="d-flex justify-content-center">
         <div class="spinner-grow text-primary" role="status">
             <span class="visually-hidden">Loading...</span>
         </div>
     </div>
 
-    <!-- Gallery Start: Populated with AJAX in gallery.js -->
+    <!-- Images populated with AJAX in gallery.js -->
     <div class="row g-2" id="gallery"></div>
     <!-- Gallery End -->
 </div>
