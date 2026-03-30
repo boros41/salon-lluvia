@@ -30,7 +30,7 @@ public class AzureBlobStorageController : ControllerBase
     {
         try
         {
-            HashSet<Dictionary<string, string>> imageUrlMappings = await _memoryCache.GetOrCreateAsync(Tags.GalleryImagesCacheKey, cacheEntry =>
+            Dictionary<string, string> imageUrlByName = await _memoryCache.GetOrCreateAsync(Tags.GalleryImagesCacheKey, cacheEntry =>
             {
                 cacheEntry.AbsoluteExpirationRelativeToNow = TimeSpan.FromDays(1);
 
@@ -38,74 +38,71 @@ public class AzureBlobStorageController : ControllerBase
             }) ?? throw new InvalidOperationException($"Value for memory cache \"{Tags.GalleryImagesCacheKey}\" was null");
 
             List<ImageResponse> imagesResponse = [];
-            foreach (Dictionary<string, string> imageUrlByName in imageUrlMappings)
+            foreach ((string imageNameInAzure, string imageUrl) in imageUrlByName)
             {
-                foreach ((string imageNameInAzure, string imageUrl) in imageUrlByName) // imageName:imageUrl kvp
+                QueryOptions<Image> queryOptions = new QueryOptions<Image>()
                 {
-                    QueryOptions<Image> queryOptions = new QueryOptions<Image>()
-                    {
-                        Includes = "HairProfile",
-                        ThenIncludes = "HairStyles, HairColors",
-                        FilterHairstyles = filters.Hairstyles,
-                        FilterHairColors = filters.HairColors,
-                    };
+                    Includes = "HairProfile",
+                    ThenIncludes = "HairStyles, HairColors",
+                    FilterHairstyles = filters.Hairstyles,
+                    FilterHairColors = filters.HairColors,
+                };
 
-                    // gender filters ( (gender) && (hairstyle1 OR hairstyle2...) && (hairColor1 OR hairColor2...) )
-                    if (!filters.Gender.Equals("both", StringComparison.CurrentCultureIgnoreCase))
+                // gender filters ( (gender) && (hairstyle1 OR hairstyle2...) && (hairColor1 OR hairColor2...) )
+                if (!filters.Gender.Equals("both", StringComparison.CurrentCultureIgnoreCase))
+                {
+                    if (!IsValidGenderFilter(filters.Gender))
                     {
-                        if (!IsValidGenderFilter(filters.Gender))
-                        {
-                            throw new RequestFailedException("Invalid gender filter specified.");
-                        }
-
-                        // Database uses "F" & "M" and also unable to use string.Equals() with a comparator with EF Core
-                        string filterGender = filters.Gender.ToUpper();
-                        queryOptions.GenderFilter = image => image.HairProfile.Gender == filterGender;
+                        throw new RequestFailedException("Invalid gender filter specified.");
                     }
 
-                    // hairstyle filters ( (gender) && (hairstyle1 OR hairstyle2...) && (hairColor1 OR hairColor2...) )
-                    // include images where their associated hairstyle is contained within the selected hairstyles passed in from the query parameters
-                    queryOptions.HairstylePredicate = imageInQuerySet => imageInQuerySet.HairProfile.HairStyles.Any(hairstyleInQuerySet => queryOptions.FilterHairstyles.Contains(hairstyleInQuerySet.Style));
-
-                    // hair color filters ( (gender) && (hairstyle1 OR hairstyle2...) && (hairColor1 OR hairColor2...) )
-                    // include images where their associated hair color is contained within the selected hair colors passed in from the query parameters
-                    queryOptions.HairColorPredicate = colorInQuerySet => colorInQuerySet.HairProfile.HairColors.Any(haircolorInQuerySet => queryOptions.FilterHairColors.Contains(haircolorInQuerySet.Color));
-
-                    // name has the image's hash code so it will be unique to safely query
-                    IEnumerable<Image> imagesInDb = _imageRepo.List(queryOptions).ToList();
-
-                    IEnumerable<string> imageNamesInDb = imagesInDb.Select(image => image.Name);
-
-                    // since imageNameInAzure came from Azure Blob Storage, it may not be stored in the DB if uploaded through Azure & not the web app
-                    if (!imageNamesInDb.Contains(imageNameInAzure))
-                    {
-                        continue;
-                    }
-
-                    Image imageInDb = imagesInDb.First(image => image.Name == imageNameInAzure);
-
-                    string imageDescription = imageInDb.Description ?? string.Empty; // null if there was no description set when uploaded
-
-                    List<HairStyleResponse> hairStyles = imageInDb.HairProfile
-                                                              .HairStyles
-                                                              .Select(hairstyle => new HairStyleResponse() { Style = hairstyle.Style })
-                                                              .ToList();
-
-                    List<HairColorResponse> hairColors = imageInDb.HairProfile
-                                                              .HairColors
-                                                              .Select(hairColor => new HairColorResponse() { Color = hairColor.Color })
-                                                              .ToList();
-
-                    ImageResponse imageResponse = new ImageResponse()
-                    {
-                        Url = imageUrl,
-                        Description = imageDescription,
-                        Hairstyles = hairStyles,
-                        HairColors = hairColors
-                    };
-
-                    imagesResponse.Add(imageResponse);
+                    // Database uses "F" & "M" and also unable to use string.Equals() with a comparator with EF Core
+                    string filterGender = filters.Gender.ToUpper();
+                    queryOptions.GenderFilter = image => image.HairProfile.Gender == filterGender;
                 }
+
+                // hairstyle filters ( (gender) && (hairstyle1 OR hairstyle2...) && (hairColor1 OR hairColor2...) )
+                // include images where their associated hairstyle is contained within the selected hairstyles passed in from the query parameters
+                queryOptions.HairstylePredicate = imageInQuerySet => imageInQuerySet.HairProfile.HairStyles.Any(hairstyleInQuerySet => queryOptions.FilterHairstyles.Contains(hairstyleInQuerySet.Style));
+
+                // hair color filters ( (gender) && (hairstyle1 OR hairstyle2...) && (hairColor1 OR hairColor2...) )
+                // include images where their associated hair color is contained within the selected hair colors passed in from the query parameters
+                queryOptions.HairColorPredicate = colorInQuerySet => colorInQuerySet.HairProfile.HairColors.Any(haircolorInQuerySet => queryOptions.FilterHairColors.Contains(haircolorInQuerySet.Color));
+
+                // name has the image's hash code so it will be unique to safely query
+                IEnumerable<Image> imagesInDb = _imageRepo.List(queryOptions).ToList();
+
+                IEnumerable<string> imageNamesInDb = imagesInDb.Select(image => image.Name);
+
+                // since imageNameInAzure came from Azure Blob Storage, it may not be stored in the DB if uploaded through Azure & not the web app
+                if (!imageNamesInDb.Contains(imageNameInAzure))
+                {
+                    continue;
+                }
+
+                Image imageInDb = imagesInDb.First(image => image.Name == imageNameInAzure);
+
+                string imageDescription = imageInDb.Description ?? string.Empty; // null if there was no description set when uploaded
+
+                List<HairStyleResponse> hairStyles = imageInDb.HairProfile
+                                                          .HairStyles
+                                                          .Select(hairstyle => new HairStyleResponse() { Style = hairstyle.Style })
+                                                          .ToList();
+
+                List<HairColorResponse> hairColors = imageInDb.HairProfile
+                                                          .HairColors
+                                                          .Select(hairColor => new HairColorResponse() { Color = hairColor.Color })
+                                                          .ToList();
+
+                ImageResponse imageResponse = new ImageResponse()
+                {
+                    Url = imageUrl,
+                    Description = imageDescription,
+                    Hairstyles = hairStyles,
+                    HairColors = hairColors
+                };
+
+                imagesResponse.Add(imageResponse);
             }
 
             ImageUrlsResponse response = new ImageUrlsResponse() { Images = imagesResponse };
