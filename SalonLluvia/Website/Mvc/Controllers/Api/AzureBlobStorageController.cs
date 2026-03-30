@@ -46,7 +46,8 @@ public class AzureBlobStorageController : ControllerBase
                     {
                         Includes = "HairProfile",
                         ThenIncludes = "HairStyles, HairColors",
-                        FilterHairstyles = filters.Hairstyles
+                        FilterHairstyles = filters.Hairstyles,
+                        FilterHairColors = filters.HairColors,
                     };
 
                     // gender filters ( (gender) && (hairstyle1 OR hairstyle2...) && (hairColor1 OR hairColor2...) )
@@ -65,6 +66,10 @@ public class AzureBlobStorageController : ControllerBase
                     // hairstyle filters ( (gender) && (hairstyle1 OR hairstyle2...) && (hairColor1 OR hairColor2...) )
                     // include images where their associated hairstyle is contained within the selected hairstyles passed in from the query parameters
                     queryOptions.HairstylePredicate = imageInQuerySet => imageInQuerySet.HairProfile.HairStyles.Any(hairstyleInQuerySet => queryOptions.FilterHairstyles.Contains(hairstyleInQuerySet.Style));
+
+                    // hair color filters ( (gender) && (hairstyle1 OR hairstyle2...) && (hairColor1 OR hairColor2...) )
+                    // include images where their associated hair color is contained within the selected hair colors passed in from the query parameters
+                    queryOptions.HairColorPredicate = colorInQuerySet => colorInQuerySet.HairProfile.HairColors.Any(haircolorInQuerySet => queryOptions.FilterHairColors.Contains(haircolorInQuerySet.Color));
 
                     // name has the image's hash code so it will be unique to safely query
                     List<Image> imagesInDb = _imageRepo.List(queryOptions).ToList();

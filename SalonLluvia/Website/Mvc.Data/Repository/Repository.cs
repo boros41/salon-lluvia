@@ -53,7 +53,11 @@ public class Repository<TEntity> : IRepository<TEntity> where TEntity : class
         {
             // since there can be multiple hairstyle filters, we need a list of predicates for a chain of Where() calls
             query = query.Where(options.HairstylePredicate);
+        }
 
+        if (options.HasHairColorFilters)
+        {
+            query = query.Where(options.HairColorPredicate);
         }
 
         if (options.HasOrderBy)

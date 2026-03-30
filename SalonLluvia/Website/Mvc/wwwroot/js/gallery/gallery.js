@@ -51,6 +51,7 @@ function fetchAllImages() {
 function addFilterClickListeners() {
     $(".filter-gender").on("click", filterImagesByGender);
     $(".filter-hairstyle").on("click", filterImagesByHairstyle);
+    $(".filter-hair-color").on("click", filterImagesByHairColor);
 }
 
 function filterImagesByGender(event) {
@@ -60,8 +61,9 @@ function filterImagesByGender(event) {
 
     let gender = $element.text();
     const $hairstyleFilters = $(".filter-hairstyle-true");
+    const $hairColors = $(".filter-hair-color-true");
 
-    fetchFilteredImages(gender, $hairstyleFilters, null);
+    fetchFilteredImages(gender, $hairstyleFilters, $hairColors);
 }
 
 function filterImagesByHairstyle(event) {
@@ -72,13 +74,32 @@ function filterImagesByHairstyle(event) {
         $element.removeClass("filter-hairstyle-true");
     } else if ($element.hasClass("text-bg-secondary")) {
         $element.removeClass("text-bg-secondary").addClass("text-bg-primary");
-        $element.removeClass("filter-hairstyle-false").addClass("filter-hairstyle-true");
+        $element.addClass("filter-hairstyle-true");
     }
 
     const gender = $(".filter-gender.text-bg-primary").text();
     const $hairstyleFilters = $(".filter-hairstyle-true");
+    const $hairColors = $(".filter-hair-color-true");
 
-    fetchFilteredImages(gender, $hairstyleFilters, null);
+    fetchFilteredImages(gender, $hairstyleFilters, $hairColors);
+}
+
+function filterImagesByHairColor(event) {
+    const $element = $(this);
+
+    if ($element.hasClass("text-bg-primary")) {
+        $element.removeClass("text-bg-primary").addClass("text-bg-secondary");
+        $element.removeClass("filter-hair-color-true");
+    } else if ($element.hasClass("text-bg-secondary")) {
+        $element.removeClass("text-bg-secondary").addClass("text-bg-primary");
+        $element.addClass("filter-hair-color-true");
+    }
+
+    const gender = $(".filter-gender.text-bg-primary").text();
+    const $hairstyleFilters = $(".filter-hairstyle-true");
+    const $hairColors = $(".filter-hair-color-true");
+
+    fetchFilteredImages(gender, $hairstyleFilters, $hairColors);
 }
 
 function createImageCards(images) {
@@ -175,7 +196,7 @@ function createImageCards(images) {
     });
 }
 
-function fetchFilteredImages(gender, $hairstyles, hairColors) {
+function fetchFilteredImages(gender, $hairstyles, $hairColors) {
     const queryParams = new URLSearchParams();
 
     // These are how the server represents genders. I should add proper localization...
@@ -198,6 +219,10 @@ function fetchFilteredImages(gender, $hairstyles, hairColors) {
         queryParams.append("hairstyles", queryValue);
     });
 
+    $hairColors.each(function (index, element) {
+        const queryValue = element.textContent.trim().toLowerCase();
+        queryParams.append("hairColors", queryValue);
+    });
 
     const resourceUrl = `/api/azureblobstorage/image-url?${queryParams.toString()}`;
 
