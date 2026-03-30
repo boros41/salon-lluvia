@@ -51,11 +51,9 @@ public class Repository<TEntity> : IRepository<TEntity> where TEntity : class
 
         if (options.HasHairstyleFilters)
         {
-            foreach (var predicate in options.HairstylePredicates)
-            {
-                // since there can be multiple hairstyle filters, we need a list of predicates for a chain of Where() calls
-                query = query.Where(predicate);
-            }
+            // since there can be multiple hairstyle filters, we need a list of predicates for a chain of Where() calls
+            query = query.Where(options.HairstylePredicate);
+
         }
 
         if (options.HasOrderBy)

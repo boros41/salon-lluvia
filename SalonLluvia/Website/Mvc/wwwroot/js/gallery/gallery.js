@@ -201,7 +201,7 @@ function fetchFilteredImages(gender, $hairstyles, hairColors) {
 
     const resourceUrl = `/api/azureblobstorage/image-url?${queryParams.toString()}`;
 
-    console.log(`Hairstyles filter URL: ${resourceUrl}`);
+    console.log(`Filter URL: ${resourceUrl}`);
 
     fetch(resourceUrl, options)
         .then(response => {
