@@ -72,9 +72,9 @@ public class AzureBlobStorageController : ControllerBase
                     queryOptions.HairColorPredicate = colorInQuerySet => colorInQuerySet.HairProfile.HairColors.Any(haircolorInQuerySet => queryOptions.FilterHairColors.Contains(haircolorInQuerySet.Color));
 
                     // name has the image's hash code so it will be unique to safely query
-                    List<Image> imagesInDb = _imageRepo.List(queryOptions).ToList();
+                    IEnumerable<Image> imagesInDb = _imageRepo.List(queryOptions).ToList();
 
-                    List<string> imageNamesInDb = imagesInDb.Select(image => image.Name).ToList();
+                    IEnumerable<string> imageNamesInDb = imagesInDb.Select(image => image.Name);
 
                     // since imageNameInAzure came from Azure Blob Storage, it may not be stored in the DB if uploaded through Azure & not the web app
                     if (!imageNamesInDb.Contains(imageNameInAzure))
