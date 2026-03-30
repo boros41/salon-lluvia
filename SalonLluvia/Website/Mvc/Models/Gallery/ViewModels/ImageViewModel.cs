@@ -22,4 +22,6 @@ public class ImageViewModel
     [Required(ErrorMessage = "Please enter a hair color.")]
     [Checkbox(ErrorMessage = "Please enter at least one hair color.")]
     public List<HairColorCheckboxVm> HairColors { get; set; } = [];
+
+    public bool IsFiltered { get; set; }
 }

@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Caching.Memory;
 using Mvc.Data.Repository;
 using Mvc.Dto.AzureBlobStorage.ImageUrls;
+using Mvc.Dto.Gallery;
 using Mvc.Integrations.AzureBlobStorage.Interfaces;
 using Mvc.Models.Gallery;
 using Mvc.Utilities;
@@ -25,7 +26,7 @@ public class AzureBlobStorageController : ControllerBase
     }
 
     [HttpGet("image-url")]
-    public async Task<IActionResult> Get()
+    public async Task<IActionResult> Get([FromQuery] FilterOptionsRequest filters)
     {
         try
         {
@@ -41,8 +42,26 @@ public class AzureBlobStorageController : ControllerBase
             {
                 foreach ((string imageNameInAzure, string imageUrl) in imageUrlByName) // imageName:imageUrl kvp
                 {
+                    QueryOptions<Image> queryOptions = new QueryOptions<Image>()
+                    {
+                        Includes = "HairProfile",
+                        ThenIncludes = "HairStyles, HairColors",
+                    };
+
+                    if (!filters.Gender.Equals("both", StringComparison.CurrentCultureIgnoreCase))
+                    {
+                        if (!IsValidGenderFilter(filters.Gender))
+                        {
+                            throw new RequestFailedException("Invalid gender filter specified.");
+                        }
+
+                        // Database uses "F" & "M" and also unable to use string.Equals() with a comparator with EF Core
+                        string filterGender = filters.Gender.ToUpper();
+                        queryOptions.GenderFilter = image => image.HairProfile.Gender == filterGender;
+                    }
+
                     // name has the image's hash code so it will be unique to safely query
-                    List<Image> imagesInDb = _imageRepo.List(new QueryOptions<Image>() { Includes = "HairProfile", ThenIncludes = "HairStyles, HairColors" }).ToList();
+                    List<Image> imagesInDb = _imageRepo.List(queryOptions).ToList();
 
                     List<string> imageNamesInDb = imagesInDb.Select(image => image.Name).ToList();
 
@@ -94,5 +113,13 @@ public class AzureBlobStorageController : ControllerBase
         {
             return StatusCode(StatusCodes.Status500InternalServerError);
         }
+    }
+
+    [NonAction]
+    private static bool IsValidGenderFilter(string gender)
+    {
+        string[] genders = ["F", "M"];
+
+        return genders.Contains(gender, StringComparer.OrdinalIgnoreCase);
     }
 }

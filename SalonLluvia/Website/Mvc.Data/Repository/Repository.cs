@@ -44,6 +44,11 @@ public class Repository<TEntity> : IRepository<TEntity> where TEntity : class
             query = query.Where(options.Where);
         }
 
+        if (options.HasGenderFilter)
+        {
+            query = query.Where(options.GenderFilter);
+        }
+
         if (options.HasOrderBy)
         {
             query = query.OrderBy(options.OrderBy);

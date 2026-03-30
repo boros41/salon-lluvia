@@ -1,6 +1,29 @@
 ﻿"use strict";
 
+/*  Gallery page will have a lot of images so a footer doesn't make sense.
+    This will improve the CLS score, otherwise the footer will constantly shift as the Masonry grid items transition.
+    Also, I will want this page as an infinite scroll.
+*/
+$("footer").remove();
+
+const $grid = $("#gallery");
+
 $(document).ready(function () {
+
+    // init Masonry.js after all images have loaded
+    // https://masonry.desandro.com/layout#imagesloaded:~:text=Or%2C%20initialize%20Masonry%20after%20all%20images%20have%20been%20loaded.
+    $grid.masonry({
+        itemSelector: ".grid-item",
+        percentPosition: true,
+        transitionDuration: 0
+    });
+
+    fetchAllImages();
+
+    addFilterClickListeners();
+});
+
+function fetchAllImages() {
     const resourceUrl = "/api/azureblobstorage/image-url";
 
     const options = {
@@ -11,102 +34,161 @@ $(document).ready(function () {
     };
 
     fetch(resourceUrl, options)
-        .then(response => {
-            if (!response.ok) {
-                throw new Error(`HTTP ${response.status}`);
-            }
+    .then(response => {
+        if (!response.ok) {
+            throw new Error(`HTTP ${response.status}`);
+        }
 
-            return response.json();
-        })
-        .then(response => {
-            const $grid = $("#gallery");
-            const images = response.images;
+        return response.json();
+    })
+    .then(response => {
+        const images = response.images;
 
-            $.each(images, function (imageIndex, value) {
-                const image = value;
-                const thumbnailUrl = image.url; // url points to the image blob in Azure Blob Storage
-                const imageUrl = null; // this should be a full resolution image that opens on the <a> tag but I've yet to implement
-                const imageDescription = image.description;
-                const hairstyles = image.hairstyles;
-                const hairColors = image.hair_colors;
+        createImageCards(images);
+    });
+}
 
-                // Bootstrap card holding one image in the gallery: https://getbootstrap.com/docs/4.0/components/card/
-                const imageCardHtmlString = `
-                <div class="col-sm-6 col-lg-3 wow fadeIn">
-                    <div class="card">
-                        <div class="gallery-item">
-                            <img src="${thumbnailUrl}" class="card-img-top img-thumbnail" alt="${imageDescription}"/>
-                            <div class="gallery-icon">
-                                <a href="${thumbnailUrl}" class="btn btn-primary btn-lg-square img-full" 
-                                data-lightbox="gallery" data-title="${imageDescription}" data-alt="${imageDescription}">
-                                    <i class="fa fa-eye"></i>
-                                </a>
-                            </div>
-                        </div>
-                        <div class="card-body pt-1 pb-1" id="card-body-img-${imageIndex}">
-                            <span class="fw-semibold mb-0">Description:</span>
-                            <span class="card-text mb-1">${imageDescription}</span>
+function addFilterClickListeners() {
+    $(".filter-gender").on("click", filterImagesByGender);
+}
+function filterImagesByGender(event) {
+    const $element = $(this);
+    $element.siblings(".badge.text-bg-primary").removeClass("text-bg-primary").addClass("text-bg-secondary");
+    $element.removeClass("text-bg-secondary").addClass("text-bg-primary");
 
-                            <div class="hairstyle-badge mb-1">
-                                <span class="fw-semibold mb-0">Hairstyles:</span>
-                            </div>
+    let gender = $element.text();
 
-                            <div class="hair-color-badge">
-                                <span class="fw-semibold mb-0">Hair Colors:</span>
-                            </div>
+    // These are how the server represents genders. I should add proper localization...
+    switch (gender) {
+        case "Ambos":
+            gender = "both";
+            break;
+        case "Mujer":
+            gender = "F";
+            break;
+        case "Hombre":
+            gender = "M";
+            break;
+    }
+
+    const resourceUrl = `/api/azureblobstorage/image-url?gender=${encodeURIComponent(gender)}`;
+
+    const options = {
+        method: "GET",
+        headers: {
+            Accept: "application/json",
+        }
+    };
+
+    fetch(resourceUrl, options)
+    .then(response => {
+        if (!response.ok) {
+            throw new Error(`HTTP ${response.status}`);
+        }
+
+        return response.json();
+    })
+    .then(response => {
+        const images = response.images;
+
+        const $allGridItems = $grid.children(".grid-item");
+        $grid.masonry("remove", $allGridItems).masonry("layout");
+        $grid.empty(); // simply recreate the newly filtered images
+
+        createImageCards(images);
+    });
+}
+
+function createImageCards(images) {
+    $("footer").addClass("d-none");
+
+    $.each(images, function (imageIndex, value) {
+        const image = value;
+        const thumbnailUrl = image.url; // url points to the image blob in Azure Blob Storage
+        const imageUrl = null; // this should be a full resolution image that opens on the <a> tag but I've yet to implement
+        const imageDescription = image.description;
+        const hairstyles = image.hairstyles;
+        const hairColors = image.hair_colors;
+
+        // Bootstrap card holding one image in the gallery: https://getbootstrap.com/docs/4.0/components/card/
+        const imageCardHtmlString = `
+            <div class="col-sm-6 col-lg-3 grid-item">
+                <div class="card">
+                    <div class="gallery-item">
+                        <img src="${thumbnailUrl}" class="card-img-top img-thumbnail" alt="${imageDescription}" />
+                        <div class="gallery-icon">
+                            <a href="${thumbnailUrl}" class="btn btn-primary btn-lg-square img-full" 
+                            data-lightbox="gallery" data-title="${imageDescription}" data-alt="${imageDescription}">
+                                <i class="fa fa-eye"></i>
+                            </a>
                         </div>
                     </div>
-                </div>`;
+                    <div class="card-body pt-1 pb-1" id="card-body-img-${imageIndex}">
+                        <span class="fw-semibold mb-0">Description:</span>
+                        <span class="card-text mb-1">${imageDescription}</span>
 
-                // Masonry.js is unable to append HTML string content so we must wrap it in a jQuery object
-                // https://masonry.desandro.com/methods#adding-removing-items:~:text=demo%20on%20CodePen-,While,-jQuery%20can%20add
-                const $imageCard = $(imageCardHtmlString);
+                        <div class="hairstyle-badge mb-1">
+                            <span class="fw-semibold mb-0">Hairstyles:</span>
+                        </div>
 
-                // At this point, the <img> is created, but the image blob might not be loaded, we will init Masonry.js after all are loaded to lay them out
-                $grid.append($imageCard);
+                        <div class="hair-color-badge">
+                            <span class="fw-semibold mb-0">Hair Colors:</span>
+                        </div>
+                    </div>
+                </div>
+            </div>`;
 
-                $("#gallery-spinner").addClass("d-none");
+        // Masonry.js is unable to add HTML string content so we must wrap it in a jQuery object
+        // https://masonry.desandro.com/methods#adding-removing-items:~:text=demo%20on%20CodePen-,While,-jQuery%20can%20add
+        const $imageCard = $(imageCardHtmlString);
 
-                // Bootstrap badges for the image's hair color metadata
-                $.each(hairColors, function (index, currentHairColor) {
-                    const hairColor = currentHairColor.color;
-                    const hairColorBadgeHtmlString = `<span class="badge rounded-pill text-bg-primary">${hairColor}</span>`;
-                    const $badgeParent = $(`#card-body-img-${imageIndex} .hair-color-badge`);
+        // At this point, the grid item is created & registered with Masonry, but the image blob might not be loaded nor has Masonry laid it out
+        // We will call Masonry to lay out the grid item once the image it contains is loaded via the imagesloaded.js library
+        $grid.append($imageCard);
+        $grid.masonry("addItems", $imageCard);
 
-                    $(hairColorBadgeHtmlString).appendTo($badgeParent);
-                });
+        $("#gallery-spinner").addClass("d-none");
 
-                // Bootstrap badges for the image's hairstyle metadata
-                $.each(hairstyles, function (index, currentHairStyle) {
-                    const hairstyle = currentHairStyle.style;
-                    const hairstyleBadgeHtmlString = `<span class="badge rounded-pill text-bg-secondary">${hairstyle}</span>`;
-                    const $badgeParent = $(`#card-body-img-${imageIndex} .hairstyle-badge`);
+        // Bootstrap badges for the image's hair color metadata
+        $.each(hairColors, function (index, currentHairColor) {
+            const hairColor = currentHairColor.color;
+            const hairColorBadgeHtmlString = `<span class="badge rounded-pill text-bg-primary">${hairColor}</span>`;
+            const $badgeParent = $(`#card-body-img-${imageIndex} .hair-color-badge`);
 
-                    $(hairstyleBadgeHtmlString).appendTo($badgeParent);
-                });
+            $(hairColorBadgeHtmlString).appendTo($badgeParent);
+        });
 
-            });
+        // Bootstrap badges for the image's hairstyle metadata
+        $.each(hairstyles, function (index, currentHairStyle) {
+            const hairstyle = currentHairStyle.style;
+            const hairstyleBadgeHtmlString = `<span class="badge rounded-pill text-bg-secondary">${hairstyle}</span>`;
+            const $badgeParent = $(`#card-body-img-${imageIndex} .hairstyle-badge`);
 
-            if ($grid.children().length === 0) {
-                console.log("No images found!!!");
-                return;
-            }
+            $(hairstyleBadgeHtmlString).appendTo($badgeParent);
+        });
 
-            $grid.imagesLoaded(function () {
-                // init Masonry.js after all images have loaded
-                // https://masonry.desandro.com/layout#imagesloaded:~:text=Or%2C%20initialize%20Masonry%20after%20all%20images%20have%20been%20loaded.
-                $grid.masonry({
-                    percentPosition: true
-                });
-            })
-            .progress(function (instance, image) {
-                var result = image.isLoaded ? "loaded" : "broken";
+    });
 
-                // This is true if the image blob was deleted in Azure but the server's memory cache still contained the image's URL
-                if (result === "broken") {
-                    console.log(`Removing broken image: ${image.img.src}`);
-                    $(image.img).parents(".card").parent("div").remove();
-                }
-            });
-        })
-});
+    if ($grid.children().length === 0) {
+        console.log("No images found!!!");
+        return;
+    }
+
+    // unloaced images can throw off Masonry layouts and cause items to overlap
+    // use imagesloaded.js to trigger a Masonry layout after each image loads
+    // https://masonry.desandro.com/layout#:~:text=demo%20on%20CodePen-,imagesLoaded,-Unloaded%20images%20can
+    $grid.imagesLoaded().progress(function (instance, image) {
+        var result = image.isLoaded ? "loaded" : "broken";
+
+        // This is true if the image blob was deleted in Azure but the server's memory cache still contained the image's URL
+        if (result === "broken") {
+            console.log(`Removing broken image: ${image.img.src}`);
+
+            const $brokenGridItem = $(image.img).closest(".grid-item");
+            $grid.masonry("remove", $brokenGridItem);
+            $brokenGridItem.remove();
+        }
+
+        $grid.masonry("layout");
+    });
+}
