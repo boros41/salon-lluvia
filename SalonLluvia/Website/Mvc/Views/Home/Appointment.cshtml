@@ -91,7 +91,11 @@
 
                 <div class="row mb-2">
                     <div class="col-12">
-                        <button class="btn btn-primary text-uppercase w-100 py-3 ms-0" type="submit">Reservar</button>
+                        <button id="appointment-submit-btn" class="btn btn-primary text-uppercase w-100 py-3 ms-0" type="submit">
+                            <span>Reservar</span>
+                            <span class="spinner-border spinner-border-sm" aria-hidden="true" hidden></span>
+                            <span role="status" hidden>Reservando</span>
+                        </button>
                     </div>
                 </div>
             </form>

@@ -32,6 +32,10 @@
     @await RenderSectionAsync("Styles", false)
 </head>
 <body>
+    <noscript>
+        <partial name="Partials/_noscriptPartial"/>
+    </noscript>
+
     <partial name="_LoadingSpinnerPartial"/>
 
     <header>

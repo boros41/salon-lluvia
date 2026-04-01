@@ -64,9 +64,19 @@ function onDateClose(selectedDates, dateStr, instance) {
 }
 
 function onSubmit(event) {
+    const $submitBtn = $("#appointment-submit-btn");
+    $submitBtn.removeClass("btn-primary").addClass("btn-secondary").prop("disabled", true);
+    $submitBtn.children("span").prop("hidden", false);
+    $submitBtn.children("span").first().prop("hidden", true);
+
     const date = $("#Date").val();
     if (!date) {
         event.preventDefault();
+
+        $submitBtn.removeClass("btn-secondary").addClass("btn-primary").prop("disabled", false);
+        $submitBtn.children("span").prop("hidden", true);
+        $submitBtn.children("span").first().prop("hidden", false);
+
         $("#Date + input").addClass("input-validation-error").removeClass("valid");
         $(".date-validation-error").addClass("field-validation-error")
                                    .removeClass("field-validation-valid")
