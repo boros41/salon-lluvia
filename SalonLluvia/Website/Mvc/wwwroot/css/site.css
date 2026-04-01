@@ -337,7 +337,7 @@ a {
 }
 
 .hero-header {
-    background: url(../img/hero-bg.jpg) top left no-repeat;
+    background: url(../img/index/hero-bg-transparent.png) top left no-repeat;
     background-size: cover;
 }
 
