@@ -1,6 +1,6 @@
 ﻿@model Mvc.Models.Gallery.ViewModels.ImageViewModel
 @{
-    ViewData["Title"] = "Gallery";
+    ViewData["Title"] = "Galería";
 }
 
 @section Styles {
@@ -9,8 +9,8 @@
 
 <div class="container gallery pt-2">
     <div class="text-center wow animate__fadeInLeft" data-wow-delay="0.2s">
-        <h1 class="font-dancing-script text-primary">Gallery</h1>
-        <h1 class="">Explore Our Gallery</h1>
+            <h1 class="font-dancing-script text-primary">Galería</h1>
+            <h1 class="">Explore Nuestra Galería</h1>
     </div>
     
     <!-- Filter start -->
@@ -18,14 +18,14 @@
         <div class="accordion-item">
             <h2 class="accordion-header">
                 <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseFilter" aria-expanded="true" aria-controls="collapseOne">
-                    Filter Options
+                        Filtros
                 </button>
             </h2>
             <div id="collapseFilter" class="accordion-collapse collapse" data-bs-parent="#accordionExample">
                 <div class="accordion-body">
                     <div class="row mb-2">
                         <div class="col">
-                            <span class="form-label fw-bold">Gender</span><br/>
+                                <span class="form-label fw-bold">Género</span><br />
 
                             <span class="badge text-bg-primary filter-gender">Ambos</span>
                             <span class="badge text-bg-secondary filter-gender">Mujer</span>
@@ -35,7 +35,7 @@
                     <div class="row mb-2">
                         <div class="col">
                             @*Hair type checkboxes such as "peinado"*@
-                            <span class="form-label fw-bold">Hair Types</span><br/>
+                            <span class="form-label fw-bold">Peinados</span><br />
 
                             @foreach (HairstyleCheckboxVm hairstyleCheckbox in Model.HairStyles)
                             {
@@ -48,7 +48,7 @@
                     <div class="row mb-2">
                         <div class="col">
                             @*Hair color checkboxes*@
-                            <span class="form-label fw-bold">Hair Colors</span><br/>
+                            <span class="form-label fw-bold">Colores</span><br />
 
                             @for (int i = 0; i < Model.HairColors.Count; i++)
                             {
@@ -189,9 +189,17 @@
     <!-- Gallery End -->
 </div>
 
+<script>
+    @*Used to determine if the delete image button is shown per image.*@
+    const isAdminUser = @((SignInManager.IsSignedIn(User) && User.IsInRole("Admin")).ToString().ToLower());
+    const adminDeleteImageUrl = "@Url.Action("Delete", "Gallery", new { area = "Admin" })";
+    console.log(isAdminUser);
+    console.log(adminDeleteImageUrl);
+</script>
+
 @section Gallery
 {
-    <script src="~/lib/imagesloaded/imagesloaded.pkgd.min.js" asp-append-version="true"></script>
+    <script src="~/lib/jquery.imagesloaded/imagesloaded.pkgd.min.js" asp-append-version="true"></script>
     <script src="~/lib/masonry/masonry.pkgd.min.js" asp-append-version="true"></script>
     <script src="~/js/gallery/gallery.js" asp-append-version="true"></script>
     <script src="~/js/validation/gallery-checkbox-validation.js" asp-append-version="true"></script>

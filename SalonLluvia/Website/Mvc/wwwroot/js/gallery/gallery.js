@@ -107,18 +107,55 @@ function createImageCards(images) {
 
     $.each(images, function (imageIndex, value) {
         const image = value;
+        const imageId = image.id;
         const thumbnailUrl = image.url; // url points to the image blob in Azure Blob Storage
         const imageUrl = null; // this should be a full resolution image that opens on the <a> tag but I've yet to implement
         const imageDescription = image.description;
         const hairstyles = image.hairstyles;
         const hairColors = image.hair_colors;
 
-        // Bootstrap card holding one image in the gallery: https://getbootstrap.com/docs/4.0/components/card/
-        const imageCardHtmlString = `
+        const $gridItem = $("<div/>").addClass("col-sm-6 col-lg-3 grid-item");
+        const $card = $("<div/>").addClass("card").appendTo($gridItem);
+        const $galleryItem = $("<div/>").addClass("gallery-item").appendTo($card);
+        const $image = $("<img/>").attr("src", thumbnailUrl).addClass("card-img-top img-fluid").appendTo($galleryItem);
+        const $galleryIconContainer = $("<div/>").addClass("gallery-icon").appendTo($galleryItem);
+        const $fullImageLink = $("<a/>").attr("href", thumbnailUrl)
+                                        .attr("data-lightbox", "gallery")
+                                        .addClass("btn btn-primary btn-lg-square img-full")
+                                        .appendTo($galleryIconContainer);
+
+        const $thumbnailIcon = $("<i/>").addClass("fa fa-eye").appendTo($fullImageLink);
+        const $cardBody = $("<div/>").addClass("card-body pt-1 pb-1").attr("id", `card-body-img-${imageIndex}`).appendTo($card);
+        const $hairstyleBadge = $("<div/>").addClass("hairstyle-badge mb-1").appendTo($cardBody);
+        const $hairstyleBadgeLabel = $("<span/>").addClass("fw-semibold mb-0").text("Hairstyles: ").appendTo($hairstyleBadge);
+        const $hairColorBadge = $("<div/>").addClass("hair-color-badge").appendTo($cardBody);
+        const $hairColorBadgeLabel = $("<span/>").addClass("fw-semibold mb-0").text("Hair Colors: ").appendTo($hairColorBadge);
+
+        // This is set by Razor code in Gallery.cshtml
+        if (isAdminUser === true) {
+            const $adminDeleteImageLink = $("<a/>").addClass("btn btn-link p-0").attr("href", adminDeleteImageUrl + imageId).text("Delete Image").appendTo($cardBody);
+        }
+
+        if (imageDescription.trim().length !== 0) {
+            $image.attr("alt", "Description: " + imageDescription);
+
+            $fullImageLink.attr("data-title", imageDescription);
+            $fullImageLink.attr("data-alt", imageDescription);
+
+            const $decriptionText = $("<span/>").addClass("card-text mb-1").text(imageDescription).prependTo($cardBody);
+            const $descriptionLabel = $("<span/>").addClass("fw-semibold mb-0").text("Description: ").prependTo($cardBody);
+        } else {
+            const hairstylesAltDescription = "Hairstyles: " + hairstyles.map(hairstyleObject => hairstyleObject.style).join(", ");
+            $image.attr("alt", hairstylesAltDescription);
+            $fullImageLink.attr("data-alt", hairstylesAltDescription);
+        }
+
+        // This is the Bootstrap card content the above code will create. The image description <span>s are excluded if it wasn't set.
+        /*const imageCardHtmlString = `
             <div class="col-sm-6 col-lg-3 grid-item">
                 <div class="card">
                     <div class="gallery-item">
-                        <img src="${thumbnailUrl}" class="card-img-top img-thumbnail" alt="${imageDescription}" />
+                        <img src="${thumbnailUrl}" class="card-img-top img-fluid" alt="${imageDescription}" />
                         <div class="gallery-icon">
                             <a href="${thumbnailUrl}" class="btn btn-primary btn-lg-square img-full" 
                             data-lightbox="gallery" data-title="${imageDescription}" data-alt="${imageDescription}">
@@ -139,16 +176,12 @@ function createImageCards(images) {
                         </div>
                     </div>
                 </div>
-            </div>`;
+            </div>`;*/
 
-        // Masonry.js is unable to add HTML string content so we must wrap it in a jQuery object
         // https://masonry.desandro.com/methods#adding-removing-items:~:text=demo%20on%20CodePen-,While,-jQuery%20can%20add
-        const $imageCard = $(imageCardHtmlString);
-
-        // At this point, the grid item is created & registered with Masonry, but the image blob might not be loaded nor has Masonry laid it out
-        // We will call Masonry to lay out the grid item once the image it contains is loaded via the imagesloaded.js library
-        $grid.append($imageCard);
-        $grid.masonry("addItems", $imageCard);
+        // At this point, the grid item is created & laid out with Masonry, but the image blob might not be loaded.
+        // We will call Masonry to lay out the grid item again once the image it contains is loaded via the imagesloaded.js library
+        $grid.append($gridItem).masonry("appended", $gridItem);
 
         $("#gallery-spinner").addClass("d-none");
 

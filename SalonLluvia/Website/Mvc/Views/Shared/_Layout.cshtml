@@ -23,7 +23,8 @@
     <!-- Libraries Stylesheet -->
     <link href="~/lib/animate.css/animate.min.css" rel="stylesheet" asp-append-version="true">
     <link href="~/lib/lightbox/css/lightbox.min.css" rel="stylesheet" asp-append-version="true">
-    <link href="~/lib/owlcarousel/assets/owl.carousel.min.css" rel="stylesheet" asp-append-version="true">
+    <link href="~/lib/glidejs/glide/dist/css/glide.core.min.css" rel="stylesheet" asp-append-version="true">
+    <link href="~/lib/glidejs/glide/dist/css/glide.theme.min.css" rel="stylesheet" asp-append-version="true">
 
     <!-- Customized Bootstrap Stylesheet -->
     <link href="~/lib/bootstrap/css/bootstrap.min.css" rel="stylesheet" asp-append-version="true">
@@ -55,9 +56,9 @@
     <script src="~/lib/bootstrap/js/bootstrap.bundle.min.js"></script>
     <script src="~/lib/easing/easing.min.js"></script>
     <script src="~/lib/waypoints/waypoints.min.js"></script>
-    <script src="~/lib/counterup/counterup.min.js"></script>
+    <script src="~/lib/countUp/dist/countUp.umd.js"></script>
     <script src="~/lib/lightbox/js/lightbox.min.js"></script>
-    <script src="~/lib/owlcarousel/owl.carousel.min.js"></script>
+    <script src="~/lib/glidejs/glide/dist/glide.min.js"></script>
     @await RenderSectionAsync("LibPhoneNumberJS", false)
 
     <!-- Template Javascript -->
@@ -67,5 +68,6 @@
     <script src="~/js/toast-message.js" asp-append-version="true"></script>
     @await RenderSectionAsync("AppointmentFormJS", false)
     @await RenderSectionAsync("Gallery", false)
+    @await RenderSectionAsync("Index", false)
     </body>
 </html>

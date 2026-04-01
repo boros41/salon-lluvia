@@ -10,6 +10,9 @@ internal sealed record ImageUrlsResponse
 
 internal sealed record ImageResponse
 {
+    [JsonPropertyName("id")]
+    public required int Id { get; init; }
+
     [JsonPropertyName("url")]
     public required string Url { get; init; }
 

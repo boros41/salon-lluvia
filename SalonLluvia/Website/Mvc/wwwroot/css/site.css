@@ -308,9 +308,41 @@ a {
 
 
 /*** Hero Header ***/
+
+/* Glide JS overrides */
+.glide__arrow {
+    border: none;
+    box-shadow: none;
+}
+
+.glide__arrow:hover {
+    color: var(--bs-link-hover-color);
+}
+
+/* Looks good for tab accessibility but will also trigger on mobile tap so it won't look good then */
+/*.glide__arrow:focus {
+    color: var(--bs-link-hover-color);
+    border: 3px solid;
+    border-color: var(--bs-link-hover-color);
+    background-color: white;
+    transition: none;
+}*/
+
+.glide__arrow--left {
+    left: 1rem;
+}
+
+.glide__arrow--right {
+    right: 1rem;
+}
+
 .hero-header {
     background: url(../img/hero-bg.jpg) top left no-repeat;
     background-size: cover;
+}
+
+.hero-header-text {
+    padding-left: 0.5rem;
 }
 
 @media (min-width: 992px) {
@@ -334,35 +366,6 @@ a {
         padding-left: calc(((100% - 1320px) / 2) + .75rem);
     }
 }
-
-.header-carousel .owl-nav {
-    position: absolute;
-    right: 0;
-    bottom: 0;
-    text-align: center;
-    display: flex;
-    justify-content: center;
-}
-
-    .header-carousel .owl-nav .owl-prev,
-    .header-carousel .owl-nav .owl-next {
-        position: relative;
-        margin-left: 2px;
-        width: 60px;
-        height: 60px;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        color: var(--bs-dark);
-        background: var(--bs-primary);
-        font-size: 22px;
-        transition: .5s;
-    }
-
-        .header-carousel .owl-nav .owl-prev:hover,
-        .header-carousel .owl-nav .owl-next:hover {
-            color: var(--bs-white);
-        }
 
 .page-header {
     background: url(../img/page-header.jpg) center center no-repeat;
@@ -532,72 +535,6 @@ a {
 
 
 /*** Testimonial ***/
-.testimonial-carousel .owl-item {
-    position: relative;
-}
-
-    .testimonial-carousel .owl-item::before {
-        position: absolute;
-        content: "\f10d";
-        font-family: "Font Awesome 5 Free";
-        font-weight: 900;
-        font-size: 300px;
-        top: 50%;
-        left: 50%;
-        transform: translate(-50%, -50%);
-        opacity: .1;
-    }
-
-    .testimonial-carousel .owl-item img {
-        position: relative;
-        width: 100px;
-        height: 100px;
-        z-index: 1;
-    }
-
-    .testimonial-carousel .owl-item,
-    .testimonial-carousel .owl-item * {
-        transition: .5s;
-    }
-
-        .testimonial-carousel .owl-item span {
-            letter-spacing: 2px;
-        }
-
-        .testimonial-carousel .owl-item.center .bg-light {
-            background: var(--bs-primary) !important;
-        }
-
-            .testimonial-carousel .owl-item.center .bg-light * {
-                color: var(--bs-dark) !important;
-            }
-
-.testimonial-carousel .owl-nav {
-    margin-top: 25px;
-    display: flex;
-    justify-content: center;
-}
-
-    .testimonial-carousel .owl-nav .owl-prev,
-    .testimonial-carousel .owl-nav .owl-next {
-        margin: 0 5px;
-        width: 45px;
-        height: 45px;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        font-size: 22px;
-        color: var(--bs-dark);
-        background: var(--bs-primary);
-        transition: .5s;
-    }
-
-        .testimonial-carousel .owl-nav .owl-prev:hover,
-        .testimonial-carousel .owl-nav .owl-next:hover {
-            color: var(--bs-white);
-            background: var(--bs-dark);
-        }
-
 
 /*** Footer ***/
 @media (min-width: 992px) {

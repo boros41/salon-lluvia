@@ -16,34 +16,26 @@
         </button>
         <div class="collapse navbar-collapse p-3" id="navbarCollapse">
             <div class="navbar-nav mx-auto">
-                <a asp-controller="Home" asp-action="Index" class="nav-item nav-link @(controller == "Home" && action == "Index" ? "active" : null)">Home</a>
+                <a asp-controller="Home" asp-action="Gallery" class="nav-item nav-link @(controller == "Home" && action == "Gallery" ? "active" : null)">Galería</a>
 
-                <a asp-controller="Home" asp-action="Gallery" class="nav-item nav-link @(controller == "Home" && action == "Gallery" ? "active" : null)">Gallery</a>
+                <a asp-controller="Home" asp-action="Service" class="nav-item nav-link @(controller == "Home" && action == "Service" ? "active" : null)">Servicio</a>
+                
+                <a asp-controller="Home" asp-action="About" class="nav-item nav-link @(controller == "Home" && action == "About" ? "active" : null)">Nosotros</a>
+                
+                <a asp-controller="Home" asp-action="Team" class="nav-item nav-link @(controller == "Home" && action == "Team" ? "active" : null)">Equipo</a>
+                
+                <a asp-controller="Home" asp-action="Appointment" class="nav-item nav-link text-uppercase @(controller == "Home" && action == "Appointment" ? "active" : null)">Cita</a>
 
-                <a asp-controller="Home" asp-action="Service" class="nav-item nav-link @(controller == "Home" && action == "Service" ? "active" : null)">Service</a>
-
-                <a asp-controller="Home" asp-action="Pricing" class="nav-item nav-link @(controller == "Home" && action == "Pricing" ? "active" : null)">Price</a>
-
+                @if (area == "Admin")
+                {
                 <div class="nav-item dropdown">
                     <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown">Pages</a>
                     <div class="dropdown-menu bg-light mt-2" id="navbar-dropdown-menu">
-                        @if (area == "Admin")
-                        {
-                            <a asp-controller="Appointment" asp-action="List" class="dropdown-item @(controller == "Appointment" && action == "List" ? "active" : null)">List of Appointments</a>
-                            <a asp-controller="Client" asp-action="List" class="dropdown-item @(controller == "Client" && action == "List" ? "active" : null)">List of clients</a>
-                        }
-                        else
-                        {
-                            <a asp-controller="Home" asp-action="About" class="dropdown-item @(controller == "Home" && action == "About" ? "active" : null)">About</a>
-
-                            <a asp-controller="Home" asp-action="Team" class="dropdown-item @(controller == "Home" && action == "Team" ? "active" : null)">Our Team</a>
-
-                            <a asp-controller="Home" asp-action="Testimonial" class="dropdown-item @(controller == "Home" && action == "Testimonial" ? "active" : null)">Testimonial</a>
-                        }
+                        <a asp-controller="Appointment" asp-action="List" class="dropdown-item @(controller == "Appointment" && action == "List" ? "active" : null)">List of Appointments</a>
+                        <a asp-controller="Client" asp-action="List" class="dropdown-item @(controller == "Client" && action == "List" ? "active" : null)">List of clients</a>
                     </div>
                 </div>
-
-                <a asp-controller="Home" asp-action="Appointment" class="nav-item nav-link text-uppercase @(controller == "Home" && action == "Appointment" ? "active" : null)">Cita</a>
+                }
             </div>
             <div class="d-flex align-items-center">
                 @using Microsoft.AspNetCore.Identity

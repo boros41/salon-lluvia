@@ -96,6 +96,7 @@ public class AzureBlobStorageController : ControllerBase
 
                 ImageResponse imageResponse = new ImageResponse()
                 {
+                    Id = imageInDb.Id,
                     Url = imageUrl,
                     Description = imageDescription,
                     Hairstyles = hairStyles,

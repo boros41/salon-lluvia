@@ -1,6 +1,6 @@
 ﻿@model AppointmentViewModel
 @{
-    ViewData["Title"] = "Appointment";
+    ViewData["Title"] = "Cita";
 }
 
 @section Styles
@@ -18,13 +18,8 @@
         <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d352.0769115647991!2d-80.8557955672369!3d35.77002177316065!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x885159b3197aaaab%3A0x695fd39779fadae3!2sSalon%20Lluvia!5e1!3m2!1sen!2sus!4v1767140107113!5m2!1sen!2sus" width="600" height="450" style="border:0;" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
         <div class="cs-wrapper">
             <div class="cs-content">
-                <span class="cs-topper text-uppercase">Contáctanos</span>
-                <h2 class="cs-title text-capitalize">
-                    Reserve su cita
-                </h2>
-                <p class="cs-text">
-                    El lugar donde la belleza te está esperando.
-                </p>
+                <h1 class="font-dancing-script text-primary mb-0">Contáctanos</h1>
+                <h1 class="cs-title text-capitalize mb-4">Reserve su cita</h1>
             </div>
             <form asp-controller="Home" asp-action="Appointment" method="post" onsubmit="onSubmit(event)">
                 <div class="row">

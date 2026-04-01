@@ -164,11 +164,6 @@ public class HomeController : Controller
         return View();
     }
 
-    public IActionResult Pricing()
-    {
-        return View();
-    }
-
     [HttpGet]
     public IActionResult Gallery([FromServices] IAzureBlobStorageImages azureBlobStorageImages)
     {
@@ -321,11 +316,6 @@ public class HomeController : Controller
     }
 
     public IActionResult Team()
-    {
-        return View();
-    }
-
-    public IActionResult Testimonial()
     {
         return View();
     }
