@@ -72,7 +72,7 @@
                             <div class="modal-dialog">
                                 <div class="modal-content">
                                     <div class="modal-header">
-                                        <h1 class="modal-title fs-5" id="exampleModalLabel">Upload image</h1>
+                                        <h1 class="modal-title fs-5" id="exampleModalLabel">Subir Imagen</h1>
                                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                                     </div>
                                     <form enctype="multipart/form-data" asp-controller="Home" asp-action="Gallery" method="post" id="upload-image-form">
@@ -85,14 +85,14 @@
                                                 </div>
                                                 <div class="row mb-2">
                                                     <div class="col">
-                                                        <label asp-for="Image" class="form-label fw-bold"></label>
+                                                        <label asp-for="Image" class="form-label fw-bold">Imagen</label>
                                                         <span asp-validation-for="Image" class="text-danger"></span>
                                                         <input asp-for="Image" type="file" class="form-control" />
                                                     </div>
                                                 </div>
                                                 <div class="row mb-2">
                                                     <div class="col">
-                                                        <span class="form-label fw-bold">Gender</span>
+                                                        <span class="form-label fw-bold">Género</span>
                                                         <span asp-validation-for="Gender" class="text-danger"></span><br />
 
                                                         <input asp-for="Gender" id="female" class="form-check-input" name="Gender" type="radio" value="F" checked />
@@ -110,7 +110,7 @@
                                                 <div class="row mb-2">
                                                     <div class="col">
                                                         @*Hair type checkboxes such as "peinado"*@
-                                                        <span class="form-label fw-bold">Hair Types</span>
+                                                        <span class="form-label fw-bold">Peinados</span>
                             
                                                         @*asp-validation-for won't easily work with jQuery client-side validation since multiple checkboxes are generated, custom js is used.*@
                                                         <span asp-validation-for="HairStyles" id="hairstyle-error" class="text-danger"></span><br />
@@ -132,7 +132,7 @@
                                                 <div class="row mb-2">
                                                     <div class="col">
                                                         @*Hair color checkboxes*@
-                                                        <span class="form-label fw-bold">Hair Colors</span>
+                                                        <span class="form-label fw-bold">Colores</span>
                             
                                                         @*asp-validation-for won't easily work with jQuery client-side validation since multiple checkboxes are generated, custom js is used.*@
                                                         <span asp-validation-for="HairColors" id="hair-color-error" class="text-danger"></span><br />
@@ -193,8 +193,6 @@
     @*Used to determine if the delete image button is shown per image.*@
     const isAdminUser = @((SignInManager.IsSignedIn(User) && User.IsInRole("Admin")).ToString().ToLower());
     const adminDeleteImageUrl = "@Url.Action("Delete", "Gallery", new { area = "Admin" })";
-    console.log(isAdminUser);
-    console.log(adminDeleteImageUrl);
 </script>
 
 @section Gallery

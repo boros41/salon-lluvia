@@ -43,7 +43,8 @@
     if ($("#counter-yoe").length > 0) {
         window.onload = function () {
             const counterOptions = {
-                autoAnimate: true
+                autoAnimate: true,
+                onCompleteCallback: appendPlusSignToCounter
             };
             const numAnim = new countUp.CountUp('counter-yoe', 15, counterOptions);
         };
@@ -59,3 +60,6 @@
     });
 })(jQuery);
 
+function appendPlusSignToCounter() {
+    $("#counter-yoe").append("+");
+}

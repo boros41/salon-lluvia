@@ -16,6 +16,7 @@ public class Image
     public int? HairProfileId { get; set; } // foreign key linking to HairProfile
 
     // one-to-many: One hair profile can have many images (multiple photos of the same person's hair), but one image can have only one hair profile.
+    // well, the above is true if I implement multiple image uploads at once, which I have not
     [ValidateNever]
     public HairProfile HairProfile { get; set; } = null!;
 

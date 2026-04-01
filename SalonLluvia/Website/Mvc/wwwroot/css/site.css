@@ -504,12 +504,12 @@ a {
 
 .team-overlay {
     position: absolute;
-    padding: 30px;
+    
     right: 30px;
     bottom: 30px;
     left: 30px;
     text-align: center;
-    background: rgba(255, 255, 255, .5);
+    background: rgba(255, 255, 255, .8);
     transition: .5s;
     z-index: 1;
 }
@@ -532,9 +532,6 @@ a {
         color: var(--bs-white);
         background: var(--bs-dark);
     }
-
-
-/*** Testimonial ***/
 
 /*** Footer ***/
 @media (min-width: 992px) {

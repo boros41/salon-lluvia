@@ -206,7 +206,18 @@ function createImageCards(images) {
     });
 
     if ($grid.children().length === 0) {
-        console.log("No images found!!!");
+        // the admin upload image button is inside the accordion so hide everything else (filter options)
+        $("#gallery-spinner").addClass("d-none");
+        $(".accordion-body > .row").addClass("d-none");
+        $(".accordion-body").children(".row").last().removeClass("d-none");
+
+        $("<p/>").addClass("m-1 text-danger text-center").text("Lo sentimos, por el momento no hay imágenes disponibles.").appendTo(".container");
+
+        // non-admin user shouldn't see the filter option if there are no images
+        if (isAdminUser === false) {
+            $(".accordion").addClass("d-none");
+        }
+
         return;
     }
 
@@ -218,8 +229,6 @@ function createImageCards(images) {
 
         // This is true if the image blob was deleted in Azure but the server's memory cache still contained the image's URL
         if (result === "broken") {
-            console.log(`Removing broken image: ${image.img.src}`);
-
             const $brokenGridItem = $(image.img).closest(".grid-item");
             $grid.masonry("remove", $brokenGridItem);
             $brokenGridItem.remove();
@@ -258,8 +267,6 @@ function fetchFilteredImages(gender, $hairstyles, $hairColors) {
     });
 
     const resourceUrl = `/api/azureblobstorage/image-url?${queryParams.toString()}`;
-
-    console.log(`Filter URL: ${resourceUrl}`);
 
     fetch(resourceUrl, options)
         .then(response => {
