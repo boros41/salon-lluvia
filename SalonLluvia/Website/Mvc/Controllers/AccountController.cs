@@ -1,6 +1,5 @@
 ﻿using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.IdentityModel.Tokens;
 using Mvc.Models;
 using Mvc.Models.ViewModels;
 using SignInResult = Microsoft.AspNetCore.Identity.SignInResult;
@@ -39,7 +38,7 @@ public class AccountController : Controller
             return View(model);
         }
 
-        if (!model.ReturnUrl.IsNullOrEmpty() && Url.IsLocalUrl(model.ReturnUrl))
+        if (!string.IsNullOrEmpty(model.ReturnUrl) && Url.IsLocalUrl(model.ReturnUrl))
         {
             return Redirect(model.ReturnUrl);
         }

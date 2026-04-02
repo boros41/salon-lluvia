@@ -52,29 +52,40 @@ public class Program
             const string storageAccountName = "stsalonlluviaimgprod01";
             const string containerName = "gallery-images";
 
-            string tenantId = builder.Configuration["AZURE_TENANT_ID"] ?? throw new InvalidOperationException("AZURE_TENANT_ID environment variable not found.");
-            string clientId = builder.Configuration["AZURE_CLIENT_ID"] ?? throw new InvalidOperationException("AZURE_CLIENT_ID environment variable not found.");
-            string clientSecret = builder.Configuration["AZURE_CLIENT_SECRET"] ?? throw new InvalidOperationException("AZURE_CLIENT_SECRET environment variable not found.");
+            Uri blobContainerUri = new Uri($"https://{storageAccountName}.blob.core.windows.net/{containerName}");
+            BlobContainerClient blobContainerClient;
 
-            return new BlobContainerClient(
-                new Uri($"https://{storageAccountName}.blob.core.windows.net/{containerName}"),
-                new ClientSecretCredential(tenantId, clientId, clientSecret));
-        });
-        #endregion
-
-        string? connectionString = builder.Configuration.GetConnectionString("SalonContext");
-        // Add EF Core DI
-        builder.Services.AddDbContext<DbContext, SalonContext>(options =>
-        {
             if (builder.Environment.IsDevelopment())
             {
-                options.UseSqlServer(connectionString);
+                // local development to connect & authenticate to Azure Blob Storage through Azure service principals
+                // https://learn.microsoft.com/en-us/dotnet/azure/sdk/authentication/local-development-service-principal?tabs=azure-portal%2Cwindows%2Ccommand-line#assign-roles-to-the-group
+                string tenantId = builder.Configuration["AZURE_TENANT_ID"] ?? throw new InvalidOperationException("AZURE_TENANT_ID environment variable not found.");
+                string clientId = builder.Configuration["AZURE_CLIENT_ID"] ?? throw new InvalidOperationException("AZURE_CLIENT_ID environment variable not found.");
+                string clientSecret = builder.Configuration["AZURE_CLIENT_SECRET"] ?? throw new InvalidOperationException("AZURE_CLIENT_SECRET environment variable not found.");
+
+                blobContainerClient = new BlobContainerClient(
+                    blobContainerUri, new ClientSecretCredential(tenantId, clientId, clientSecret));
             }
             else
             {
-                // TODO: Setup production database on deployment
-                //options.UseSqlServer(connectionString);
+                // https://learn.microsoft.com/en-us/dotnet/azure/sdk/authentication/system-assigned-managed-identity?tabs=azure-portal%2Ccommand-line#implement-the-code
+                blobContainerClient = new BlobContainerClient(
+                    blobContainerUri, new ManagedIdentityCredential(ManagedIdentityId.SystemAssigned));
             }
+
+            return blobContainerClient;
+        });
+        #endregion
+
+        // Add EF Core DI
+        builder.Services.AddDbContext<DbContext, SalonContext>(options =>
+        {
+            string? connectionString = builder.Configuration.GetConnectionString("SalonContext") ?? throw new InvalidOperationException("SalonContext connection string is missing."); ;
+
+            if (builder.Environment.IsDevelopment())
+                options.UseSqlServer(connectionString);
+            else
+                options.UseAzureSql(connectionString);
         });
 
         builder.Services.AddRouting(options =>
