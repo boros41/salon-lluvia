@@ -127,9 +127,9 @@ function createImageCards(images) {
         const $thumbnailIcon = $("<i/>").addClass("fa fa-eye").appendTo($fullImageLink);
         const $cardBody = $("<div/>").addClass("card-body pt-1 pb-1").attr("id", `card-body-img-${imageIndex}`).appendTo($card);
         const $hairstyleBadge = $("<div/>").addClass("hairstyle-badge mb-1").appendTo($cardBody);
-        const $hairstyleBadgeLabel = $("<span/>").addClass("fw-semibold mb-0").text("Hairstyles: ").appendTo($hairstyleBadge);
+        const $hairstyleBadgeLabel = $("<span/>").addClass("fw-semibold mb-0").text("Peinados: ").appendTo($hairstyleBadge);
         const $hairColorBadge = $("<div/>").addClass("hair-color-badge").appendTo($cardBody);
-        const $hairColorBadgeLabel = $("<span/>").addClass("fw-semibold mb-0").text("Hair Colors: ").appendTo($hairColorBadge);
+        const $hairColorBadgeLabel = $("<span/>").addClass("fw-semibold mb-0").text("Colores: ").appendTo($hairColorBadge);
 
         // This is set by Razor code in Gallery.cshtml
         if (isAdminUser === true) {
@@ -145,7 +145,7 @@ function createImageCards(images) {
             const $decriptionText = $("<span/>").addClass("card-text mb-1").text(imageDescription).prependTo($cardBody);
             const $descriptionLabel = $("<span/>").addClass("fw-semibold mb-0").text("Description: ").prependTo($cardBody);
         } else {
-            const hairstylesAltDescription = "Hairstyles: " + hairstyles.map(hairstyleObject => hairstyleObject.style).join(", ");
+            const hairstylesAltDescription = "Peinados: " + hairstyles.map(hairstyleObject => hairstyleObject.style).join(", ");
             $image.attr("alt", hairstylesAltDescription);
             $fullImageLink.attr("data-alt", hairstylesAltDescription);
         }
@@ -168,11 +168,11 @@ function createImageCards(images) {
                         <span class="card-text mb-1">${imageDescription}</span>
 
                         <div class="hairstyle-badge mb-1">
-                            <span class="fw-semibold mb-0">Hairstyles:</span>
+                            <span class="fw-semibold mb-0">Peinados:</span>
                         </div>
 
                         <div class="hair-color-badge">
-                            <span class="fw-semibold mb-0">Hair Colors:</span>
+                            <span class="fw-semibold mb-0">Colores:</span>
                         </div>
                     </div>
                 </div>

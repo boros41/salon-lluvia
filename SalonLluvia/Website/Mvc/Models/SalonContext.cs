@@ -28,7 +28,8 @@ public class SalonContext : IdentityDbContext<User>
             new HairStyle() { Id = 5, Style = "corte" },
             new HairStyle() { Id = 6, Style = "largo" },
             new HairStyle() { Id = 7, Style = "corto" },
-            new HairStyle() { Id = 8, Style = "otro" }
+            new HairStyle() { Id = 8, Style = "liso" },
+            new HairStyle() { Id = 9, Style = "otro" }
         );
 
         modelBuilder.Entity<HairColor>().HasData(
@@ -36,7 +37,10 @@ public class SalonContext : IdentityDbContext<User>
             new HairColor() { Id = 2, Color = "cafe" },
             new HairColor() { Id = 3, Color = "rubio" },
             new HairColor() { Id = 4, Color = "rojo" },
-            new HairColor() { Id = 5, Color = "mixto" }
+            new HairColor() { Id = 5, Color = "mixto" },
+            new HairColor() { Id = 6, Color = "azul" },
+            new HairColor() { Id = 7, Color = "morado" },
+            new HairColor() { Id = 8, Color = "rosa" }
             );
         #endregion
     }
