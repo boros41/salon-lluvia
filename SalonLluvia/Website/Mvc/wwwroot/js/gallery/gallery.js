@@ -208,10 +208,8 @@ function createImageCards(images) {
     if ($grid.children().length === 0) {
         // the admin upload image button is inside the accordion so hide everything else (filter options)
         $("#gallery-spinner").addClass("d-none");
-        $(".accordion-body > .row").addClass("d-none");
-        $(".accordion-body").children(".row").last().removeClass("d-none");
 
-        $("<p/>").addClass("m-1 text-danger text-center").text("Lo sentimos, por el momento no hay imágenes disponibles.").appendTo(".container");
+        $("#gallery").addClass("m-1 text-danger").text("Lo sentimos, por el momento no hay imágenes disponibles.");
 
         // non-admin user shouldn't see the filter option if there are no images
         if (isAdminUser === false) {
