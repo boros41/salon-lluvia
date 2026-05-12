@@ -1,3 +1,5 @@
+**This ASP.NET Core MVC project is no longer maintained as it has been migrated to an [Angular](https://github.com/boros41/ng-salonlluvia) and [ASP.NET Web API](https://github.com/boros41/salonlluvia) project.**
+
 # Salon Lluvia Web Application
 Production web application for a local salon business built to support online appointment scheduling, gallery browsing, and delivery of general business information.
 
